@@ -75,6 +75,21 @@ rm -rf .wrangler/state/v3/d1 && npm run db:schema:local
 
 Access `DB` in server code via the Cloudflare env binding (e.g. `context.cloudflare.env.DB`).
 
+## Seed data
+
+Starter catalog lives in `db/seed/`:
+
+- `web-pentesting-starter.json` — source seed data
+- `import.sql` — generated import file (gitignored)
+
+Each resource uses **`resource_type`** plus a learning-mode tag: `theory`, `practice`, or `mixed`.
+
+```bash
+npm run db:seed:sql      # generate db/seed/import.sql
+npm run db:seed:local    # generate + load into local D1
+npm run db:seed:remote   # generate + load into remote D1
+```
+
 ## Setting up Better Auth
 
 1. Generate and set the `BETTER_AUTH_SECRET` environment variable in your `.env.local`:
