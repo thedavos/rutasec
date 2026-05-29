@@ -1,4 +1,5 @@
 import type { PublicCatalogResult } from "#/modules/catalog/domain/entities/resource";
+import { Card, CardDescription, CardHeader, CardTitle } from "#/components/ui/card";
 import { CatalogFiltersBar } from "#/modules/catalog/presentation/components/catalog-filters";
 import { ResourceCard } from "#/modules/catalog/presentation/components/resource-card";
 
@@ -27,14 +28,14 @@ export function CatalogPage({ catalog }: CatalogPageProps) {
       />
 
       {catalog.resources.length === 0 ? (
-        <div className="island-shell mt-8 rounded-2xl p-8 text-center">
-          <p className="display-title text-xl font-bold text-[var(--sea-ink)]">
-            No resources match
-          </p>
-          <p className="mt-2 text-sm text-[var(--sea-ink-soft)]">
-            Try clearing filters or choosing a different category, level, or type.
-          </p>
-        </div>
+        <Card className="island-shell mt-8 rounded-2xl border-[var(--line)] py-8 shadow-none">
+          <CardHeader className="text-center">
+            <CardTitle className="display-title text-xl">No resources match</CardTitle>
+            <CardDescription>
+              Try clearing filters or choosing a different category, level, or type.
+            </CardDescription>
+          </CardHeader>
+        </Card>
       ) : (
         <ul className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {catalog.resources.map((resource) => (

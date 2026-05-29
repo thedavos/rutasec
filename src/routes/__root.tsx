@@ -3,6 +3,7 @@ import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { TanStackDevtools } from "@tanstack/react-devtools";
 
 import BetterAuthHeader from "#/integrations/better-auth/header-user";
+import { Button } from "#/components/ui/button";
 
 import appCss from "../styles.css?url";
 
@@ -49,9 +50,11 @@ function RootDocument({ children }: { children: React.ReactNode }) {
                 </span>
               </Link>
               <nav aria-label="Main">
-                <Link to="/" className="nav-link is-active px-2 py-1 text-sm font-semibold">
-                  Catalog
-                </Link>
+                <Button variant="ghost" size="sm" asChild className="font-semibold">
+                  <Link to="/" className="nav-link is-active">
+                    Catalog
+                  </Link>
+                </Button>
               </nav>
               <BetterAuthHeader />
             </div>

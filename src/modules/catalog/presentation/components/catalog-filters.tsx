@@ -1,10 +1,21 @@
 import { useNavigate } from "@tanstack/react-router";
 
+import { Button } from "#/components/ui/button";
+import { Card, CardContent, CardHeader } from "#/components/ui/card";
+import { Label } from "#/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "#/components/ui/select";
 import type {
   CatalogFilterOptions,
   CatalogListInput,
 } from "#/modules/catalog/domain/entities/resource";
-import { cn } from "#/shared/utils";
+
+const ALL_FILTER_VALUE = "__all__";
 
 type CatalogFiltersProps = {
   filters: CatalogListInput;
@@ -29,26 +40,27 @@ export function CatalogFiltersBar({ filters, filterOptions, total }: CatalogFilt
   }
 
   return (
-    <section className="island-shell rise-in rounded-2xl p-5" aria-label="Catalog filters">
-      <div className="flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <p className="island-kicker mb-1">Filter catalog</p>
-          <p className="text-sm text-[var(--sea-ink-soft)]">
-            {total} resource{total === 1 ? "" : "s"} shown
-          </p>
+    <Card
+      className="island-shell rise-in rounded-2xl border-[var(--line)] py-0 shadow-none"
+      aria-label="Catalog filters"
+    >
+      <CardHeader className="gap-4 px-5 pt-5 pb-0">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p className="island-kicker mb-1">Filter catalog</p>
+            <p className="text-sm text-[var(--sea-ink-soft)]">
+              {total} resource{total === 1 ? "" : "s"} shown
+            </p>
+          </div>
+          {hasFilters ? (
+            <Button type="button" variant="outline" size="sm" onClick={() => applyFilters({})}>
+              Clear filters
+            </Button>
+          ) : null}
         </div>
-        {hasFilters ? (
-          <button
-            type="button"
-            onClick={() => applyFilters({})}
-            className="rounded-lg border border-[var(--line)] bg-[var(--chip-bg)] px-3 py-1.5 text-sm font-semibold text-[var(--sea-ink)] hover:border-[var(--lagoon-deep)]"
-          >
-            Clear filters
-          </button>
-        ) : null}
-      </div>
+      </CardHeader>
 
-      <div className="mt-4 grid gap-4 sm:grid-cols-3">
+      <CardContent className="grid gap-4 px-5 pt-4 pb-5 sm:grid-cols-3">
         <FilterSelect
           label="Category"
           value={filters.category ?? ""}
@@ -88,8 +100,8 @@ export function CatalogFiltersBar({ filters, filterOptions, total }: CatalogFilt
             })
           }
         />
-      </div>
-    </section>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -101,24 +113,27 @@ type FilterSelectProps = {
 };
 
 function FilterSelect({ label, value, options, onSelect }: FilterSelectProps) {
+  const selectId = `catalog-filter-${label.toLowerCase().replace(/\s+/g, "-")}`;
+
   return (
-    <label className="block text-sm">
-      <span className="mb-1.5 block font-semibold text-[var(--sea-ink)]">{label}</span>
-      <select
-        className={cn(
-          "w-full rounded-xl border border-[var(--line)] bg-[var(--surface-strong)] px-3 py-2",
-          "text-sm text-[var(--sea-ink)] outline-none focus:border-[var(--lagoon-deep)]",
-        )}
-        value={value}
-        onChange={(event) => onSelect(event.target.value)}
+    <div className="grid gap-2">
+      <Label htmlFor={selectId}>{label}</Label>
+      <Select
+        value={value || ALL_FILTER_VALUE}
+        onValueChange={(next) => onSelect(next === ALL_FILTER_VALUE ? "" : next)}
       >
-        <option value="">All</option>
-        {options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
-    </label>
+        <SelectTrigger id={selectId} className="w-full">
+          <SelectValue placeholder={`All ${label.toLowerCase()}s`} />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value={ALL_FILTER_VALUE}>All</SelectItem>
+          {options.map((option) => (
+            <SelectItem key={option.value} value={option.value}>
+              {option.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
   );
 }
