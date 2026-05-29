@@ -1,0 +1,25 @@
+import { z } from "zod";
+
+import { RESOURCE_LEVELS, RESOURCE_TYPES } from "#/modules/catalog/domain/entities/resource";
+
+export const resourceRowSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  description: z.string().nullable(),
+  url: z.string(),
+  phase: z.string(),
+  category: z.string(),
+  topic: z.string(),
+  subtopic: z.string().nullable(),
+  resource_type: z.enum(RESOURCE_TYPES),
+  level: z.enum(RESOURCE_LEVELS),
+  estimated_hours: z.number(),
+  is_free: z.number(),
+  language: z.string().nullable(),
+  original_source_name: z.string(),
+  curated_from_name: z.string(),
+});
+
+export type ResourceRow = z.infer<typeof resourceRowSchema>;
+
+export const resourceRowListSchema = z.array(resourceRowSchema);
