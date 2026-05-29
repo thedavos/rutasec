@@ -18,7 +18,7 @@ Detailed rules live in **`.cursor/rules/`** (`.mdc` files). Prefer those over ge
 | `better-auth.mdc`    | Auth files — sessions, cookies                          |
 | `sentry.mdc`         | `src/**` — instrument server functions                  |
 | `testing.mdc`        | Always — Vitest, Playwright, coverage, layer boundaries |
-| `ui-shadcn.mdc`      | UI files — Tailwind, shadcn                             |
+| `ui-shadcn.mdc`      | UI files — shadcn/ui required for pages and components  |
 
 ## Stack
 

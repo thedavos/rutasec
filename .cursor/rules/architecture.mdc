@@ -129,6 +129,7 @@ Migrate incrementally from flatter paths (e.g. `ports/` at module root, plain fu
 - Route loaders call module server functions from `#/modules/<feature>`.
 - Components render state and dispatch events. No business logic, SQL, auth enforcement, or adapter construction.
 - Prefer loaders + server functions over client-side fetching for catalog and personal data.
+- **New pages and components must use shadcn/ui** — see `ui-shadcn.mdc`. Install primitives via CLI before building UI.
 
 ## Cross-module dependencies
 
