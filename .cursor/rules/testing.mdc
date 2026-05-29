@@ -1,0 +1,74 @@
+---
+description: Testing strategy — Vitest unit tests and Playwright e2e
+globs: "{src/**/*.test.ts,e2e/**/*.spec.ts,playwright.config.ts}"
+alwaysApply: true
+---
+
+# Unit tests (Vitest)
+
+Run tests with `vp test run`. Coverage: `vp test run --coverage` or `npm run test:coverage` (report in `coverage/index.html`).
+
+Import from `vite-plus/test`, not `vitest` directly.
+
+Colocate tests as `*.test.ts` beside the module under test.
+
+## Coverage
+
+Coverage is enforced in `vite.config.ts` — **minimum 80%** for statements, branches, functions, and lines on scoped files (`src/modules/**`, `src/shared/**`).
+
+- Run `npm run test:coverage` before finishing work; the run **must pass** the threshold.
+- Scope matches the hexagonal layers under test — routes and barrel `index.ts` files are excluded.
+- Add or extend tests (following the priority order below) until coverage meets 80%.
+
+## Priority (hexagonal layers)
+
+1. Zod schemas (`adapters/schemas/`)
+2. Mappers (`adapters/mappers/`) — D1 row → domain entity
+3. Pure domain logic (`domain/entities/`, filter parsing, in-memory rules)
+4. Adapter helpers (e.g. SQL/query builders in `adapters/d1/`)
+5. Application use cases (`application/`) — mock domain **ports**, not adapters
+6. React components and routes — defer in v1 unless behavior is non-trivial
+
+## Rules
+
+- Use cases must be tested with mocked **ports** (`CatalogPort`, etc.), never `getDb()` or concrete adapters.
+- Domain and application tests must not import React, TanStack, D1, Better Auth, or routes.
+- Mappers must verify conversion from validated D1 `snake_case` rows to camelCase domain entities.
+- Filter and search logic must be case-insensitive and must not mutate the original array or input object.
+- Query builders should assert published scope, clause order, and bindings — not full D1 integration.
+- Component tests may use React Testing Library with jsdom; prefer testing behavior over markup structure.
+- Avoid testing implementation details that do not affect observable behavior.
+
+## Example
+
+```ts
+import { describe, expect, it } from 'vite-plus/test'
+
+import { mapResourceRowToCard } from '#/modules/catalog/adapters/mappers/map-resource-row'
+
+describe('mapResourceRowToCard', () => {
+  it('maps snake_case rows to camelCase card shape', () => {
+    expect(mapResourceRowToCard({ /* row */ })).toEqual({ /* entity */ })
+  })
+})
+```
+
+# E2E tests (Playwright)
+
+Specs live in `e2e/**/*.spec.ts`. No specs yet — add them when catalog/auth UI ships.
+
+## Commands
+
+- `npm run test:e2e:install` — install Chromium (once per machine / CI image)
+- `npm run test:e2e` — run e2e specs (starts dev server on port 3000 via `webServer`)
+- `npm run test:e2e:ui` — interactive UI mode
+- `npm run test:e2e:headed` — headed browser
+- `npm run test:e2e:debug` — step-through debugger
+- `npm run test:e2e:report` — open last HTML report
+
+## Rules
+
+- E2E covers user flows (browse catalog → resource detail → sign in → save). Unit tests cover hexagonal layers.
+- Use `baseURL` from config; prefer role/text locators over CSS hooks.
+- Do not duplicate business-logic assertions already covered by unit tests.
+- Local runs reuse an existing dev server; CI starts a fresh one (`reuseExistingServer: !CI`).

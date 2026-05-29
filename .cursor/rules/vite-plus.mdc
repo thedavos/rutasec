@@ -15,6 +15,7 @@ Import config from `vite-plus`, not `vite` (enforced by `vite-plus/prefer-vite-p
 - `vp check` — format, lint, type-check
 - `vp check --fix` — same, applying auto-fixes (also runs on staged files)
 - `vp test run` — run tests once
+- `vp test run --coverage` — run tests with coverage report (`coverage/index.html`)
 - `vp build` — production build (also via `npm run build`, which copies Sentry instrumentation)
 - `vp preview` — preview production build
 - `vp run <script>` — run custom `package.json` / vite.config tasks

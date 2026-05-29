@@ -1,6 +1,6 @@
 ---
 description: TanStack Start routing, loaders, and server functions
-globs: src/**/*.{ts,tsx}
+globs: src/**/*.ts,src/**/*.tsx
 alwaysApply: false
 ---
 

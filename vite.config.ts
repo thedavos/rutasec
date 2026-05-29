@@ -26,6 +26,22 @@ const config = defineConfig({
     options: { typeAware: true, typeCheck: true },
   },
   resolve: { tsconfigPaths: true },
+  test: {
+    include: ["src/**/*.test.ts"],
+    coverage: {
+      provider: "v8",
+      reporter: ["text", "html", "lcov"],
+      reportsDirectory: "./coverage",
+      include: ["src/modules/**/*.ts", "src/shared/**/*.ts"],
+      exclude: ["**/*.test.ts", "**/index.ts", "src/routes/**", "src/routeTree.gen.ts"],
+      thresholds: {
+        statements: 80,
+        branches: 80,
+        functions: 80,
+        lines: 80,
+      },
+    },
+  },
   plugins: [
     devtools(),
     !isVitest && cloudflare({ viteEnvironment: { name: "ssr" } }),
