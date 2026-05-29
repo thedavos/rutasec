@@ -1,0 +1,37 @@
+---
+description: Cloudflare D1 schema, seed, and database conventions
+globs: db/**,wrangler.jsonc,scripts/**
+alwaysApply: false
+---
+
+# Cloudflare D1
+
+## Binding
+
+Worker binding: `DB` → database `rutasec-db` (see `wrangler.jsonc`).
+
+Access in server code: `context.cloudflare.env.DB`.
+
+## Files
+
+- `db/schema.sql` — MVP tables
+- `db/seed/web-pentesting-starter.json` — seed source (committed)
+- `db/seed/import.sql` — generated SQL (gitignored)
+- `scripts/import-seed-to-d1.mjs` — JSON → idempotent SQL
+
+## Local vs remote
+
+- `--local` → SQLite in `.wrangler/state/v3/d1/` (used by `npm run dev`)
+- `--remote` → Cloudflare production D1
+
+No separate SQL server runs locally.
+
+## Seed tags
+
+Each resource needs `resource_type` plus a learning-mode tag: `theory`, `practice`, or `mixed`.
+
+## Reset local DB
+
+```bash
+rm -rf .wrangler/state/v3/d1 && npm run db:schema:local && npm run db:seed:local
+```

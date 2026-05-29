@@ -1,0 +1,33 @@
+---
+description: TanStack Start routing, loaders, and server functions
+globs: src/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# TanStack Start
+
+## Routing
+
+File-based routes live in `src/routes/`. Layout shell is `src/routes/__root.tsx`.
+
+## Data loading
+
+Prefer route loaders and `createServerFn` over client-side fetching for catalog and personal data.
+
+```tsx
+import { createServerFn } from '@tanstack/react-start'
+
+export const getResources = createServerFn({ method: 'GET' }).handler(async () => {
+  // access D1 via Cloudflare env binding
+})
+```
+
+## Avoid
+
+- Heavy client state when server loaders or server functions suffice
+- Turning the app into a client-only SPA
+- Next.js patterns (App Router, Server Actions, `use server`)
+
+## UI surfaces (MVP)
+
+Public catalog, resource detail, auth, library. Match existing route and component conventions.

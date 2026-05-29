@@ -1,48 +1,94 @@
 # AGENTS.md
 
-## Project Context
-This repository originated as a blank GitLab scaffold (`gitlab.com/davos/rutasec`). Initially, it contained only the default `README.md` with no application code, dependencies, or services.
+Guidance for AI agents working in the RutaSec codebase.
 
-> ⚠️ **Note**: The "no tooling" notes below have been superseded. This project now uses **Vite+** as its unified frontend toolchain. See the active instructions below.
+## Project
 
-### Legacy Scaffold Notes (for reference)
-- ~~No build/lint/test commands exist yet.~~ → **Now handled by Vite+** (`vp check`, `vp test`)
-- ~~No services to start.~~ → **Frontend dev server**: `vp dev`
-- ~~No dependency files present.~~ → **Now managed via**: `package.json` + `vp install`
+RutaSec is a cybersecurity learning catalog on **TanStack Start + Cloudflare Workers + D1 + Better Auth**. MVP goal: public catalog, auth, and save a resource to a personal library.
 
-When additional backend services or non-frontend code are added, update this file accordingly.
+Detailed rules live in **`.cursor/rules/`** (`.mdc` files). Prefer those over generic framework advice.
 
----
+| Rule file            | When it applies                              |
+| -------------------- | -------------------------------------------- |
+| `rutasec-core.mdc`   | Always — stack, v1 scope, data boundaries    |
+| `vite-plus.mdc`      | Always — toolchain and validation            |
+| `tanstack-start.mdc` | `src/**` — routes, loaders, server functions |
+| `cloudflare-d1.mdc`  | `db/**`, `wrangler.jsonc`, `scripts/**`      |
+| `better-auth.mdc`    | Auth files — sessions, cookies               |
+| `sentry.mdc`         | `src/**` — instrument server functions       |
+| `ui-shadcn.mdc`      | UI files — Tailwind, shadcn                  |
 
-## Using Vite+, the Unified Toolchain for the Web
+## Stack
 
-This project uses **Vite+**, a unified toolchain built on top of Vite, Rolldown, Vitest, tsdown, Oxlint, Oxfmt, and Vite Task. Vite+ wraps runtime management, package management, and frontend tooling in a single global CLI called `vp`.
+TanStack Start · React · Tailwind CSS · Cloudflare Workers · D1 · Better Auth · Sentry
 
-> 💡 Vite+ is distinct from Vite. It invokes Vite through `vp dev` and `vp build`.
+Do not introduce Astro, Next.js, Durable Objects, Queues, KV, or R2 unless explicitly requested.
 
-- Run `vp help` for a list of commands
-- Run `vp <command> --help` for details on a specific command
-- Docs: local at `node_modules/vite-plus/docs` or online at https://viteplus.dev/guide/
+## Key paths
 
-### Review Checklist
-- [ ] Run `vp install` after pulling remote changes and before getting started
-- [ ] Run `vp check` and `vp test` to format, lint, type-check, and test changes
-- [ ] Check `vite.config.ts` tasks or `package.json` scripts for validation steps; run via `vp run <script>`
-- [ ] If setup, runtime, or package-manager behavior looks wrong, run `vp env doctor` and include its output when asking for help
+```
+src/routes/          file-based routes
+src/lib/auth.ts      Better Auth config
+db/schema.sql        D1 schema
+db/seed/             seed JSON + generated import.sql
+scripts/             import-seed-to-d1.mjs
+wrangler.jsonc       Worker + D1 binding (DB → rutasec-db)
+.cursor/rules/       project rules for agents
+```
 
-### Common Workflows
+## Vite+ toolchain
+
+This project uses **Vite+** (`vp`) — distinct from raw Vite. Docs: https://viteplus.dev/guide/ or `node_modules/vite-plus/docs`.
+
 ```bash
-# Start dev server
-vp dev
+vp install              # after pull / dependency changes
+vp check                # format, lint, type-check
+vp test run             # tests once
+vp env doctor           # diagnose toolchain issues
+```
 
-# Build for production
-vp build
+### App scripts
 
-# Run all checks (lint + type + test)
-vp check && vp test
+```bash
+npm run dev             # dev server (port 3000, .env.local, Sentry)
+npm run build           # production build → dist/server/
+npm run deploy          # build + wrangler deploy
+npm run db:schema:local # apply schema to local D1
+npm run db:seed:local   # generate + load seed into local D1
+```
 
-# Install/update dependencies
-vp install
+Local D1 is SQLite under `.wrangler/state/v3/d1/` — no separate SQL server. `npm run dev` uses the same local D1 via the `DB` binding.
 
-# Diagnose environment issues
-vp env doctor
+## v1 ship gate
+
+A change belongs in v1 if it supports this loop:
+
+1. Browse public catalog
+2. Open resource detail
+3. Sign in
+4. Save a resource
+
+Defer timeline, full goals, broad dashboard, admin panel, scraping, and social features.
+
+## Before finishing work
+
+```bash
+vp check
+vp test run
+```
+
+## Conventions
+
+- Business logic and D1 access in server functions / loaders, not client components.
+- `resources` = editorial catalog; `user_resources` = personal state — keep them separate.
+- Instrument `createServerFn` handlers with `Sentry.startSpan` (see `sentry.mdc`).
+- Add shadcn components: `pnpm dlx shadcn@latest add <component>`.
+- Minimize scope — match existing patterns; don't over-engineer.
+
+## Docs (Projects Vault)
+
+Operational docs (PRD, architecture, setup, commands) live outside this repo:
+
+`/Users/davidvargas/Davion Software/Projects Vault/projects/rutasec/docs/`
+
+Start with `SETUP.md` and `COMMANDS.md` for bootstrap and CLI reference.

@@ -1,0 +1,29 @@
+---
+description: Tailwind and shadcn/ui component conventions
+globs: src/**/*.tsx,src/styles.css
+alwaysApply: false
+---
+
+# UI — Tailwind + shadcn
+
+## Styling
+
+Use Tailwind utilities. Keep components clear; avoid premature abstraction layers.
+
+Utility helper: `src/lib/utils.ts` (`cn()` for class merging).
+
+## shadcn components
+
+Install with the latest shadcn CLI:
+
+```bash
+pnpm dlx shadcn@latest add button
+```
+
+Replace `button` with the component name. Follow existing shadcn config in the repo.
+
+## MVP UI focus
+
+Catalog browsing, resource detail, auth flows, save-to-library CTA. Match the existing layout in `src/routes/__root.tsx`.
+
+Do not add dashboard, timeline, or admin UI unless the current milestone explicitly requires it.

@@ -1,0 +1,34 @@
+---
+description: RutaSec stack, scope, and product boundaries for MVP
+alwaysApply: true
+---
+
+# RutaSec Core
+
+## Stack
+
+TanStack Start, React, Tailwind CSS, Cloudflare Workers, Cloudflare D1, Better Auth.
+
+Do not introduce Astro, Next.js, Durable Objects, Queues, KV, or R2 unless explicitly requested.
+
+## Architecture
+
+- Sensitive business logic runs on Workers (server functions), not in client components.
+- D1 is the source of truth. Better Auth handles identity; `app_users` handles internal ownership.
+- Public catalog must work without login. Personal actions require a valid session.
+
+## Data model
+
+- `resources` = canonical editorial catalog.
+- `user_resources` = personal user state. Never mix editorial metadata with personal progress.
+- Keep `db/schema.sql` and `db/seed/` in sync. Seed imports must be idempotent.
+
+## v1 scope
+
+Ship gate: browse catalog → resource detail → sign in → save a resource.
+
+v1 excludes timeline, full goals, broad dashboard, social features, admin panel, scraping, and advanced AI.
+
+Build order: foundation → D1/seed → public catalog → auth → save resource → library/goals/progress → timeline.
+
+If a change adds complexity without improving that loop, defer it.

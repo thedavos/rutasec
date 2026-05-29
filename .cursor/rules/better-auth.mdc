@@ -1,0 +1,41 @@
+---
+description: Better Auth setup and MVP auth constraints
+globs: src/lib/auth*.ts,src/routes/api/auth/**
+alwaysApply: false
+---
+
+# Better Auth
+
+## MVP auth
+
+Email/password and sessions only. No social login, orgs, or RBAC in v1.
+
+## TanStack Start integration
+
+Use `tanstackStartCookies()` plugin — already configured in `src/lib/auth.ts`:
+
+```tsx
+import { betterAuth } from 'better-auth'
+import { tanstackStartCookies } from 'better-auth/tanstack-start'
+
+export const auth = betterAuth({
+  emailAndPassword: { enabled: true },
+  plugins: [tanstackStartCookies()],
+})
+```
+
+Auth API route: `src/routes/api/auth/$.ts`.
+
+## Secrets
+
+`BETTER_AUTH_SECRET` in `.env.local`. Generate with:
+
+```bash
+npx -y @better-auth/cli secret
+```
+
+## Wrangler
+
+Keep `nodejs_compat` enabled in `wrangler.jsonc`.
+
+Protect personal actions (save resource, library) with session validation on the server.

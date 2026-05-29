@@ -1,0 +1,40 @@
+---
+description: Vite+ toolchain commands and validation checklist
+alwaysApply: true
+---
+
+# Vite+ Toolchain
+
+This project uses **Vite+** (`vp`) — distinct from raw Vite. Do not use `vite` CLI directly for tooling.
+
+Import config from `vite-plus`, not `vite` (enforced by `vite-plus/prefer-vite-plus-imports` in `vite.config.ts`).
+
+## Commands
+
+- `vp install` — after pull or dependency changes
+- `vp check` — format, lint, type-check
+- `vp check --fix` — same, applying auto-fixes (also runs on staged files)
+- `vp test run` — run tests once
+- `vp build` — production build (also via `npm run build`, which copies Sentry instrumentation)
+- `vp preview` — preview production build
+- `vp run <script>` — run custom `package.json` / vite.config tasks
+- `vp env doctor` — diagnose toolchain issues
+- `vp help` / `vp <command> --help` — CLI reference
+
+## App scripts (package.json)
+
+Prefer these for app-specific workflows:
+
+- `npm run dev` — dev server (port 3000, `.env.local`, Sentry)
+- `npm run build` / `npm run deploy` — production build and Cloudflare deploy
+- `npm run db:schema:local|remote` — apply D1 schema
+- `npm run db:seed:local|remote` — generate and load seed
+
+## Before finishing work
+
+```bash
+vp check
+vp test run
+```
+
+Docs: `node_modules/vite-plus/docs` or https://viteplus.dev/guide/
