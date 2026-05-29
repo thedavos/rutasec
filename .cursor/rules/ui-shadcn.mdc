@@ -10,7 +10,7 @@ alwaysApply: false
 
 Use Tailwind utilities. Keep components clear; avoid premature abstraction layers.
 
-Utility helper: `src/lib/utils.ts` (`cn()` for class merging).
+Utility helper: `src/shared/utils.ts` (`cn()` for class merging).
 
 ## shadcn components
 

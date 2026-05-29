@@ -73,7 +73,7 @@ npm run db:tables:local             # verify tables exist
 rm -rf .wrangler/state/v3/d1 && npm run db:schema:local
 ```
 
-Access `DB` in server code via the Cloudflare env binding (e.g. `context.cloudflare.env.DB`).
+Access `DB` in server code via `#/shared/db` (`getDb()`).
 
 ## Seed data
 

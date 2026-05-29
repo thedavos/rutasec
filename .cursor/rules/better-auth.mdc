@@ -1,6 +1,6 @@
 ---
 description: Better Auth setup and MVP auth constraints
-globs: src/lib/auth*.ts,src/routes/api/auth/**
+globs: src/modules/identity/**,src/routes/api/auth/**
 alwaysApply: false
 ---
 
@@ -12,7 +12,7 @@ Email/password and sessions only. No social login, orgs, or RBAC in v1.
 
 ## TanStack Start integration
 
-Use `tanstackStartCookies()` plugin — already configured in `src/lib/auth.ts`:
+Use `tanstackStartCookies()` plugin — configured in `src/modules/identity/adapters/better-auth/server-auth.ts`:
 
 ```tsx
 import { betterAuth } from 'better-auth'
@@ -22,6 +22,12 @@ export const auth = betterAuth({
   emailAndPassword: { enabled: true },
   plugins: [tanstackStartCookies()],
 })
+```
+
+Import from the module public API in routes and UI:
+
+```tsx
+import { auth, authClient } from '#/modules/identity'
 ```
 
 Auth API route: `src/routes/api/auth/$.ts`.

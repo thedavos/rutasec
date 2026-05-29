@@ -1,0 +1,224 @@
+---
+description: Hexagonal architecture, DI composition root, and SOLID rules
+globs: src/**/*.ts,src/**/*.tsx
+alwaysApply: true
+---
+
+# Hexagonal Architecture (TanStack Start adaptation)
+
+Follow a **feature-module hexagonal** layout. Each feature owns its layers. Wire dependencies only in the composition root.
+
+## Dependency flow
+
+```
+Routes / React UI (src/routes/, module presentation/)
+  → server functions (modules/<feature>/server/) — driving adapters
+  → use case interfaces (GetPublicCatalog, SaveResource, …)
+  → use case implementations (*UseCase)
+  → domain port (CatalogPort) — only for I/O-bound use cases
+  → adapters (D1CatalogAdapter, BetterAuthSessionAdapter)
+  → Zod schemas + mappers
+  → getDb() / Better Auth / external I/O
+  → D1, Better Auth API
+```
+
+Pure use cases (e.g. filter parsing, in-memory search) do not call a port.
+
+Routes and components must call a module's **public server API** or DI-provided use cases — never adapters, D1, or `getDb()` directly.
+
+## Project layout
+
+```
+src/
+  app/
+    config/env.ts              # Zod-validated env at startup
+    di/                        # composition root (*.module.ts)
+    router.tsx                 # TanStack Router instance (if not colocated in routes/)
+  modules/<feature>/             # vertical slice per feature (catalog, library, identity)
+    domain/
+      entities/                # domain models (camelCase)
+      errors/                  # domain error types (CatalogNotFound, Unauthorized, …)
+      ports/                   # outbound contracts (CatalogPort)
+    application/
+      <use-case>/              # interface + *UseCase per folder (get-public-catalog/, …)
+      index.ts
+    adapters/
+      d1/                      # or better-auth/, etc.
+      schemas/                 # Zod DTOs (snake_case / row shapes stay here)
+      mappers/                 # validated DTO / row → domain entity
+      errors/                  # map infra failures → domain/port errors
+    server/                    # thin createServerFn handlers (driving adapters)
+    presentation/              # feature-specific components (optional)
+    index.ts                   # public exports for routes and other modules
+  shared/
+    domain/                    # Result.ts and cross-module domain primitives
+    adapters/                  # shared infra (if needed)
+    db.ts                      # getDb() accessor
+    utils/
+  routes/                      # TanStack Start file-based routes — loaders call modules
+  integrations/                # cross-cutting UI glue (auth header, etc.)
+```
+
+**MVP modules:** `catalog`, `library`, `identity`.
+
+Migrate incrementally from flatter paths (e.g. `ports/` at module root, plain functions instead of `*UseCase`) toward this layout.
+
+## Nomenclature
+
+| Concept | Name in this repo |
+| ------- | ----------------- |
+| Outbound domain contract | `CatalogPort` (`domain/ports/`) |
+| D1 / auth implementation | `D1CatalogAdapter`, `BetterAuthSessionAdapter` (`adapters/d1/`, `adapters/better-auth/`) |
+| Application contract | `GetPublicCatalog`, `SaveResource` (no `Port` suffix) |
+| Application implementation | `GetPublicCatalogUseCase`, etc. |
+| Legacy `infrastructure/` | Use `adapters/` |
+| Legacy `*Repository` | Use `*Port` (domain) or `*Adapter` (implementations) |
+| Persistence row / API DTO | Zod schema in `adapters/schemas/`, mapped in `adapters/mappers/` |
+
+**Rule:** the `Port` suffix is reserved for **domain** outbound contracts only.
+
+## Composition root (`src/app/di/`)
+
+- Only `src/app/di/*.module.ts` may instantiate `getDb()`, adapters, use cases, and server-function dependencies.
+- Example: `catalog.module.ts` wires `getDb()` → `D1CatalogAdapter` → `GetPublicCatalogUseCase` → exports wired deps for `modules/catalog/server/`.
+- Routes, React components, and use cases must not construct adapters or call `getDb()` directly.
+- Tests may construct adapters inline or via test doubles; production wiring goes through DI modules.
+- Prefer factory functions over DI frameworks; one `*.module.ts` per feature is enough for MVP.
+
+## Rules
+
+### Domain (`modules/<feature>/domain/`)
+
+- Must not import React, TanStack, D1, Better Auth, SQL, `fetch`, Zod, adapters, or routes.
+- `entities/` holds business types and pure rules.
+- `errors/` holds domain error types used in `Result<T, E>`.
+- `ports/` holds outbound contracts (`CatalogPort`).
+- Uses camelCase. D1 `snake_case` must not appear here.
+
+### Application (`modules/<feature>/application/`)
+
+- One folder per use case (`get-public-catalog/`, `save-resource/`).
+- Each folder exports a use case **interface** (no `Port` suffix) and a `*UseCase` class that implements it.
+- I/O-bound use cases depend on domain **port interfaces**, never on concrete adapters or `getDb()`.
+- Pure logic use cases depend only on domain entities and other use case interfaces.
+- Return `Result<T, DomainError>` for expected failures; do not throw on the happy path.
+- No SQL, HTTP, or Zod in application code.
+
+### Adapters (`modules/<feature>/adapters/`)
+
+- Implement domain ports (`*Adapter` naming).
+- Own all I/O: D1 prepared statements, Better Auth, external HTTP.
+- `schemas/` — Zod schemas for rows, request payloads, and external DTOs.
+- `mappers/` — convert validated schemas to domain entities (`mapResourceRowToEntity`).
+- `errors/` — map D1/HTTP/validation failures to domain or port errors before returning `Result`.
+- `snake_case` stays in schemas; domain entities are camelCase.
+
+### Server (`modules/<feature>/server/`)
+
+- Driving adapters: thin `createServerFn` handlers.
+- Resolve wired use cases from `src/app/di/<feature>.module.ts`; instrument with Sentry spans (see `sentry.mdc`).
+- Map `Result` errors to server-fn responses here, not in routes or components.
+
+### Public API (`modules/<feature>/index.ts`)
+
+- Export server functions, use case interfaces/types, and domain ports needed by other modules.
+- Do **not** export adapters, mappers, schemas, or internal domain helpers unless tests require them.
+
+### Presentation (`src/routes/`, `modules/<feature>/presentation/`)
+
+- Route loaders call module server functions from `#/modules/<feature>`.
+- Components render state and dispatch events. No business logic, SQL, auth enforcement, or adapter construction.
+- Prefer loaders + server functions over client-side fetching for catalog and personal data.
+
+## Cross-module dependencies
+
+- **Allowed:** module A use case → module B **domain port** (via `#/modules/<feature>` public export).
+- **Forbidden:** module A → module B adapters, schemas, mappers, or D1 code.
+- **Forbidden:** circular module dependencies. Shared ports live in the owning module and are re-exported from its `index.ts`.
+
+Example: `library` `SaveResourceUseCase` depends on `CatalogPort` from `catalog`, not on `D1CatalogAdapter`.
+
+## Data boundaries (RutaSec)
+
+- `catalog` module → editorial `resources` (read).
+- `library` module → personal `user_resources` (write/read).
+- Never mix editorial metadata with user progress in domain entities or use cases.
+
+## Errors and Result
+
+- Shared `Result<T, E>` lives in `src/shared/domain/result.ts`.
+- Domain errors in `modules/<feature>/domain/errors/`.
+- Adapter errors mapped in `modules/<feature>/adapters/errors/` before crossing into use cases.
+- Use cases return `Result<T, DomainError>`; reserve throwing for unexpected infrastructure failures.
+- Unwrap or map `Result` only in `server/` or `app/di/`, not in routes or components.
+
+## SOLID (pragmatic)
+
+- **Single responsibility:** one use case per folder; one module per bounded feature.
+- **Open/closed:** extend via new use cases/adapters, not by editing another module's domain for UI needs.
+- **Liskov:** port implementations honor the full contract (e.g. public catalog reads only published resources).
+- **Interface segregation:** small ports per module, not one mega-repository.
+- **Dependency inversion:** application depends on ports; adapters depend on domain shapes.
+
+## Avoid
+
+- Top-level `src/domain/`, `src/application/`, `src/ports/`, `src/adapters/` outside modules.
+- Instantiating adapters or calling `getDb()` outside `src/app/di/` (except tests).
+- SQL or Zod in routes, components, domain, or application layers.
+- `*Port` on use case names.
+- Leaking `snake_case` row fields into domain entities.
+
+## Example (`catalog` module)
+
+```
+src/modules/catalog/
+  domain/
+    entities/resource.ts
+    errors/catalog-errors.ts
+    ports/catalog-port.ts
+  application/
+    get-public-catalog/
+      get-public-catalog.ts          # interface GetPublicCatalog
+      get-public-catalog.use-case.ts # class GetPublicCatalogUseCase
+    index.ts
+  adapters/
+    d1/d1-catalog-adapter.ts
+    schemas/resource-row.schema.ts
+    mappers/map-resource-row.ts
+    errors/map-d1-error.ts
+  server/get-public-catalog.ts
+  index.ts
+
+src/app/di/catalog.module.ts
+```
+
+```ts
+// domain/ports/catalog-port.ts
+export interface CatalogPort {
+  listPublished(filters: CatalogFilters): Promise<Result<CatalogResource[], CatalogError>>
+}
+
+// application/get-public-catalog/get-public-catalog.use-case.ts
+export class GetPublicCatalogUseCase implements GetPublicCatalog {
+  constructor(private readonly catalog: CatalogPort) {}
+  async execute(input?: CatalogListInput): Promise<Result<PublicCatalog, CatalogError>> { /* … */ }
+}
+
+// app/di/catalog.module.ts
+export function createCatalogModule(db: D1Database) {
+  const catalog = createD1CatalogAdapter(db)
+  return { getPublicCatalog: new GetPublicCatalogUseCase(catalog) }
+}
+
+// server/get-public-catalog.ts
+export const getPublicCatalogFn = createServerFn({ method: 'GET' })
+  .handler(async ({ data }) =>
+    Sentry.startSpan({ name: 'getPublicCatalog' }, () => {
+      const { getPublicCatalog } = createCatalogModule(getDb())
+      return unwrap(await getPublicCatalog.execute(data))
+    }),
+  )
+
+// routes/catalog/index.tsx
+import { getPublicCatalogFn } from '#/modules/catalog'
+```

@@ -10,7 +10,7 @@ alwaysApply: false
 
 Worker binding: `DB` → database `rutasec-db` (see `wrangler.jsonc`).
 
-Access in server code: `context.cloudflare.env.DB`.
+Access in server code: `#/shared/db` (`getDb()`).
 
 ## Files
 

@@ -8,15 +8,17 @@ RutaSec is a cybersecurity learning catalog on **TanStack Start + Cloudflare Wor
 
 Detailed rules live in **`.cursor/rules/`** (`.mdc` files). Prefer those over generic framework advice.
 
-| Rule file            | When it applies                              |
-| -------------------- | -------------------------------------------- |
-| `rutasec-core.mdc`   | Always — stack, v1 scope, data boundaries    |
-| `vite-plus.mdc`      | Always — toolchain and validation            |
-| `tanstack-start.mdc` | `src/**` — routes, loaders, server functions |
-| `cloudflare-d1.mdc`  | `db/**`, `wrangler.jsonc`, `scripts/**`      |
-| `better-auth.mdc`    | Auth files — sessions, cookies               |
-| `sentry.mdc`         | `src/**` — instrument server functions       |
-| `ui-shadcn.mdc`      | UI files — Tailwind, shadcn                  |
+| Rule file            | When it applies                                         |
+| -------------------- | ------------------------------------------------------- |
+| `rutasec-core.mdc`   | Always — stack, v1 scope, data boundaries               |
+| `architecture.mdc`   | `src/**` — feature modules, DI, hexagonal layers, ports |
+| `vite-plus.mdc`      | Always — toolchain and validation                       |
+| `tanstack-start.mdc` | `src/**` — routes, loaders, server functions            |
+| `cloudflare-d1.mdc`  | `db/**`, `wrangler.jsonc`, `scripts/**`                 |
+| `better-auth.mdc`    | Auth files — sessions, cookies                          |
+| `sentry.mdc`         | `src/**` — instrument server functions                  |
+| `testing.mdc`        | Always — Vitest, Playwright, coverage, layer boundaries |
+| `ui-shadcn.mdc`      | UI files — Tailwind, shadcn                             |
 
 ## Stack
 
@@ -27,14 +29,19 @@ Do not introduce Astro, Next.js, Durable Objects, Queues, KV, or R2 unless expli
 ## Key paths
 
 ```
-src/routes/          file-based routes
-src/lib/auth.ts      Better Auth config
-db/schema.sql        D1 schema
-db/seed/             seed JSON + generated import.sql
-scripts/             import-seed-to-d1.mjs
-wrangler.jsonc       Worker + D1 binding (DB → rutasec-db)
-.cursor/rules/       project rules for agents
+src/routes/                    file-based routes (presentation)
+src/app/di/                    composition root (*.module.ts)
+src/modules/<feature>/         feature modules (catalog, identity, …)
+src/shared/                    cross-cutting (db, domain/Result, utils)
+db/schema.sql                  D1 schema
 ```
+
+db/seed/ seed JSON + generated import.sql
+scripts/ import-seed-to-d1.mjs
+wrangler.jsonc Worker + D1 binding (DB → rutasec-db)
+.cursor/rules/ project rules for agents
+
+````
 
 ## Vite+ toolchain
 
@@ -43,9 +50,12 @@ This project uses **Vite+** (`vp`) — distinct from raw Vite. Docs: https://vit
 ```bash
 vp install              # after pull / dependency changes
 vp check                # format, lint, type-check
-vp test run             # tests once
+vp test run             # unit tests once
+npm run test:coverage   # unit tests + 80% coverage gate
+npm run test:e2e:install # Playwright Chromium (once)
+npm run test:e2e        # e2e specs in e2e/ (when UI exists)
 vp env doctor           # diagnose toolchain issues
-```
+````
 
 ### App scripts
 
@@ -53,6 +63,7 @@ vp env doctor           # diagnose toolchain issues
 npm run dev             # dev server (port 3000, .env.local, Sentry)
 npm run build           # production build → dist/server/
 npm run deploy          # build + wrangler deploy
+npm run test:e2e        # Playwright e2e (starts dev server if needed)
 npm run db:schema:local # apply schema to local D1
 npm run db:seed:local   # generate + load seed into local D1
 ```
