@@ -6,8 +6,3 @@ export type {
 } from "#/modules/identity/domain/entities/app-user";
 export type { IdentityError } from "#/modules/identity/domain/errors/identity-errors";
 export { identityErrorMessage } from "#/modules/identity/domain/errors/identity-errors";
-export { getSessionFn } from "#/modules/identity/server/get-session";
-export {
-  requireAuthenticatedAppUser,
-  resolveAuthenticatedAppUserFn,
-} from "#/modules/identity/server/resolve-authenticated-app-user";

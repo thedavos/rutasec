@@ -50,7 +50,7 @@ Auth tables live in `db/auth-schema.sql` (applied with `npm run db:schema:local`
 npm run db:auth-schema:generate
 ```
 
-Resolve internal ownership via `requireAuthenticatedAppUser()` from `#/modules/identity` in protected server functions. Do not query `app_users` directly from routes or adapters outside the identity module.
+Resolve internal ownership via `requireAuthenticatedAppUser()` from `#/modules/identity/server/resolve-authenticated-app-user` (or `#/modules/identity/server`) in protected server functions. Do not export server helpers from `#/modules/identity` — client UI imports that barrel. Do not query `app_users` directly outside the identity module.
 
 ## Secrets
 
