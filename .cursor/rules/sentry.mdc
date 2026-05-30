@@ -6,22 +6,43 @@ alwaysApply: false
 
 # Sentry
 
-Error collection is automatic — configured in `src/router.tsx`.
+SDK: `@sentry/tanstackstart-react`.
+
+## Local setup
+
+- Set `VITE_SENTRY_DSN` in `.env.local` (project DSN from sentry.io).
+- Server init: `instrument.server.mjs` at repo root (loaded via `NODE_OPTIONS='--import ./instrument.server.mjs'` in `npm run dev`; copied to `dist/server/` on `npm run build`).
+- Without the DSN, Sentry does not start (see console warning in `instrument.server.mjs`).
+
+Optional full TanStack Start integration (client `src/client.tsx`, router tracing, Vite `sentryTanstackStart` plugin, `src/start.ts` middleware) is not wired yet — follow [Sentry manual setup](https://docs.sentry.io/platforms/javascript/guides/tanstackstart-react/manual-setup/) when adding it.
 
 ## Server functions
 
-Instrument `createServerFn` handlers with spans:
+Place instrumented handlers in `src/modules/<feature>/server/*.ts`. Routes and components call these server functions (or module exports) — do not call adapters, `getDb()`, or D1 from presentation code.
+
+Wrap the **handler body** with `Sentry.startSpan`, not `createServerFn` itself:
 
 ```tsx
 import * as Sentry from '@sentry/tanstackstart-react'
+import { createServerFn } from '@tanstack/react-start'
 
 export const myServerFn = createServerFn({ method: 'GET' }).handler(async () => {
   return Sentry.startSpan({ name: 'myServerFn' }, async () => {
-    // operation here
+    // use case / port work here
   })
 })
 ```
 
-Use descriptive span names matching the operation (e.g. `'listResources'`, `'saveUserResource'`).
+Use span names that match the operation (e.g. `'getPublicCatalog'`, `'saveResource'`), not generic names like `'handler'`.
 
-Wrap lengthy or failure-prone operations (D1 queries, external fetches), not trivial one-liners.
+### What to wrap
+
+Wrap handlers that use `createServerFn` and do real work: D1 (via use cases/adapters), other modules, external fetches, or non-trivial server logic.
+
+### What not to wrap
+
+- One-liner passthroughs with no I/O
+- Test-only stubs
+- Logic that lives only in routes or components (move I/O to a server function in `modules/<feature>/server/` and instrument there)
+
+Better Auth (`src/routes/api/auth/$.ts`) is not a `createServerFn` — do not apply this span pattern to auth routes unless you add Sentry’s TanStack Start middleware separately.
