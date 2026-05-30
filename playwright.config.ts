@@ -3,6 +3,10 @@ import { defineConfig, devices } from "@playwright/test";
 const port = 3000;
 const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? `http://localhost:${port}`;
 
+/** CI default when GitLab variable is unset or empty (empty string bypasses `??`). */
+const ciAuthSecret = process.env.BETTER_AUTH_SECRET || "ci-only-not-for-production-use-32chars!!";
+const ciAuthUrl = process.env.BETTER_AUTH_URL || `http://localhost:${port}`;
+
 export default defineConfig({
   testDir: "./e2e",
   testMatch: "**/*.spec.ts",
@@ -29,9 +33,10 @@ export default defineConfig({
     timeout: 180_000,
     env: process.env.CI
       ? {
-          BETTER_AUTH_SECRET:
-            process.env.BETTER_AUTH_SECRET ?? "ci-only-not-for-production-use-32chars!!",
-          BETTER_AUTH_URL: process.env.BETTER_AUTH_URL ?? `http://localhost:${port}`,
+          ...process.env,
+          CLOUDFLARE_INCLUDE_PROCESS_ENV: "true",
+          BETTER_AUTH_SECRET: ciAuthSecret,
+          BETTER_AUTH_URL: ciAuthUrl,
         }
       : undefined,
   },

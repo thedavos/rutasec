@@ -90,6 +90,12 @@ e2e:
     - npm ci
     - npm run db:schema:local
     - npm run db:seed:local
+    # Wrangler dev loads auth secrets from .dev.vars, not only the shell env.
+    - |
+      printf '%s\n' \
+        "BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET:-ci-only-not-for-production-use-32chars!!}" \
+        "BETTER_AUTH_URL=${BETTER_AUTH_URL:-http://localhost:3000}" \
+        > .dev.vars
   script:
     - npm run test:e2e
   artifacts:
