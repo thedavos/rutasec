@@ -8,9 +8,9 @@ alwaysApply: false
 
 ## Required: use shadcn/ui for new UI
 
-When creating or substantially editing **pages** (`src/routes/`) or **React components** (`src/modules/<feature>/presentation/`, `#/components/`):
+When creating or substantially editing **pages** (`src/routes/`) or **React components** (`src/modules/<feature>/presentation/`, `#/shared/presentation/`):
 
-1. **Use shadcn/ui components** from `#/components/ui/` for interactive and structural UI (buttons, inputs, selects, cards, badges, dialogs, etc.).
+1. **Use shadcn/ui components** from `#/shared/presentation/ui/` for interactive and structural UI (buttons, inputs, selects, cards, badges, dialogs, etc.).
 2. **Install missing primitives first** — do not hand-roll equivalents when shadcn provides one:
 
 ```bash

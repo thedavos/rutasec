@@ -15,6 +15,7 @@ describe("GetCatalogFilterOptionsUseCase", () => {
     const catalog: CatalogPort = {
       listPublished: vi.fn(),
       getFilterOptions,
+      getPublishedById: vi.fn(),
     };
 
     const useCase = new GetCatalogFilterOptionsUseCase(catalog);
@@ -31,6 +32,7 @@ describe("GetCatalogFilterOptionsUseCase", () => {
     const catalog: CatalogPort = {
       listPublished: vi.fn(),
       getFilterOptions,
+      getPublishedById: vi.fn(),
     };
 
     const useCase = new GetCatalogFilterOptionsUseCase(catalog);

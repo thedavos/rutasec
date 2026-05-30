@@ -1,5 +1,7 @@
+import { Link } from "@tanstack/react-router";
+
 import type { CatalogResourceCard } from "#/modules/catalog/domain/entities/resource";
-import { Badge } from "#/components/ui/badge";
+import { Badge } from "#/shared/presentation/ui/badge";
 import {
   Card,
   CardContent,
@@ -7,8 +9,8 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "#/components/ui/card";
-import { Separator } from "#/components/ui/separator";
+} from "#/shared/presentation/ui/card";
+import { Separator } from "#/shared/presentation/ui/separator";
 import { cn } from "#/shared/utils";
 
 type ResourceCardProps = {
@@ -51,14 +53,13 @@ export function ResourceCard({ resource }: ResourceCardProps) {
           ) : null}
         </div>
         <CardTitle className="display-title text-xl font-bold leading-tight">
-          <a
-            href={resource.url}
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            to="/resources/$id"
+            params={{ id: resource.id }}
             className="text-[var(--sea-ink)] no-underline hover:text-[var(--lagoon-deep)]"
           >
             {resource.title}
-          </a>
+          </Link>
         </CardTitle>
       </CardHeader>
 
@@ -88,6 +89,14 @@ export function ResourceCard({ resource }: ResourceCardProps) {
           <span aria-hidden="true"> · </span>
           Curated from {resource.attribution.curatedFromName}
         </p>
+        <a
+          href={resource.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-2 text-xs font-semibold text-[var(--lagoon-deep)] underline-offset-2 hover:underline"
+        >
+          Visit source
+        </a>
       </CardFooter>
     </Card>
   );

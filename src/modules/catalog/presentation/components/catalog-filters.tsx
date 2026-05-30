@@ -1,15 +1,15 @@
 import { useNavigate } from "@tanstack/react-router";
 
-import { Button } from "#/components/ui/button";
-import { Card, CardContent, CardHeader } from "#/components/ui/card";
-import { Label } from "#/components/ui/label";
+import { Button } from "#/shared/presentation/ui/button";
+import { Card, CardContent, CardHeader } from "#/shared/presentation/ui/card";
+import { Label } from "#/shared/presentation/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "#/components/ui/select";
+} from "#/shared/presentation/ui/select";
 import type {
   CatalogFilterOptions,
   CatalogListInput,

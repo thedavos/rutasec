@@ -3,11 +3,13 @@ import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { TanStackDevtools } from "@tanstack/react-devtools";
 
 import BetterAuthHeader from "#/integrations/better-auth/header-user";
-import { Button } from "#/components/ui/button";
+import { Button } from "#/shared/presentation/ui/button";
+import { Card, CardDescription, CardHeader, CardTitle } from "#/shared/presentation/ui/card";
 
 import appCss from "../styles.css?url";
 
 export const Route = createRootRoute({
+  notFoundComponent: NotFoundPage,
   head: () => ({
     meta: [
       {
@@ -30,6 +32,20 @@ export const Route = createRootRoute({
   }),
   shellComponent: RootDocument,
 });
+
+function NotFoundPage() {
+  return (
+    <Card className="island-shell mx-auto max-w-lg rounded-2xl border-[var(--line)] py-8 text-center shadow-none">
+      <CardHeader>
+        <CardTitle className="display-title text-2xl">Page not found</CardTitle>
+        <CardDescription>The resource or page you requested does not exist.</CardDescription>
+        <Button asChild className="mt-4">
+          <Link to="/">Back to catalog</Link>
+        </Button>
+      </CardHeader>
+    </Card>
+  );
+}
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (

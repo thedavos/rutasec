@@ -1,6 +1,6 @@
-import { Avatar, AvatarFallback, AvatarImage } from "#/components/ui/avatar";
-import { Button } from "#/components/ui/button";
-import { Skeleton } from "#/components/ui/skeleton";
+import { Avatar, AvatarFallback, AvatarImage } from "#/shared/presentation/ui/avatar";
+import { Button } from "#/shared/presentation/ui/button";
+import { Skeleton } from "#/shared/presentation/ui/skeleton";
 import { authClient } from "#/modules/identity";
 
 export default function BetterAuthHeader() {

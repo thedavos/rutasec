@@ -23,3 +23,16 @@ export const resourceRowSchema = z.object({
 export type ResourceRow = z.infer<typeof resourceRowSchema>;
 
 export const resourceRowListSchema = z.array(resourceRowSchema);
+
+export const resourceDetailRowSchema = resourceRowSchema.extend({
+  original_source_url: z.string(),
+  curated_from_url: z.string(),
+  roadmap_section: z.string().nullable(),
+  path_id: z.string().nullable(),
+  path_slug: z.string().nullable(),
+  path_title: z.string().nullable(),
+  item_order: z.number().nullable(),
+  path_total: z.number().nullable(),
+});
+
+export type ResourceDetailRow = z.infer<typeof resourceDetailRowSchema>;

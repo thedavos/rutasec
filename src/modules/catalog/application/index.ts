@@ -9,3 +9,6 @@ export { ListCatalogResourcesUseCase } from "#/modules/catalog/application/list-
 
 export type { GetCatalogFilterOptions } from "#/modules/catalog/application/get-catalog-filter-options/get-catalog-filter-options";
 export { GetCatalogFilterOptionsUseCase } from "#/modules/catalog/application/get-catalog-filter-options/get-catalog-filter-options.use-case";
+
+export type { GetPublicResourceById } from "#/modules/catalog/application/get-public-resource-by-id/get-public-resource-by-id";
+export { GetPublicResourceByIdUseCase } from "#/modules/catalog/application/get-public-resource-by-id/get-public-resource-by-id.use-case";

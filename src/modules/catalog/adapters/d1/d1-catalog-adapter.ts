@@ -1,7 +1,13 @@
+import {
+  buildGetResourceByIdQuery,
+  buildResourceTagSlugsQuery,
+} from "#/modules/catalog/adapters/d1/build-get-resource-by-id-query";
 import { buildListResourcesQuery } from "#/modules/catalog/adapters/d1/build-list-resources-query";
 import { invalidRowError, mapD1Error } from "#/modules/catalog/adapters/errors/map-d1-error";
+import { mapResourceDetailRow } from "#/modules/catalog/adapters/mappers/map-resource-detail-row";
 import { mapResourceRowToCard } from "#/modules/catalog/adapters/mappers/map-resource-row";
 import {
+  resourceDetailRowSchema,
   resourceRowListSchema,
   resourceRowSchema,
 } from "#/modules/catalog/adapters/schemas/resource-row.schema";
@@ -11,9 +17,11 @@ import {
   type CatalogFilterOptions,
   type CatalogFilters,
   type CatalogResourceCard,
+  type CatalogResourceDetail,
   type ResourceLevel,
   type ResourceType,
 } from "#/modules/catalog/domain/entities/resource";
+import { notFoundError } from "#/modules/catalog/domain/errors/catalog-errors";
 import type { CatalogError } from "#/modules/catalog/domain/errors/catalog-errors";
 import type { CatalogPort } from "#/modules/catalog/domain/ports/catalog-port";
 import { err, ok, type Result } from "#/shared/domain/result";
@@ -96,6 +104,40 @@ export function createD1CatalogAdapter(db: D1Database): CatalogPort {
         levels,
         resourceTypes,
       });
+    },
+
+    async getPublishedById(id: string): Promise<Result<CatalogResourceDetail, CatalogError>> {
+      try {
+        const { sql, bindings } = buildGetResourceByIdQuery(id);
+        const result = await db
+          .prepare(sql)
+          .bind(...bindings)
+          .first();
+
+        if (!result) {
+          return err(notFoundError());
+        }
+
+        const parsed = resourceDetailRowSchema.safeParse(result);
+        if (!parsed.success) {
+          return err(invalidRowError(parsed.error.message));
+        }
+
+        const detail = mapResourceDetailRow(parsed.data);
+
+        const tagsQuery = buildResourceTagSlugsQuery(id);
+        const tagsResult = await db
+          .prepare(tagsQuery.sql)
+          .bind(...tagsQuery.bindings)
+          .all<{ slug: string }>();
+
+        return ok({
+          ...detail,
+          tags: tagsResult.results.map((row) => row.slug),
+        });
+      } catch (error) {
+        return err(mapD1Error(error));
+      }
     },
   };
 }

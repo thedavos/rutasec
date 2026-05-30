@@ -24,6 +24,52 @@ const validRow = {
   curated_from_name: "Cybersecurity-Mastery-Roadmap",
 };
 
+const validDetailRow = {
+  ...validRow,
+  original_source_url: "https://linuxjourney.com/",
+  curated_from_url: "https://github.com/Hamed233/Cybersecurity-Mastery-Roadmap",
+  roadmap_section: "Foundational Knowledge Phase > Operating Systems",
+  path_id: "path-1",
+  path_slug: "web-pentesting-bug-bounty-starter",
+  path_title: "Web Pentesting Starter Path",
+  item_order: 1,
+  path_total: 18,
+};
+
+function createDetailMockDb(options: {
+  detailRow?: Record<string, unknown> | null;
+  detailError?: Error;
+  tagSlugs?: string[];
+  tagError?: Error;
+}) {
+  let callIndex = 0;
+  const prepare = vi.fn(() => {
+    const index = callIndex++;
+    if (index === 0) {
+      const first = vi.fn(async () => {
+        if (options.detailError) {
+          throw options.detailError;
+        }
+        return options.detailRow ?? null;
+      });
+      return { bind: vi.fn().mockReturnValue({ first }), first };
+    }
+
+    const all = vi.fn(async () => {
+      if (options.tagError) {
+        throw options.tagError;
+      }
+      return { results: (options.tagSlugs ?? []).map((slug) => ({ slug })) };
+    });
+    return { bind: vi.fn().mockReturnValue({ all }), all };
+  });
+
+  return {
+    db: { prepare } as unknown as D1Database,
+    prepare,
+  };
+}
+
 function createMockDb(options: {
   listResults?: unknown[];
   listError?: Error;
@@ -141,6 +187,52 @@ describe("createD1CatalogAdapter", () => {
     const result = await adapter.getFilterOptions();
 
     expect(result).toEqual(err({ type: "query_failed", message: "distinct failed" }));
+  });
+
+  it("getPublishedById maps detail rows and tag slugs", async () => {
+    const { db, prepare } = createDetailMockDb({
+      detailRow: validDetailRow,
+      tagSlugs: ["linux", "mixed"],
+    });
+    const adapter = createD1CatalogAdapter(db);
+
+    const result = await adapter.getPublishedById("res-1");
+
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.value.id).toBe("res-1");
+      expect(result.value.attribution.originalSourceUrl).toBe("https://linuxjourney.com/");
+      expect(result.value.pathContext?.itemOrder).toBe(1);
+      expect(result.value.tags).toEqual(["linux", "mixed"]);
+    }
+    expect(prepare).toHaveBeenCalledTimes(2);
+  });
+
+  it("getPublishedById returns not_found when no row exists", async () => {
+    const { db } = createDetailMockDb({ detailRow: null });
+    const adapter = createD1CatalogAdapter(db);
+
+    const result = await adapter.getPublishedById("missing");
+
+    expect(result).toEqual(err({ type: "not_found" }));
+  });
+
+  it("getPublishedById returns invalid_row when detail row fails validation", async () => {
+    const { db } = createDetailMockDb({ detailRow: { id: "bad-row" } });
+    const adapter = createD1CatalogAdapter(db);
+
+    const result = await adapter.getPublishedById("bad-row");
+
+    expect(result).toEqual(err({ type: "invalid_row", message: expect.any(String) }));
+  });
+
+  it("getPublishedById returns query_failed when D1 throws", async () => {
+    const { db } = createDetailMockDb({ detailError: new Error("detail failed") });
+    const adapter = createD1CatalogAdapter(db);
+
+    const result = await adapter.getPublishedById("res-1");
+
+    expect(result).toEqual(err({ type: "query_failed", message: "detail failed" }));
   });
 });
 

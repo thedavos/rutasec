@@ -21,6 +21,11 @@ export type CatalogFilters = {
 
 export type CatalogListInput = CatalogFilters;
 
+export type CatalogResourceCardAttribution = {
+  originalSourceName: string;
+  curatedFromName: string;
+};
+
 export type CatalogResourceCard = {
   id: string;
   title: string;
@@ -35,10 +40,27 @@ export type CatalogResourceCard = {
   estimatedHours: number;
   isFree: boolean;
   language: string | null;
-  attribution: {
-    originalSourceName: string;
-    curatedFromName: string;
-  };
+  attribution: CatalogResourceCardAttribution;
+};
+
+export type CatalogResourcePathContext = {
+  pathId: string;
+  pathSlug: string;
+  pathTitle: string;
+  itemOrder: number;
+  totalItems: number;
+};
+
+export type CatalogResourceDetailAttribution = CatalogResourceCardAttribution & {
+  originalSourceUrl: string;
+  curatedFromUrl: string;
+};
+
+export type CatalogResourceDetail = Omit<CatalogResourceCard, "attribution"> & {
+  roadmapSection: string | null;
+  attribution: CatalogResourceDetailAttribution;
+  tags: string[];
+  pathContext: CatalogResourcePathContext | null;
 };
 
 export type CatalogFilterOptions = {

@@ -1,5 +1,5 @@
 import type { PublicCatalogResult } from "#/modules/catalog/domain/entities/resource";
-import { Card, CardDescription, CardHeader, CardTitle } from "#/components/ui/card";
+import { Card, CardDescription, CardHeader, CardTitle } from "#/shared/presentation/ui/card";
 import { CatalogFiltersBar } from "#/modules/catalog/presentation/components/catalog-filters";
 import { ResourceCard } from "#/modules/catalog/presentation/components/resource-card";
 
