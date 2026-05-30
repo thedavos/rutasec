@@ -167,6 +167,10 @@ Pipelines run on merge requests and `main` via [`.gitlab-ci.yml`](.gitlab-ci.yml
 
 Set in GitLab **Settings → CI/CD → Variables**: `CLOUDFLARE_API_TOKEN` (and `CLOUDFLARE_ACCOUNT_ID` if Wrangler needs it). Override `BETTER_AUTH_SECRET` for stricter e2e; production auth secrets belong in Wrangler (`wrangler secret put`), not only in GitLab.
 
+### CodeRabbit (MR review)
+
+[`.coderabbit.yaml`](.coderabbit.yaml) configures AI review on merge requests (hexagonal rules, identity boundaries, MVP scope). Trigger manually with `@coderabbitai full review` on an MR. CodeRabbit is advisory; CI remains the merge gate.
+
 ## v1 scope
 
 In scope: public catalog, resource detail, auth, save to library.
