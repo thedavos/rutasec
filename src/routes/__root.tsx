@@ -2,7 +2,7 @@ import { HeadContent, Link, Scripts, createRootRoute } from "@tanstack/react-rou
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { TanStackDevtools } from "@tanstack/react-devtools";
 
-import BetterAuthHeader from "#/integrations/better-auth/header-user";
+import { AuthHeader } from "#/modules/identity/presentation/auth-header";
 import { Button } from "#/shared/presentation/ui/button";
 import { Card, CardDescription, CardHeader, CardTitle } from "#/shared/presentation/ui/card";
 
@@ -54,7 +54,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        <div className="min-h-screen">
+        <div className="flex min-h-screen flex-col">
           <header className="sticky top-0 z-20 border-b border-[var(--line)] bg-[var(--header-bg)] backdrop-blur-md">
             <div className="page-wrap flex items-center justify-between gap-4 py-4">
               <Link to="/" className="no-underline">
@@ -72,13 +72,13 @@ function RootDocument({ children }: { children: React.ReactNode }) {
                   </Link>
                 </Button>
               </nav>
-              <BetterAuthHeader />
+              <AuthHeader />
             </div>
           </header>
 
-          <main className="page-wrap py-10">{children}</main>
+          <main className="page-wrap flex flex-1 flex-col py-10">{children}</main>
 
-          <footer className="site-footer mt-auto py-6">
+          <footer className="site-footer py-6">
             <div className="page-wrap text-sm text-[var(--sea-ink-soft)]">
               Curated cybersecurity resources with source attribution. Personal library and progress
               coming soon.
