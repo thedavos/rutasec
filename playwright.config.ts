@@ -22,9 +22,17 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: "npm run dev",
+    // CI has no .env.local; dev uses dotenv -e .env.local only
+    command: process.env.CI ? "npm run dev:e2e" : "npm run dev",
     url: baseURL,
     reuseExistingServer: !process.env.CI,
     timeout: 180_000,
+    env: process.env.CI
+      ? {
+          BETTER_AUTH_SECRET:
+            process.env.BETTER_AUTH_SECRET ?? "ci-only-not-for-production-use-32chars!!",
+          BETTER_AUTH_URL: process.env.BETTER_AUTH_URL ?? `http://localhost:${port}`,
+        }
+      : undefined,
   },
 });

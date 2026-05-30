@@ -84,6 +84,8 @@ e2e:
   needs: [install, check, build]
   variables:
     CI: "true"
+    BETTER_AUTH_SECRET: "ci-only-not-for-production-use-32chars!!"
+    BETTER_AUTH_URL: "http://localhost:3000"
   before_script:
     - npm ci
     - npm run db:schema:local
@@ -104,7 +106,7 @@ deploy:production:
   when: manual
   environment:
     name: production
-    url: https://rutasec.workers.dev
+    url: https://rutasec.davidvargas-d45.workers.dev/
   script:
     - npm ci
     - npm run build
