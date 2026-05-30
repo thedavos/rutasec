@@ -50,7 +50,7 @@ Auth tables live in `db/auth-schema.sql` (applied with `npm run db:schema:local`
 npm run db:auth-schema:generate
 ```
 
-Do not map to `app_users` in auth-only work — that belongs in RUT-13.
+Resolve internal ownership via `requireAuthenticatedAppUser()` from `#/modules/identity` in protected server functions. Do not query `app_users` directly from routes or adapters outside the identity module.
 
 ## Secrets
 
@@ -67,4 +67,4 @@ Production: `wrangler secret put BETTER_AUTH_SECRET` and `wrangler secret put BE
 
 Keep `nodejs_compat` enabled in `wrangler.jsonc`.
 
-Protect personal actions (save resource, library) with session validation on the server (`getSessionFn` or `getAuth().api.getSession`).
+Protect personal actions (save resource, library) with `requireAuthenticatedAppUser()` on the server. Use `getSessionFn` only for read-only session UI state.
