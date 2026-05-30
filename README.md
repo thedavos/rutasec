@@ -1,284 +1,158 @@
-# Rutasec
+# RutaSec
 
-TanStack Start app on Cloudflare Workers.
+Cybersecurity learning catalog on **TanStack Start**, **Cloudflare Workers**, **D1**, and **Better Auth**.
 
-## Getting Started
+**MVP goal:** browse the public catalog → open a resource → sign in → save a resource to your library.
 
-To run this application:
+## Stack
+
+- [TanStack Start](https://tanstack.com/start) + [TanStack Router](https://tanstack.com/router) (file-based routes in `src/routes/`)
+- [React](https://react.dev/) · [Tailwind CSS](https://tailwindcss.com/) · [shadcn/ui](https://ui.shadcn.com/)
+- [Cloudflare Workers](https://developers.cloudflare.com/workers/) · [D1](https://developers.cloudflare.com/d1/)
+- [Better Auth](https://www.better-auth.com/) (email/password, sessions)
+- [Sentry](https://sentry.io/) (server instrumentation)
+- Tooling: [Vite+](https://viteplus.dev/guide/) (`vp` CLI)
+
+## Prerequisites
+
+- Node.js (see `packageManager` in `package.json`)
+- [Wrangler](https://developers.cloudflare.com/workers/wrangler/) for D1 and deploy
+- `.env.local` with at least `BETTER_AUTH_SECRET` (see [Authentication](#authentication))
+
+## Getting started
 
 ```bash
 vp install
+npx -y @better-auth/cli secret   # add output to .env.local as BETTER_AUTH_SECRET=
+npm run db:schema:local
+npm run db:seed:local
 npm run dev
 ```
 
-## Building For Production
+Dev server: [http://localhost:3000](http://localhost:3000). Local D1 lives under `.wrangler/state/v3/d1/` and is used automatically via the `DB` binding.
 
-To build this application for production:
-
-```bash
-npm run build
-```
-
-## Testing
-
-This project uses [Vitest](https://vitest.dev/) for testing. You can run the tests with:
+**Reset local D1** (wipe SQLite, re-apply schema and seed):
 
 ```bash
-npm run test
+rm -rf .wrangler/state/v3/d1 && npm run db:schema:local && npm run db:seed:local
 ```
 
-Run `vp check` to format, lint, and type-check.
+## Toolchain (Vite+)
 
-## Styling
+This repo uses **Vite+** (`vp`), not the raw `vite` CLI for checks and tests.
 
-This project uses [Tailwind CSS](https://tailwindcss.com/) for styling.
+```bash
+vp check              # format, lint, type-check
+vp check --fix        # same, with auto-fixes
+vp test run           # unit tests (Vitest via vite-plus/test)
+npm run test:coverage # unit tests + 80% coverage gate on modules/shared
+vp env doctor         # diagnose toolchain issues
+```
 
-### Removing Tailwind CSS
+After pull or dependency changes: `vp install`.
 
-If you prefer not to use Tailwind CSS:
+## Project layout
 
-1. Remove the demo pages in `src/routes/demo/`
-2. Replace the Tailwind import in `src/styles.css` with your own styles
-3. Remove `tailwindcss()` from the plugins array in `vite.config.ts`
-4. Uninstall the packages: `npm install @tailwindcss/vite tailwindcss -D`
+```
+src/
+  routes/                 # TanStack file-based routes (loaders → server fns)
+  modules/<feature>/      # catalog, identity, … (hexagonal layers)
+  app/di/                 # composition root (*.module.ts)
+  shared/presentation/ui/ # shadcn primitives
+  shared/                 # getDb(), Result, utils
+db/
+  schema.sql              # D1 schema
+  seed/                   # JSON source + generated import.sql
+```
 
-## Deploy to Cloudflare Workers
-
-This project uses the Cloudflare Vite plugin (configured in `vite.config.ts`) and `wrangler.jsonc`:
-
-1. Install Wrangler: `npm install -g wrangler`
-2. Authenticate: `wrangler login`
-3. Deploy: `npx wrangler deploy`
-
-For production env vars, run `wrangler secret put MY_VAR` for each secret listed in `.env.example`. Public (non-secret) vars go in `wrangler.jsonc` under `vars`.
-
-KV, D1, R2, and Durable Object bindings are configured in `wrangler.jsonc` — see https://developers.cloudflare.com/workers/wrangler/configuration/.
+Business logic and D1 access stay in server functions and use cases — not in presentation components. See `.cursor/rules/architecture.mdc` and `AGENTS.md` for conventions.
 
 ## Database (D1)
 
-Schema lives in `db/schema.sql`. The Worker binding is `DB` → `rutasec-db`.
-
-**First-time bootstrap** (already done if you cloned after RUT-05):
-
-```bash
-npx wrangler d1 create rutasec-db   # once — copy database_id into wrangler.jsonc
-npm run db:schema:local             # local dev (Wrangler miniflare)
-npm run db:schema:remote            # Cloudflare production D1
-npm run db:tables:local             # verify tables exist
-```
-
-**Reset local DB** (wipes local SQLite, re-applies schema):
+| Binding | Database     | Schema          |
+| ------- | ------------ | --------------- |
+| `DB`    | `rutasec-db` | `db/schema.sql` |
 
 ```bash
-rm -rf .wrangler/state/v3/d1 && npm run db:schema:local
+npm run db:schema:local    # apply schema (local)
+npm run db:schema:remote   # apply schema (remote)
+npm run db:tables:local    # list tables
+npm run db:seed:sql        # generate db/seed/import.sql
+npm run db:seed:local      # generate + load seed (local)
+npm run db:seed:remote     # generate + load seed (remote)
 ```
 
-Access `DB` in server code via `#/shared/db` (`getDb()`).
+Seed source: `db/seed/web-pentesting-starter.json`. Each resource uses `resource_type` plus a learning-mode tag: `theory`, `practice`, or `mixed`.
 
-## Seed data
+Access D1 in server code via `#/shared/db` (`getDb()`).
 
-Starter catalog lives in `db/seed/`:
-
-- `web-pentesting-starter.json` — source seed data
-- `import.sql` — generated import file (gitignored)
-
-Each resource uses **`resource_type`** plus a learning-mode tag: `theory`, `practice`, or `mixed`.
+**First-time Cloudflare setup** (if `database_id` is not in `wrangler.jsonc`):
 
 ```bash
-npm run db:seed:sql      # generate db/seed/import.sql
-npm run db:seed:local    # generate + load into local D1
-npm run db:seed:remote   # generate + load into remote D1
+npx wrangler d1 create rutasec-db   # once — copy id into wrangler.jsonc
 ```
 
-## Setting up Better Auth
+## Authentication
 
-1. Generate and set the `BETTER_AUTH_SECRET` environment variable in your `.env.local`:
-
-   ```bash
-   npx -y @better-auth/cli secret
-   ```
-
-2. Visit the [Better Auth documentation](https://www.better-auth.com) to unlock the full potential of authentication in your app.
-
-### Adding a Database (Optional)
-
-Better Auth can work in stateless mode, but to persist user data, add a database:
-
-```typescript
-// src/lib/auth.ts
-import { betterAuth } from "better-auth";
-import { Pool } from "pg";
-
-export const auth = betterAuth({
-  database: new Pool({
-    connectionString: process.env.DATABASE_URL,
-  }),
-  // ... rest of config
-});
-```
-
-Then run migrations:
+Better Auth is wired for TanStack Start in `src/modules/identity/` with the catch-all route `src/routes/api/auth/$.ts`.
 
 ```bash
-npx -y @better-auth/cli migrate
+# .env.local
+BETTER_AUTH_SECRET=<from @better-auth/cli secret>
 ```
 
-## Shadcn
+MVP: email/password and sessions only. Personal actions (e.g. save resource) must validate the session on the server.
 
-Add components using the latest version of [Shadcn](https://ui.shadcn.com/).
+```tsx
+import { auth, authClient } from "#/modules/identity";
+```
+
+Keep `nodejs_compat` enabled in `wrangler.jsonc`.
+
+## UI (shadcn)
+
+New pages and feature UI use components from `#/shared/presentation/ui/`. Install primitives before use:
 
 ```bash
 pnpm dlx shadcn@latest add button
 ```
 
-## Routing
+Config: `components.json`. Class merging: `cn()` in `src/shared/utils.ts`.
 
-This project uses [TanStack Router](https://tanstack.com/router) with file-based routing. Routes are managed as files in `src/routes`.
+## Testing
 
-### Adding A Route
+| Kind     | Command                                            |
+| -------- | -------------------------------------------------- |
+| Unit     | `npm run test` or `vp test run`                    |
+| Coverage | `npm run test:coverage`                            |
+| E2E      | `npm run test:e2e:install` then `npm run test:e2e` |
 
-To add a new route to your application just add a new file in the `./src/routes` directory.
+E2E specs live in `e2e/` (Playwright). Unit tests colocate as `*.test.ts` beside modules under `src/modules/**` and `src/shared/**`.
 
-TanStack will automatically generate the content of the route file for you.
+## Build and deploy
 
-Now that you have two routes you can use a `Link` component to navigate between them.
-
-### Adding Links
-
-To use SPA (Single Page Application) navigation you will need to import the `Link` component from `@tanstack/react-router`.
-
-```tsx
-import { Link } from "@tanstack/react-router";
+```bash
+npm run build    # vp build → dist/server/
+npm run deploy   # build + wrangler deploy
+npm run preview  # preview production build
 ```
 
-Then anywhere in your JSX you can use it like so:
+Production secrets: `wrangler secret put <NAME>`. Bindings and compatibility flags: `wrangler.jsonc`.
 
-```tsx
-<Link to="/about">About</Link>
-```
+## v1 scope
 
-This will create a link that will navigate to the `/about` route.
+In scope: public catalog, resource detail, auth, save to library.
 
-More information on the `Link` component can be found in the [Link documentation](https://tanstack.com/router/v1/docs/framework/react/api/router/linkComponent).
+Deferred: timeline, full goals dashboard, admin, scraping, broad social features.
 
-### Using A Layout
+## Docs
 
-In the File Based Routing setup the layout is located in `src/routes/__root.tsx`. Anything you add to the root route will appear in all the routes. The route content will appear in the JSX where you render `{children}` in the `shellComponent`.
+- Agent and architecture rules: `AGENTS.md`, `.cursor/rules/`
+- Vite+: https://viteplus.dev/guide/ or `node_modules/vite-plus/docs`
+- Operational docs (setup, commands, PRD): Projects Vault `projects/rutasec/docs/`
 
-Here is an example layout that includes a header:
+## Learn more
 
-```tsx
-import { HeadContent, Scripts, createRootRoute } from "@tanstack/react-router";
-
-export const Route = createRootRoute({
-  head: () => ({
-    meta: [
-      { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "My App" },
-    ],
-  }),
-  shellComponent: ({ children }) => (
-    <html lang="en">
-      <head>
-        <HeadContent />
-      </head>
-      <body>
-        <header>
-          <nav>
-            <Link to="/">Home</Link>
-            <Link to="/about">About</Link>
-          </nav>
-        </header>
-        {children}
-        <Scripts />
-      </body>
-    </html>
-  ),
-});
-```
-
-More information on layouts can be found in the [Layouts documentation](https://tanstack.com/router/latest/docs/framework/react/guide/routing-concepts#layouts).
-
-## Server Functions
-
-TanStack Start provides server functions that allow you to write server-side code that seamlessly integrates with your client components.
-
-```tsx
-import { createServerFn } from "@tanstack/react-start";
-
-const getServerTime = createServerFn({
-  method: "GET",
-}).handler(async () => {
-  return new Date().toISOString();
-});
-
-// Use in a component
-function MyComponent() {
-  const [time, setTime] = useState("");
-
-  useEffect(() => {
-    getServerTime().then(setTime);
-  }, []);
-
-  return <div>Server time: {time}</div>;
-}
-```
-
-## API Routes
-
-You can create API routes by using the `server` property in your route definitions:
-
-```tsx
-import { createFileRoute } from "@tanstack/react-router";
-import { json } from "@tanstack/react-start";
-
-export const Route = createFileRoute("/api/hello")({
-  server: {
-    handlers: {
-      GET: () => json({ message: "Hello, World!" }),
-    },
-  },
-});
-```
-
-## Data Fetching
-
-There are multiple ways to fetch data in your application. You can use TanStack Query to fetch data from a server. But you can also use the `loader` functionality built into TanStack Router to load the data for a route before it's rendered.
-
-For example:
-
-```tsx
-import { createFileRoute } from "@tanstack/react-router";
-
-export const Route = createFileRoute("/people")({
-  loader: async () => {
-    const response = await fetch("https://swapi.dev/api/people");
-    return response.json();
-  },
-  component: PeopleComponent,
-});
-
-function PeopleComponent() {
-  const data = Route.useLoaderData();
-  return (
-    <ul>
-      {data.results.map((person) => (
-        <li key={person.name}>{person.name}</li>
-      ))}
-    </ul>
-  );
-}
-```
-
-Loaders simplify your data fetching logic dramatically. Check out more information in the [Loader documentation](https://tanstack.com/router/latest/docs/framework/react/guide/data-loading#loader-parameters).
-
-## Demo files
-
-Files prefixed with `demo` can be safely deleted. They are there to provide a starting point for you to play around with the features you've installed.
-
-## Learn More
-
-You can learn more about all of the offerings from TanStack in the [TanStack documentation](https://tanstack.com).
-
-For TanStack Start specific documentation, visit [TanStack Start](https://tanstack.com/start).
+- [TanStack Start](https://tanstack.com/start)
+- [TanStack Router](https://tanstack.com/router)
+- [Cloudflare Workers + Vite](https://developers.cloudflare.com/workers/framework-guides/web-apps/tanstack-start/)
