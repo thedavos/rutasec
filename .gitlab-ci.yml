@@ -1,0 +1,121 @@
+# RutaSec — TanStack Start on Cloudflare Workers + D1 + Better Auth
+# https://docs.gitlab.com/ee/ci/yaml/
+
+default:
+  image: node:22-bookworm
+  interruptible: true
+  cache:
+    key:
+      files:
+        - package-lock.json
+    paths:
+      - node_modules/
+      - .npm/
+
+variables:
+  npm_config_cache: "$CI_PROJECT_DIR/.npm"
+  PLAYWRIGHT_BASE_URL: "http://localhost:3000"
+  BETTER_AUTH_URL: "http://localhost:3000"
+  # Override in GitLab CI/CD variables for production deploy / stricter e2e
+  BETTER_AUTH_SECRET: "ci-only-not-for-production-use-32chars!!"
+
+stages:
+  - validate
+  - test
+  - build
+  - e2e
+  - deploy
+
+.workflow:mr_or_main: &workflow_mr_or_main
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+.workflow:main_only: &workflow_main_only
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+install:
+  stage: validate
+  <<: *workflow_mr_or_main
+  script:
+    - npm ci
+  artifacts:
+    expire_in: 1 hour
+    paths:
+      - node_modules/
+
+check:
+  stage: validate
+  <<: *workflow_mr_or_main
+  needs: [install]
+  script:
+    - npx vp check
+
+unit:
+  stage: test
+  <<: *workflow_mr_or_main
+  needs: [install]
+  script:
+    - npm run test:coverage
+  coverage: '/Lines\s+:\s+(\d+\.\d+)%/'
+  artifacts:
+    when: always
+    expire_in: 7 days
+    paths:
+      - coverage/
+
+build:
+  stage: build
+  <<: *workflow_mr_or_main
+  needs: [install]
+  script:
+    - npm run build
+  artifacts:
+    expire_in: 1 day
+    paths:
+      - dist/
+
+e2e:
+  stage: e2e
+  <<: *workflow_mr_or_main
+  # allow_failure: true
+  image: mcr.microsoft.com/playwright:v1.60.0-noble
+  needs: [install, check, build]
+  variables:
+    CI: "true"
+  before_script:
+    - npm ci
+    - npm run db:schema:local
+    - npm run db:seed:local
+  script:
+    - npm run test:e2e
+  artifacts:
+    when: always
+    expire_in: 7 days
+    paths:
+      - playwright-report/
+      - test-results/
+
+deploy:production:
+  stage: deploy
+  <<: *workflow_main_only
+  needs: [check, unit, build]
+  when: manual
+  environment:
+    name: production
+    url: https://rutasec.workers.dev
+  script:
+    - npm ci
+    - npm run build
+    - npx wrangler deploy --config dist/server/wrangler.json
+  # CI/CD variables: CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID (if required)
+  # Runtime secrets: wrangler secret put BETTER_AUTH_SECRET BETTER_AUTH_URL
+
+db:schema:remote:
+  stage: deploy
+  <<: *workflow_main_only
+  when: manual
+  script:
+    - npm ci
+    - npm run db:schema:remote

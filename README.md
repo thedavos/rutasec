@@ -152,6 +152,21 @@ npm run preview  # preview production build
 
 Production secrets: `wrangler secret put <NAME>`. Bindings and compatibility flags: `wrangler.jsonc`.
 
+## CI/CD (GitLab)
+
+Pipelines run on merge requests and `main` via [`.gitlab-ci.yml`](.gitlab-ci.yml):
+
+| Stage    | Job                 | Purpose                                     |
+| -------- | ------------------- | ------------------------------------------- |
+| validate | `check`             | `vp check` (format, lint, types)            |
+| test     | `unit`              | `npm run test:coverage` (80% gate)          |
+| build    | `build`             | `npm run build`                             |
+| e2e      | `e2e`               | Playwright (`e2e/`) with local D1 bootstrap |
+| deploy   | `deploy:production` | Manual Wrangler deploy on `main`            |
+| deploy   | `db:schema:remote`  | Manual remote D1 schema apply               |
+
+Set in GitLab **Settings → CI/CD → Variables**: `CLOUDFLARE_API_TOKEN` (and `CLOUDFLARE_ACCOUNT_ID` if Wrangler needs it). Override `BETTER_AUTH_SECRET` for stricter e2e; production auth secrets belong in Wrangler (`wrangler secret put`), not only in GitLab.
+
 ## v1 scope
 
 In scope: public catalog, resource detail, auth, save to library.
