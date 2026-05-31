@@ -1,3 +1,8 @@
+export { getResourceSaveStatusFn } from "#/modules/library/server/get-resource-save-status";
+export type {
+  ResourceSaveStatus,
+  ResourceSaveStatusInput,
+} from "#/modules/library/server/get-resource-save-status";
 export { saveResourceFn } from "#/modules/library/server/save-resource";
 export type { SaveResourceInput } from "#/modules/library/server/save-resource";
 

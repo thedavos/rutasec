@@ -19,10 +19,21 @@ function createMockDb(options: {
   runError?: Error;
   row?: Record<string, unknown> | null;
   selectError?: Error;
+  selectOnly?: boolean;
 }) {
   let callIndex = 0;
   const prepare = vi.fn(() => {
     const index = callIndex++;
+    if (options.selectOnly || index > 0) {
+      const first = vi.fn(async () => {
+        if (options.selectError) {
+          throw options.selectError;
+        }
+        return options.row ?? null;
+      });
+      return { bind: vi.fn().mockReturnValue({ first }), first };
+    }
+
     if (index === 0) {
       const run = vi.fn(async () => {
         if (options.runError) {
@@ -138,5 +149,33 @@ describe("createD1LibraryAdapter", () => {
       ok: false,
       error: { type: "query_failed", message: "select failed" },
     });
+  });
+
+  it("getForUser returns the mapped row when present", async () => {
+    const { prepare } = createMockDb({ row: validRow, selectOnly: true });
+    const adapter = createD1LibraryAdapter({ prepare } as unknown as D1Database);
+
+    const result = await adapter.getForUser({
+      userId: "app-1",
+      resourceId: "res-linux-journey",
+    });
+
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.value?.resourceId).toBe("res-linux-journey");
+    }
+    expect(prepare).toHaveBeenCalledTimes(1);
+  });
+
+  it("getForUser returns null when no row exists", async () => {
+    const { prepare } = createMockDb({ row: null, selectOnly: true });
+    const adapter = createD1LibraryAdapter({ prepare } as unknown as D1Database);
+
+    const result = await adapter.getForUser({
+      userId: "app-1",
+      resourceId: "res-linux-journey",
+    });
+
+    expect(result).toEqual({ ok: true, value: null });
   });
 });
