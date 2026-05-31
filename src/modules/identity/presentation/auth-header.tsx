@@ -1,9 +1,11 @@
+import { Link } from "@tanstack/react-router";
+
+import { authClient } from "#/modules/identity";
 import { Avatar, AvatarFallback, AvatarImage } from "#/shared/presentation/ui/avatar";
 import { Button } from "#/shared/presentation/ui/button";
 import { Skeleton } from "#/shared/presentation/ui/skeleton";
-import { authClient } from "#/modules/identity";
 
-export default function BetterAuthHeader() {
+export function AuthHeader() {
   const { data: session, isPending } = authClient.useSession();
 
   if (isPending) {
@@ -33,5 +35,14 @@ export default function BetterAuthHeader() {
     );
   }
 
-  return null;
+  return (
+    <div className="flex items-center gap-2">
+      <Button variant="ghost" size="sm" asChild>
+        <Link to="/sign-in">Sign in</Link>
+      </Button>
+      <Button size="sm" asChild>
+        <Link to="/sign-up">Sign up</Link>
+      </Button>
+    </div>
+  );
 }

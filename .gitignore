@@ -9,6 +9,7 @@ blob-report
 playwright/.cache
 *.local
 .env
+.dev.vars
 .nitro
 .tanstack
 .wrangler

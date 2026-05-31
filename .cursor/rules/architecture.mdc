@@ -56,7 +56,7 @@ src/
     db.ts                      # getDb() accessor
     utils/
   routes/                      # TanStack Start file-based routes — loaders call modules
-  integrations/                # cross-cutting UI glue (auth header, etc.)
+  integrations/                # cross-cutting UI glue (prefer feature presentation/ when owned by a module)
 ```
 
 **MVP modules:** `catalog`, `library`, `identity`.

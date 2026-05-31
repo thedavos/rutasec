@@ -17,14 +17,15 @@ Cybersecurity learning catalog on **TanStack Start**, **Cloudflare Workers**, **
 
 - Node.js (see `packageManager` in `package.json`)
 - [Wrangler](https://developers.cloudflare.com/workers/wrangler/) for D1 and deploy
-- `.env.local` with at least `BETTER_AUTH_SECRET` (see [Authentication](#authentication))
+- `.env.local` with `BETTER_AUTH_SECRET` and `BETTER_AUTH_URL` (see [Authentication](#authentication))
 
 ## Getting started
 
 ```bash
 vp install
 npx -y @better-auth/cli secret   # add output to .env.local as BETTER_AUTH_SECRET=
-npm run db:schema:local
+# .env.local also needs BETTER_AUTH_URL=http://localhost:3000
+npm run db:schema:local          # product tables + Better Auth tables
 npm run db:seed:local
 npm run dev
 ```
@@ -61,7 +62,8 @@ src/
   shared/presentation/ui/ # shadcn primitives
   shared/                 # getDb(), Result, utils
 db/
-  schema.sql              # D1 schema
+  schema.sql              # D1 product schema
+  auth-schema.sql         # Better Auth tables (user, session, account, verification)
   seed/                   # JSON source + generated import.sql
 ```
 
@@ -69,13 +71,14 @@ Business logic and D1 access stay in server functions and use cases — not in p
 
 ## Database (D1)
 
-| Binding | Database     | Schema          |
-| ------- | ------------ | --------------- |
-| `DB`    | `rutasec-db` | `db/schema.sql` |
+| Binding | Database     | Schema                                 |
+| ------- | ------------ | -------------------------------------- |
+| `DB`    | `rutasec-db` | `db/schema.sql` + `db/auth-schema.sql` |
 
 ```bash
-npm run db:schema:local    # apply schema (local)
-npm run db:schema:remote   # apply schema (remote)
+npm run db:schema:local    # apply product + auth schema (local)
+npm run db:schema:remote   # apply product + auth schema (remote)
+npm run db:auth-schema:generate  # regenerate db/auth-schema.sql from Better Auth CLI
 npm run db:tables:local    # list tables
 npm run db:seed:sql        # generate db/seed/import.sql
 npm run db:seed:local      # generate + load seed (local)
@@ -94,20 +97,30 @@ npx wrangler d1 create rutasec-db   # once — copy id into wrangler.jsonc
 
 ## Authentication
 
-Better Auth is wired for TanStack Start in `src/modules/identity/` with the catch-all route `src/routes/api/auth/$.ts`.
+Better Auth runs on the same D1 binding as product data. Server config lives in `src/modules/identity/adapters/better-auth/server-auth.ts` (`getAuth()`). The catch-all API route is `src/routes/api/auth/$.ts`. Sign-in and sign-up pages are at `/sign-in` and `/sign-up`.
 
 ```bash
 # .env.local
 BETTER_AUTH_SECRET=<from @better-auth/cli secret>
+BETTER_AUTH_URL=http://localhost:3000
 ```
 
-MVP: email/password and sessions only. Personal actions (e.g. save resource) must validate the session on the server.
+After changing Better Auth options, regenerate auth tables if needed:
+
+```bash
+npm run db:auth-schema:generate
+npm run db:schema:local   # or reset local D1 first (see Getting started)
+```
+
+MVP: email/password and sessions only. Personal actions (e.g. save resource) must validate the session on the server via `getSessionFn` or `getAuth().api.getSession`.
 
 ```tsx
-import { auth, authClient } from "#/modules/identity";
+import { authClient } from "#/modules/identity";
+import { getAuth } from "#/modules/identity/adapters/better-auth/server-auth";
+import { getSessionFn } from "#/modules/identity/server/get-session";
 ```
 
-Keep `nodejs_compat` enabled in `wrangler.jsonc`.
+Production: set `BETTER_AUTH_SECRET` and `BETTER_AUTH_URL` with `wrangler secret put`. Keep `nodejs_compat` enabled in `wrangler.jsonc`.
 
 ## UI (shadcn)
 
@@ -138,6 +151,21 @@ npm run preview  # preview production build
 ```
 
 Production secrets: `wrangler secret put <NAME>`. Bindings and compatibility flags: `wrangler.jsonc`.
+
+## CI/CD (GitLab)
+
+Pipelines run on merge requests and `main` via [`.gitlab-ci.yml`](.gitlab-ci.yml):
+
+| Stage    | Job                 | Purpose                                     |
+| -------- | ------------------- | ------------------------------------------- |
+| validate | `check`             | `vp check` (format, lint, types)            |
+| test     | `unit`              | `npm run test:coverage` (80% gate)          |
+| build    | `build`             | `npm run build`                             |
+| e2e      | `e2e`               | Playwright (`e2e/`) with local D1 bootstrap |
+| deploy   | `deploy:production` | Manual Wrangler deploy on `main`            |
+| deploy   | `db:schema:remote`  | Manual remote D1 schema apply               |
+
+Set in GitLab **Settings → CI/CD → Variables**: `CLOUDFLARE_API_TOKEN` (and `CLOUDFLARE_ACCOUNT_ID` if Wrangler needs it). Override `BETTER_AUTH_SECRET` for stricter e2e; production auth secrets belong in Wrangler (`wrangler secret put`), not only in GitLab.
 
 ## v1 scope
 

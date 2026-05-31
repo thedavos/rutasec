@@ -12,36 +12,59 @@ Email/password and sessions only. No social login, orgs, or RBAC in v1.
 
 ## TanStack Start integration
 
-Use `tanstackStartCookies()` plugin — configured in `src/modules/identity/adapters/better-auth/server-auth.ts`:
+Use `tanstackStartCookies()` as the **last** plugin in `src/modules/identity/adapters/better-auth/server-auth.ts`. Resolve the auth instance with `getAuth()` inside handlers (do not call `getDb()` at module import time).
 
 ```tsx
 import { betterAuth } from 'better-auth'
 import { tanstackStartCookies } from 'better-auth/tanstack-start'
+import { getDb } from '#/shared/db'
 
-export const auth = betterAuth({
-  emailAndPassword: { enabled: true },
-  plugins: [tanstackStartCookies()],
-})
+export function getAuth() {
+  return betterAuth({
+    database: getDb(),
+    secret: process.env.BETTER_AUTH_SECRET!,
+    baseURL: process.env.BETTER_AUTH_URL ?? 'http://localhost:3000',
+    emailAndPassword: { enabled: true },
+    plugins: [tanstackStartCookies()],
+  })
+}
 ```
 
 Import from the module public API in routes and UI:
 
 ```tsx
-import { auth, authClient } from '#/modules/identity'
+import { authClient } from '#/modules/identity'
+import { getAuth } from '#/modules/identity/adapters/better-auth/server-auth'
+import { getSessionFn } from '#/modules/identity/server/get-session'
 ```
 
-Auth API route: `src/routes/api/auth/$.ts`.
+Auth API route: `src/routes/api/auth/$.ts` → `getAuth().handler(request)`.
+
+UI routes: `/sign-in`, `/sign-up`.
+
+## D1 schema
+
+Auth tables live in `db/auth-schema.sql` (applied with `npm run db:schema:local`). Regenerate after auth config changes:
+
+```bash
+npm run db:auth-schema:generate
+```
+
+Resolve internal ownership via `requireAuthenticatedAppUser()` from `#/modules/identity/server/resolve-authenticated-app-user` (or `#/modules/identity/server`) in protected server functions. Do not export server helpers from `#/modules/identity` — client UI imports that barrel. Do not query `app_users` directly outside the identity module.
 
 ## Secrets
 
-`BETTER_AUTH_SECRET` in `.env.local`. Generate with:
+`.env.local`:
 
 ```bash
-npx -y @better-auth/cli secret
+BETTER_AUTH_SECRET=   # npx -y @better-auth/cli secret
+BETTER_AUTH_URL=http://localhost:3000
 ```
+
+Production: `wrangler secret put BETTER_AUTH_SECRET` and `wrangler secret put BETTER_AUTH_URL`.
 
 ## Wrangler
 
 Keep `nodejs_compat` enabled in `wrangler.jsonc`.
 
-Protect personal actions (save resource, library) with session validation on the server.
+Protect personal actions (save resource, library) with `requireAuthenticatedAppUser()` on the server. Use `getSessionFn` only for read-only session UI state.
