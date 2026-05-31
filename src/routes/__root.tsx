@@ -3,6 +3,7 @@ import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { TanStackDevtools } from "@tanstack/react-devtools";
 
 import { AuthHeader } from "#/modules/identity/presentation/auth-header";
+import { LibraryNavLink } from "#/modules/identity/presentation/library-nav-link";
 import { Button } from "#/shared/presentation/ui/button";
 import { Card, CardDescription, CardHeader, CardTitle } from "#/shared/presentation/ui/card";
 
@@ -65,12 +66,13 @@ function RootDocument({ children }: { children: React.ReactNode }) {
                   Learning catalog
                 </span>
               </Link>
-              <nav aria-label="Main">
+              <nav aria-label="Main" className="flex items-center gap-1">
                 <Button variant="ghost" size="sm" asChild className="font-semibold">
                   <Link to="/" className="nav-link is-active">
                     Catalog
                   </Link>
                 </Button>
+                <LibraryNavLink />
               </nav>
               <AuthHeader />
             </div>
@@ -80,8 +82,8 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 
           <footer className="site-footer py-6">
             <div className="page-wrap text-sm text-[var(--sea-ink-soft)]">
-              Curated cybersecurity resources with source attribution. Personal library and progress
-              coming soon.
+              Curated cybersecurity resources with source attribution. Sign in to save resources to
+              your personal library.
             </div>
           </footer>
         </div>
