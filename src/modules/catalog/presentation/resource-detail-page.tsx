@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 
 import type { CatalogResourceDetail } from "#/modules/catalog/domain/entities/resource";
+import { SaveToLibraryCta } from "#/modules/library/presentation/save-to-library-cta";
 import { Badge } from "#/shared/presentation/ui/badge";
 import { Button } from "#/shared/presentation/ui/button";
 import {
@@ -191,14 +192,10 @@ export function ResourceDetailPage({ resource }: ResourceDetailPageProps) {
                 </a>
               </Button>
 
-              <div className="space-y-2">
-                <Button type="button" variant="outline" className="w-full" disabled>
-                  Save to library
-                </Button>
-                <p className="text-xs leading-relaxed text-[var(--sea-ink-soft)]">
-                  Personal saves ship soon. Sign in to save resources to your library.
-                </p>
-              </div>
+              <SaveToLibraryCta
+                resourceId={resource.id}
+                signInRedirect={`/resources/${resource.id}`}
+              />
             </CardContent>
           </Card>
         </aside>
