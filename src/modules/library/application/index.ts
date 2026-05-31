@@ -1,4 +1,9 @@
 export type {
+  GetPersonalLibrary,
+  GetPersonalLibraryInput,
+} from "#/modules/library/application/get-personal-library/get-personal-library";
+export { GetPersonalLibraryUseCase } from "#/modules/library/application/get-personal-library/get-personal-library.use-case";
+export type {
   GetUserResource,
   GetUserResourceInput,
 } from "#/modules/library/application/get-user-resource/get-user-resource";

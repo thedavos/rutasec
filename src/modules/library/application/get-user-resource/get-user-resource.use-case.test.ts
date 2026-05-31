@@ -24,6 +24,7 @@ describe("GetUserResourceUseCase", () => {
     const library: LibraryPort = {
       getForUser,
       saveForUser: vi.fn(),
+      listForUser: vi.fn(),
     };
 
     const useCase = new GetUserResourceUseCase(library);
@@ -38,6 +39,7 @@ describe("GetUserResourceUseCase", () => {
     const library: LibraryPort = {
       getForUser,
       saveForUser: vi.fn(),
+      listForUser: vi.fn(),
     };
 
     const useCase = new GetUserResourceUseCase(library);

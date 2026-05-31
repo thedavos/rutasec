@@ -179,3 +179,81 @@ describe("createD1LibraryAdapter", () => {
     expect(result).toEqual({ ok: true, value: null });
   });
 });
+
+const listRow = {
+  user_resource_id: "ur-1",
+  resource_id: "res-linux-journey",
+  status: "pending",
+  progress_percentage: 0,
+  saved_at: "2026-01-01T00:00:00.000Z",
+  title: "Linux Journey",
+  category: "Operating Systems",
+  level: "beginner",
+  resource_type: "course",
+};
+
+function createListMockDb(rows: unknown[], options?: { allError?: Error }) {
+  const prepare = vi.fn(() => ({
+    bind: vi.fn().mockReturnValue({
+      all: vi.fn(async () => {
+        if (options?.allError) {
+          throw options.allError;
+        }
+        return { results: rows };
+      }),
+    }),
+  }));
+
+  return { prepare };
+}
+
+describe("createD1LibraryAdapter listForUser", () => {
+  it("returns mapped library items scoped to the user", async () => {
+    const { prepare } = createListMockDb([listRow]);
+    const adapter = createD1LibraryAdapter({ prepare } as unknown as D1Database);
+
+    const result = await adapter.listForUser({ userId: "app-1" });
+
+    expect(result).toEqual({
+      ok: true,
+      value: [
+        {
+          userResourceId: "ur-1",
+          resourceId: "res-linux-journey",
+          status: "pending",
+          progressPercentage: 0,
+          savedAt: "2026-01-01T00:00:00.000Z",
+          title: "Linux Journey",
+          category: "Operating Systems",
+          level: "beginner",
+          resourceType: "course",
+        },
+      ],
+    });
+    expect(prepare).toHaveBeenCalledTimes(1);
+  });
+
+  it("binds status when filtering", async () => {
+    const bind = vi.fn().mockReturnValue({
+      all: vi.fn().mockResolvedValue({ results: [] }),
+    });
+    const prepare = vi.fn(() => ({ bind }));
+    const adapter = createD1LibraryAdapter({ prepare } as unknown as D1Database);
+
+    await adapter.listForUser({ userId: "app-1", status: "completed" });
+
+    expect(bind).toHaveBeenCalledWith("app-1", "completed");
+  });
+
+  it("returns query_failed when list throws", async () => {
+    const { prepare } = createListMockDb([], { allError: new Error("list failed") });
+    const adapter = createD1LibraryAdapter({ prepare } as unknown as D1Database);
+
+    const result = await adapter.listForUser({ userId: "app-1" });
+
+    expect(result).toEqual({
+      ok: false,
+      error: { type: "query_failed", message: "list failed" },
+    });
+  });
+});
