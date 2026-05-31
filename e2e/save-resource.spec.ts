@@ -38,4 +38,9 @@ test("authenticated user can save a resource from detail", async ({ page }) => {
   await expect(page.getByRole("button", { name: "Saved to library" })).toBeVisible({
     timeout: 15_000,
   });
+
+  await page.reload();
+  await expect(page.getByRole("button", { name: "Saved to library" })).toBeVisible({
+    timeout: 15_000,
+  });
 });
