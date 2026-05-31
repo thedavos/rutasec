@@ -1,14 +1,19 @@
+import { buildListUserResourcesQuery } from "#/modules/library/adapters/d1/build-list-user-resources-query";
 import {
   buildSaveUserResourceQuery,
   buildSelectUserResourceQuery,
 } from "#/modules/library/adapters/d1/build-save-user-resource-query";
 import { invalidRowError, mapD1Error } from "#/modules/library/adapters/errors/map-d1-error";
+import { mapPersonalLibraryRowToItem } from "#/modules/library/adapters/mappers/map-personal-library-row";
 import { mapUserResourceRow } from "#/modules/library/adapters/mappers/map-user-resource-row";
+import { personalLibraryRowListSchema } from "#/modules/library/adapters/schemas/personal-library-row.schema";
 import { userResourceRowSchema } from "#/modules/library/adapters/schemas/user-resource-row.schema";
+import type { PersonalLibraryItem } from "#/modules/library/domain/entities/personal-library-item";
 import type { SavedUserResource } from "#/modules/library/domain/entities/user-resource";
 import type { LibraryError } from "#/modules/library/domain/errors/library-errors";
 import type {
   LibraryPort,
+  ListForUserInput,
   UserResourceLookupInput,
 } from "#/modules/library/domain/ports/library-port";
 import { err, ok, type Result } from "#/shared/domain/result";
@@ -82,6 +87,29 @@ export function createD1LibraryAdapter(db: D1Database): LibraryPort {
       }
 
       return ok(result.value);
+    },
+
+    async listForUser(
+      input: ListForUserInput,
+    ): Promise<Result<PersonalLibraryItem[], LibraryError>> {
+      const { sql, bindings } = buildListUserResourcesQuery(input.userId, input.status);
+
+      try {
+        const bindValues = bindings.status ? [bindings.userId, bindings.status] : [bindings.userId];
+        const result = await db
+          .prepare(sql)
+          .bind(...bindValues)
+          .all<unknown>();
+
+        const parsed = personalLibraryRowListSchema.safeParse(result.results ?? []);
+        if (!parsed.success) {
+          return err(invalidRowError(parsed.error.message));
+        }
+
+        return ok(parsed.data.map(mapPersonalLibraryRowToItem));
+      } catch (error) {
+        return err(mapD1Error(error));
+      }
     },
   };
 }
