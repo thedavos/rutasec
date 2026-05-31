@@ -9,13 +9,18 @@ import { Skeleton } from "#/shared/presentation/ui/skeleton";
 type SaveToLibraryCtaProps = {
   resourceId: string;
   signInRedirect: string;
+  initialIsSaved?: boolean;
 };
 
 type SaveUiState = "idle" | "saving" | "saved" | "error";
 
-export function SaveToLibraryCta({ resourceId, signInRedirect }: SaveToLibraryCtaProps) {
+export function SaveToLibraryCta({
+  resourceId,
+  signInRedirect,
+  initialIsSaved = false,
+}: SaveToLibraryCtaProps) {
   const { data: session, isPending } = authClient.useSession();
-  const [saveState, setSaveState] = useState<SaveUiState>("idle");
+  const [saveState, setSaveState] = useState<SaveUiState>(initialIsSaved ? "saved" : "idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   async function handleSave() {

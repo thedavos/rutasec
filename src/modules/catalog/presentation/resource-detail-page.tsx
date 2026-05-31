@@ -16,6 +16,7 @@ import { cn } from "#/shared/utils";
 
 type ResourceDetailPageProps = {
   resource: CatalogResourceDetail;
+  isSaved: boolean;
 };
 
 const levelLabels: Record<CatalogResourceDetail["level"], string> = {
@@ -56,7 +57,7 @@ function TaxonomyTrail({ resource }: { resource: CatalogResourceDetail }) {
   );
 }
 
-export function ResourceDetailPage({ resource }: ResourceDetailPageProps) {
+export function ResourceDetailPage({ resource, isSaved }: ResourceDetailPageProps) {
   return (
     <div className="pb-16">
       <nav aria-label="Breadcrumb" className="rise-in mb-6">
@@ -195,6 +196,7 @@ export function ResourceDetailPage({ resource }: ResourceDetailPageProps) {
               <SaveToLibraryCta
                 resourceId={resource.id}
                 signInRedirect={`/resources/${resource.id}`}
+                initialIsSaved={isSaved}
               />
             </CardContent>
           </Card>
