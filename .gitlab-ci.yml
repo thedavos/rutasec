@@ -81,13 +81,14 @@ e2e:
   <<: *workflow_mr_or_main
   # allow_failure: true
   image: mcr.microsoft.com/playwright:v1.60.0-noble
-  needs: [install, check, build]
+  needs:
+    - job: install
+      artifacts: true
   variables:
     CI: "true"
     BETTER_AUTH_SECRET: "ci-only-not-for-production-use-32chars!!"
     BETTER_AUTH_URL: "http://localhost:3000"
   before_script:
-    - npm ci
     - npm run db:schema:local
     - npm run db:seed:local
     # Wrangler dev loads auth secrets from .dev.vars, not only the shell env.
