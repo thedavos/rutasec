@@ -13,7 +13,11 @@ import {
 import { Input } from "#/shared/presentation/ui/input";
 import { Label } from "#/shared/presentation/ui/label";
 
-export function SignInPage() {
+type SignInPageProps = {
+  redirect?: string;
+};
+
+export function SignInPage({ redirect }: SignInPageProps) {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -37,7 +41,7 @@ export function SignInPage() {
       return;
     }
 
-    await navigate({ to: "/", reloadDocument: true });
+    await navigate({ to: redirect ?? "/", reloadDocument: true });
   }
 
   return (
