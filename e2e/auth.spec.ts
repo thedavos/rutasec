@@ -11,13 +11,13 @@ test("user can register, stay signed in, and sign out", async ({ page }) => {
 
   await page.goto("/sign-up");
 
-  const emailInput = page.locator("#sign-up-email");
-  const passwordInput = page.locator("#sign-up-password");
+  await expect(page.getByRole("banner").getByRole("link", { name: "Sign up" })).toBeVisible();
 
-  await emailInput.click();
-  await emailInput.pressSequentially(email);
-  await passwordInput.click();
-  await passwordInput.pressSequentially(password);
+  const emailInput = page.getByLabel("Email");
+  const passwordInput = page.getByLabel("Password");
+
+  await emailInput.fill(email);
+  await passwordInput.fill(password);
 
   await expect(emailInput).toHaveValue(email);
   await expect(passwordInput).toHaveValue(password);
