@@ -1,6 +1,8 @@
 import { Link } from "@tanstack/react-router";
 
 import type { CatalogResourceDetail } from "#/modules/catalog/domain/entities/resource";
+import { ResourceAttribution } from "#/modules/catalog/presentation/components/resource-attribution";
+import { detailAttributionDescription } from "#/modules/catalog/presentation/copy/transparency-copy";
 import { SaveToLibraryCta } from "#/modules/library/presentation/save-to-library-cta";
 import { Badge } from "#/shared/presentation/ui/badge";
 import { Button } from "#/shared/presentation/ui/button";
@@ -139,30 +141,12 @@ export function ResourceDetailPage({ resource, isSaved }: ResourceDetailPageProp
             <Card className={detailCardClassName}>
               <CardHeader className="gap-2 px-5 pt-5 pb-0">
                 <CardTitle className="display-title text-lg font-bold">Attribution</CardTitle>
+                <CardDescription className="text-[var(--sea-ink-soft)]">
+                  {detailAttributionDescription}
+                </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-3 px-5 pt-3 pb-5 text-sm leading-relaxed text-[var(--sea-ink-soft)]">
-                <p>
-                  Source:{" "}
-                  <a
-                    href={resource.attribution.originalSourceUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="font-semibold text-[var(--sea-ink)] underline-offset-2 hover:underline"
-                  >
-                    {resource.attribution.originalSourceName}
-                  </a>
-                </p>
-                <p>
-                  Curated from:{" "}
-                  <a
-                    href={resource.attribution.curatedFromUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="font-semibold text-[var(--sea-ink)] underline-offset-2 hover:underline"
-                  >
-                    {resource.attribution.curatedFromName}
-                  </a>
-                </p>
+              <CardContent className="px-5 pt-3 pb-5">
+                <ResourceAttribution attribution={resource.attribution} variant="full" />
               </CardContent>
             </Card>
           </div>

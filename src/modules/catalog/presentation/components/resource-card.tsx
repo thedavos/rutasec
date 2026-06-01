@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 
 import type { CatalogResourceCard } from "#/modules/catalog/domain/entities/resource";
+import { ResourceAttribution } from "#/modules/catalog/presentation/components/resource-attribution";
 import { Badge } from "#/shared/presentation/ui/badge";
 import {
   Card,
@@ -84,18 +85,14 @@ export function ResourceCard({ resource }: ResourceCardProps) {
 
       <CardFooter className="flex-col items-start gap-0 px-5 pt-4 pb-5">
         <Separator className="mb-3 bg-[var(--line)]" />
-        <p className="text-xs leading-relaxed text-[var(--sea-ink-soft)]">
-          Source: {resource.attribution.originalSourceName}
-          <span aria-hidden="true"> · </span>
-          Curated from {resource.attribution.curatedFromName}
-        </p>
+        <ResourceAttribution attribution={resource.attribution} variant="compact" />
         <a
           href={resource.url}
           target="_blank"
           rel="noopener noreferrer"
           className="mt-2 text-xs font-semibold text-[var(--lagoon-deep)] underline-offset-2 hover:underline"
         >
-          Visit source
+          Visit resource
         </a>
       </CardFooter>
     </Card>

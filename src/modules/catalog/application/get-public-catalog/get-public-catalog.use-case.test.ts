@@ -21,7 +21,9 @@ const resource: CatalogResourceCard = {
   language: "en",
   attribution: {
     originalSourceName: "Linux Journey",
+    originalSourceUrl: "https://linuxjourney.com/",
     curatedFromName: "Cybersecurity-Mastery-Roadmap",
+    curatedFromUrl: "https://github.com/Hamed233/Cybersecurity-Mastery-Roadmap",
   },
 };
 

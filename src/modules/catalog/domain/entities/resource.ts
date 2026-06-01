@@ -24,7 +24,9 @@ export type CatalogListInput = CatalogFilters;
 
 export type CatalogResourceCardAttribution = {
   originalSourceName: string;
+  originalSourceUrl: string;
   curatedFromName: string;
+  curatedFromUrl: string;
 };
 
 export type CatalogResourceCard = {
@@ -52,10 +54,7 @@ export type CatalogResourcePathContext = {
   totalItems: number;
 };
 
-export type CatalogResourceDetailAttribution = CatalogResourceCardAttribution & {
-  originalSourceUrl: string;
-  curatedFromUrl: string;
-};
+export type CatalogResourceDetailAttribution = CatalogResourceCardAttribution;
 
 export type CatalogResourceDetail = Omit<CatalogResourceCard, "attribution"> & {
   roadmapSection: string | null;

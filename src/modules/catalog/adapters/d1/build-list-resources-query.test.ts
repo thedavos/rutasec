@@ -9,6 +9,8 @@ describe("buildListResourcesQuery", () => {
   it("always scopes to published resources", () => {
     const { sql } = buildListResourcesQuery({});
     expect(sql).toContain("is_published = 1");
+    expect(sql).toContain("original_source_url");
+    expect(sql).toContain("curated_from_url");
     expect(sql).toContain("ORDER BY phase ASC, category ASC, topic ASC, title ASC");
   });
 

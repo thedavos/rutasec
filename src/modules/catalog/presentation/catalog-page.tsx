@@ -1,7 +1,8 @@
 import type { PublicCatalogResult } from "#/modules/catalog/domain/entities/resource";
-import { Card, CardDescription, CardHeader, CardTitle } from "#/shared/presentation/ui/card";
 import { CatalogFiltersBar } from "#/modules/catalog/presentation/components/catalog-filters";
 import { ResourceCard } from "#/modules/catalog/presentation/components/resource-card";
+import { catalogTransparencyNotice } from "#/modules/catalog/presentation/copy/transparency-copy";
+import { Card, CardDescription, CardHeader, CardTitle } from "#/shared/presentation/ui/card";
 
 type CatalogPageProps = {
   catalog: PublicCatalogResult;
@@ -20,6 +21,18 @@ export function CatalogPage({ catalog }: CatalogPageProps) {
           No account required to browse.
         </p>
       </header>
+
+      <Card
+        className="island-shell rise-in mb-8 rounded-2xl border-[var(--line)] py-0 shadow-none"
+        aria-label="Catalog transparency"
+      >
+        <CardHeader className="gap-2 px-5 py-4">
+          <CardTitle className="display-title text-base font-bold">About this catalog</CardTitle>
+          <CardDescription className="text-sm leading-relaxed text-[var(--sea-ink-soft)]">
+            {catalogTransparencyNotice}
+          </CardDescription>
+        </CardHeader>
+      </Card>
 
       <CatalogFiltersBar
         filters={catalog.filters}
