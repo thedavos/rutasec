@@ -35,6 +35,10 @@ stages:
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
+.workflow:merge_request_only: &workflow_merge_request_only
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+
 install:
   stage: validate
   <<: *workflow_mr_or_main
@@ -105,6 +109,38 @@ e2e:
     paths:
       - playwright-report/
       - test-results/
+
+deploy:preview:
+  stage: deploy
+  <<: *workflow_merge_request_only
+  needs: [check, unit, build]
+  environment:
+    name: review/$CI_MERGE_REQUEST_IID
+    url: https://rutasec-mr-$CI_MERGE_REQUEST_IID.davidvargas-d45.workers.dev
+    on_stop: stop:preview
+  script:
+    - npm ci
+    - npm run build
+    - |
+      preview_worker_name="rutasec-mr-${CI_MERGE_REQUEST_IID}"
+      preview_url="https://${preview_worker_name}.davidvargas-d45.workers.dev"
+      printf '%s\n' \
+        "BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET}" \
+        "BETTER_AUTH_URL=${preview_url}" \
+        > .preview.vars
+      npx wrangler deploy --config dist/server/wrangler.json --name "$preview_worker_name" --secrets-file .preview.vars
+
+stop:preview:
+  stage: deploy
+  <<: *workflow_merge_request_only
+  when: manual
+  allow_failure: true
+  environment:
+    name: review/$CI_MERGE_REQUEST_IID
+    action: stop
+  script:
+    - npm ci
+    - npx wrangler delete "rutasec-mr-${CI_MERGE_REQUEST_IID}" --force
 
 deploy:production:
   stage: deploy
