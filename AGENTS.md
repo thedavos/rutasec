@@ -31,7 +31,7 @@ Do not introduce Astro, Next.js, Durable Objects, Queues, KV, or R2 unless expli
 ```
 src/routes/                    file-based routes (presentation)
 src/app/di/                    composition root (*.module.ts)
-src/modules/<feature>/         feature modules (catalog, library, identity, goals)
+src/modules/<feature>/         feature modules (catalog, library, identity, goals, dashboard)
 src/shared/                    cross-cutting (db, domain/Result, utils)
 db/schema.sql                  D1 schema
 ```

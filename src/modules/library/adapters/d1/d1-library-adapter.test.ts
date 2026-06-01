@@ -261,6 +261,7 @@ const listRow = {
   category: "Operating Systems",
   level: "beginner",
   resource_type: "course",
+  estimated_hours: 4,
 };
 
 function createListMockDb(rows: unknown[], options?: { allError?: Error }) {
@@ -298,6 +299,7 @@ describe("createD1LibraryAdapter listForUser", () => {
           category: "Operating Systems",
           level: "beginner",
           resourceType: "course",
+          estimatedHours: 4,
         },
       ],
     });

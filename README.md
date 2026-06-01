@@ -58,7 +58,7 @@ After pull or dependency changes: `vp install`.
 ```
 src/
   routes/                 # TanStack file-based routes (loaders → server fns)
-  modules/<feature>/      # catalog, library, identity, goals (hexagonal layers)
+  modules/<feature>/      # catalog, library, identity, goals, dashboard (hexagonal layers)
   app/di/                 # composition root (*.module.ts)
   shared/presentation/ui/ # shadcn primitives
   shared/                 # getDb(), Result, utils
@@ -176,7 +176,9 @@ Set in GitLab **Settings → CI/CD → Variables**: `CLOUDFLARE_API_TOKEN` (and 
 
 In scope: public catalog, resource detail, auth, save to library, create and list learning goals.
 
-Deferred: timeline, full goals dashboard, admin, scraping, broad social features.
+**v2 (personal workflow):** basic user dashboard at `/dashboard` (active goal, library progress, next resources, pending hours).
+
+Deferred: timeline, full analytics dashboard, admin, scraping, broad social features.
 
 ## Docs
 

@@ -28,6 +28,6 @@ export const getResources = createServerFn({ method: 'GET' }).handler(async () =
 - Turning the app into a client-only SPA
 - Next.js patterns (App Router, Server Actions, `use server`)
 
-## UI surfaces (MVP)
+## UI surfaces (MVP / v2)
 
-Public catalog, resource detail, auth, library, goals. Match existing route and component conventions.
+Public catalog, resource detail, auth, library, goals, basic user dashboard (`/dashboard`). Match existing route and component conventions.

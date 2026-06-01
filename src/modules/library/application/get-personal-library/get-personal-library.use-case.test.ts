@@ -15,6 +15,7 @@ const item: PersonalLibraryItem = {
   category: "OS",
   level: "beginner",
   resourceType: "course",
+  estimatedHours: 4,
 };
 
 describe("GetPersonalLibraryUseCase", () => {

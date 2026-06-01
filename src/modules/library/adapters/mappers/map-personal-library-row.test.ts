@@ -15,6 +15,7 @@ describe("mapPersonalLibraryRowToItem", () => {
         category: "Operating Systems",
         level: "intermediate",
         resource_type: "lab",
+        estimated_hours: 6,
       }),
     ).toEqual({
       userResourceId: "ur-1",
@@ -26,6 +27,7 @@ describe("mapPersonalLibraryRowToItem", () => {
       category: "Operating Systems",
       level: "intermediate",
       resourceType: "lab",
+      estimatedHours: 6,
     });
   });
 });

@@ -14,6 +14,7 @@ describe("personalLibraryRowSchema", () => {
       category: "Operating Systems",
       level: "beginner",
       resource_type: "course",
+      estimated_hours: 4,
     });
 
     expect(parsed.success).toBe(true);
