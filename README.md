@@ -28,6 +28,7 @@ npx -y @better-auth/cli secret   # add output to .env.local as BETTER_AUTH_SECRE
 npm run db:schema:local          # product tables + Better Auth tables
 npm run db:seed:local
 npm run dev
+npm run db:smoke-user:local   # optional local QA account — see db/README.md
 ```
 
 Dev server: [http://localhost:3000](http://localhost:3000). Local D1 lives under `.wrangler/state/v3/d1/` and is used automatically via the `DB` binding.
@@ -75,6 +76,8 @@ Business logic and D1 access stay in server functions and use cases — not in p
 | ------- | ------------ | -------------------------------------- |
 | `DB`    | `rutasec-db` | `db/schema.sql` + `db/auth-schema.sql` |
 
+See **[db/README.md](db/README.md)** for schema/seed commands and the **local smoke test account** (`smoke@rutasec.local`).
+
 ```bash
 npm run db:schema:local    # apply product + auth schema (local)
 npm run db:schema:remote   # apply product + auth schema (remote)
@@ -84,6 +87,7 @@ npm run db:seed:sql        # generate db/seed/import.sql
 npm run db:seed:local      # generate + load seed (local)
 npm run db:seed:verify     # check seed URLs are reachable
 npm run db:seed:remote     # generate + load seed (remote)
+npm run db:smoke-user:local    # local QA user (requires npm run dev)
 ```
 
 Seed source: `db/seed/web-pentesting-starter.json`. Each resource uses `resource_type` plus a learning-mode tag: `theory`, `practice`, or `mixed`.
