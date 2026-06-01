@@ -10,6 +10,7 @@ export type PersonalLibraryItem = {
   category: string;
   level: string;
   resourceType: string;
+  estimatedHours: number;
 };
 
 export type PersonalLibrary = {

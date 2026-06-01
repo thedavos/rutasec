@@ -9,7 +9,8 @@ const LIBRARY_SELECT = `
   r.title,
   r.category,
   r.level,
-  r.resource_type
+  r.resource_type,
+  r.estimated_hours
 `.trim();
 
 export type ListUserResourcesQuery = {

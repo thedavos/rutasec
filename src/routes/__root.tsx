@@ -3,6 +3,7 @@ import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { TanStackDevtools } from "@tanstack/react-devtools";
 
 import { AuthHeader } from "#/modules/identity/presentation/auth-header";
+import { DashboardNavLink } from "#/modules/dashboard/presentation/dashboard-nav-link";
 import { LibraryNavLink } from "#/modules/identity/presentation/library-nav-link";
 import { GoalsNavLink } from "#/modules/goals/presentation/goals-nav-link";
 import {
@@ -77,6 +78,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
                     Catalog
                   </Link>
                 </Button>
+                <DashboardNavLink />
                 <LibraryNavLink />
                 <GoalsNavLink />
               </nav>

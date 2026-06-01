@@ -30,8 +30,8 @@ Utility helper: `src/shared/utils.ts` (`cn()` for class merging).
 
 Match existing layout patterns in `src/routes/__root.tsx`. Theme tokens live in `src/styles.css` (CSS variables).
 
-## MVP UI focus
+## MVP / v2 UI focus
 
-Catalog browsing, resource detail, auth flows, save-to-library CTA, learning goals.
+Catalog browsing, resource detail, auth flows, save-to-library CTA, learning goals, basic user dashboard (v2 milestone).
 
-Do not add dashboard, timeline, or admin UI unless the current milestone explicitly requires it.
+Do not add broad dashboard, timeline, or admin UI unless the current milestone explicitly requires it. The v2 basic dashboard at `/dashboard` is in scope.

@@ -12,5 +12,6 @@ export function mapPersonalLibraryRowToItem(row: PersonalLibraryRow): PersonalLi
     category: row.category,
     level: row.level,
     resourceType: row.resource_type,
+    estimatedHours: row.estimated_hours,
   };
 }

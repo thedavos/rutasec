@@ -13,6 +13,7 @@ export const personalLibraryRowSchema = z.object({
   category: z.string(),
   level: z.enum(RESOURCE_LEVELS),
   resource_type: z.enum(RESOURCE_TYPES),
+  estimated_hours: z.number(),
 });
 
 export type PersonalLibraryRow = z.infer<typeof personalLibraryRowSchema>;
