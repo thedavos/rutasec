@@ -13,3 +13,8 @@ export type {
   SaveResourceInput,
 } from "#/modules/library/application/save-resource/save-resource";
 export { SaveResourceUseCase } from "#/modules/library/application/save-resource/save-resource.use-case";
+export type {
+  UpdateUserResource,
+  UpdateUserResourceInput,
+} from "#/modules/library/application/update-user-resource/update-user-resource";
+export { UpdateUserResourceUseCase } from "#/modules/library/application/update-user-resource/update-user-resource.use-case";

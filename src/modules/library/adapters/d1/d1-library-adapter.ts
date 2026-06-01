@@ -3,6 +3,7 @@ import {
   buildSaveUserResourceQuery,
   buildSelectUserResourceQuery,
 } from "#/modules/library/adapters/d1/build-save-user-resource-query";
+import { buildUpdateUserResourceQuery } from "#/modules/library/adapters/d1/build-update-user-resource-query";
 import { invalidRowError, mapD1Error } from "#/modules/library/adapters/errors/map-d1-error";
 import { mapPersonalLibraryRowToItem } from "#/modules/library/adapters/mappers/map-personal-library-row";
 import { mapUserResourceRow } from "#/modules/library/adapters/mappers/map-user-resource-row";
@@ -10,10 +11,12 @@ import { personalLibraryRowListSchema } from "#/modules/library/adapters/schemas
 import { userResourceRowSchema } from "#/modules/library/adapters/schemas/user-resource-row.schema";
 import type { PersonalLibraryItem } from "#/modules/library/domain/entities/personal-library-item";
 import type { SavedUserResource } from "#/modules/library/domain/entities/user-resource";
+import { userResourceNotFoundError } from "#/modules/library/domain/errors/library-errors";
 import type { LibraryError } from "#/modules/library/domain/errors/library-errors";
 import type {
   LibraryPort,
   ListForUserInput,
+  UpdateForUserInput,
   UserResourceLookupInput,
 } from "#/modules/library/domain/ports/library-port";
 import { err, ok, type Result } from "#/shared/domain/result";
@@ -84,6 +87,56 @@ export function createD1LibraryAdapter(db: D1Database): LibraryPort {
 
       if (result.value === null) {
         return err(invalidRowError("user_resources row missing after save"));
+      }
+
+      return ok(result.value);
+    },
+
+    async updateForUser(
+      input: UpdateForUserInput,
+    ): Promise<Result<SavedUserResource, LibraryError>> {
+      const now = new Date().toISOString();
+      const { sql, bindings } = buildUpdateUserResourceQuery(
+        input.userId,
+        input.resourceId,
+        input.status,
+        input.progressPercentage,
+        input.startedAt,
+        input.completedAt,
+        now,
+      );
+
+      try {
+        const updateResult = await db
+          .prepare(sql)
+          .bind(
+            bindings.status,
+            bindings.progressPercentage,
+            bindings.startedAt,
+            bindings.completedAt,
+            bindings.updatedAt,
+            bindings.userId,
+            bindings.resourceId,
+          )
+          .run();
+
+        if ((updateResult.meta.changes ?? 0) === 0) {
+          return err(userResourceNotFoundError());
+        }
+      } catch (error) {
+        return err(mapD1Error(error));
+      }
+
+      const result = await selectForUser(db, input.userId, input.resourceId, {
+        missingRowError: invalidRowError("user_resources row missing after update"),
+      });
+
+      if (!result.ok) {
+        return result;
+      }
+
+      if (result.value === null) {
+        return err(invalidRowError("user_resources row missing after update"));
       }
 
       return ok(result.value);
