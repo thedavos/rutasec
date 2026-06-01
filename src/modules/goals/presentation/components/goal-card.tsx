@@ -1,4 +1,8 @@
+import type { GoalLinkedResource } from "#/modules/goals/domain/entities/goal-linked-resource";
 import type { LearningGoal } from "#/modules/goals/domain/entities/goal";
+import { AddGoalResourceSelect } from "#/modules/goals/presentation/components/add-goal-resource-select";
+import { GoalLinkedResources } from "#/modules/goals/presentation/components/goal-linked-resources";
+import type { PersonalLibraryItem } from "#/modules/library/domain/entities/personal-library-item";
 import { Badge } from "#/shared/presentation/ui/badge";
 import {
   Card,
@@ -17,9 +21,12 @@ const statusLabels: Record<LearningGoal["status"], string> = {
 
 type GoalCardProps = {
   goal: LearningGoal;
+  linkedResources: GoalLinkedResource[];
+  libraryItems: PersonalLibraryItem[];
 };
 
-export function GoalCard({ goal }: GoalCardProps) {
+export function GoalCard({ goal, linkedResources, libraryItems }: GoalCardProps) {
+  const linkedResourceIds = new Set(linkedResources.map((resource) => resource.resourceId));
   return (
     <Card className={cn("feature-card island-shell h-full gap-0 rounded-2xl py-0 shadow-none")}>
       <CardHeader className="gap-3 px-5 pt-5 pb-0">
@@ -50,6 +57,16 @@ export function GoalCard({ goal }: GoalCardProps) {
           {" · "}
           Created {new Date(goal.createdAt).toLocaleDateString()}
         </CardDescription>
+
+        <div className="mt-4 space-y-3 border-t border-[var(--line)] pt-4">
+          <h3 className="text-sm font-semibold text-[var(--sea-ink)]">Linked resources</h3>
+          <GoalLinkedResources resources={linkedResources} />
+          <AddGoalResourceSelect
+            goalId={goal.id}
+            libraryItems={libraryItems}
+            linkedResourceIds={linkedResourceIds}
+          />
+        </div>
       </CardContent>
     </Card>
   );

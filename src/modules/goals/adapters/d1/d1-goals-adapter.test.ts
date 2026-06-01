@@ -212,4 +212,162 @@ describe("createD1GoalsAdapter", () => {
       expect(result.error.type).toBe("invalid_row");
     }
   });
+
+  it("linkResource returns ok when insert succeeds", async () => {
+    const prepare = vi.fn(() => ({
+      bind: vi.fn().mockReturnValue({
+        run: vi.fn(async () => ({ meta: { changes: 1 } })),
+      }),
+    }));
+    const adapter = createD1GoalsAdapter({ prepare } as unknown as D1Database);
+
+    const result = await adapter.linkResource({
+      userId: "app-1",
+      goalId: "goal-1",
+      resourceId: "res-1",
+    });
+
+    expect(result).toEqual({ ok: true, value: undefined });
+  });
+
+  it("linkResource returns ok when the relation already exists", async () => {
+    let callIndex = 0;
+    const prepare = vi.fn(() => {
+      const index = callIndex++;
+      if (index === 0) {
+        return {
+          bind: vi.fn().mockReturnValue({
+            run: vi.fn(async () => ({ meta: { changes: 0 } })),
+          }),
+        };
+      }
+      return {
+        bind: vi.fn().mockReturnValue({
+          first: vi.fn(async () => ({ exists_flag: 1 })),
+        }),
+      };
+    });
+    const adapter = createD1GoalsAdapter({ prepare } as unknown as D1Database);
+
+    const result = await adapter.linkResource({
+      userId: "app-1",
+      goalId: "goal-1",
+      resourceId: "res-1",
+    });
+
+    expect(result).toEqual({ ok: true, value: undefined });
+  });
+
+  it("linkResource returns goal_not_found when the goal is not owned", async () => {
+    let callIndex = 0;
+    const prepare = vi.fn(() => {
+      const index = callIndex++;
+      if (index === 0) {
+        return {
+          bind: vi.fn().mockReturnValue({
+            run: vi.fn(async () => ({ meta: { changes: 0 } })),
+          }),
+        };
+      }
+      if (index === 1) {
+        return {
+          bind: vi.fn().mockReturnValue({
+            first: vi.fn(async () => null),
+          }),
+        };
+      }
+      return {
+        bind: vi.fn().mockReturnValue({
+          first: vi.fn(async () => null),
+        }),
+      };
+    });
+    const adapter = createD1GoalsAdapter({ prepare } as unknown as D1Database);
+
+    const result = await adapter.linkResource({
+      userId: "app-1",
+      goalId: "goal-missing",
+      resourceId: "res-1",
+    });
+
+    expect(result).toEqual({
+      ok: false,
+      error: { type: "goal_not_found", message: "Goal not found." },
+    });
+  });
+
+  it("linkResource returns resource_not_in_library when resource is not saved", async () => {
+    let callIndex = 0;
+    const prepare = vi.fn(() => {
+      const index = callIndex++;
+      if (index === 0) {
+        return {
+          bind: vi.fn().mockReturnValue({
+            run: vi.fn(async () => ({ meta: { changes: 0 } })),
+          }),
+        };
+      }
+      if (index === 1) {
+        return {
+          bind: vi.fn().mockReturnValue({
+            first: vi.fn(async () => null),
+          }),
+        };
+      }
+      return {
+        bind: vi.fn().mockReturnValue({
+          first: vi.fn(async () => ({ exists_flag: 1 })),
+        }),
+      };
+    });
+    const adapter = createD1GoalsAdapter({ prepare } as unknown as D1Database);
+
+    const result = await adapter.linkResource({
+      userId: "app-1",
+      goalId: "goal-1",
+      resourceId: "res-1",
+    });
+
+    expect(result).toEqual({
+      ok: false,
+      error: {
+        type: "resource_not_in_library",
+        message: "Save this resource to your library before linking it to a goal.",
+      },
+    });
+  });
+
+  it("listLinkedResourcesForUser returns mapped links scoped to the user", async () => {
+    const { prepare } = createListMockDb([
+      {
+        goal_id: "goal-1",
+        resource_id: "res-1",
+        priority: 0,
+        linked_at: "2026-01-01T00:00:00.000Z",
+        title: "Web Security",
+        category: "Web",
+        level: "beginner",
+        resource_type: "course",
+      },
+    ]);
+    const adapter = createD1GoalsAdapter({ prepare } as unknown as D1Database);
+
+    const result = await adapter.listLinkedResourcesForUser("app-1");
+
+    expect(result).toEqual({
+      ok: true,
+      value: [
+        {
+          goalId: "goal-1",
+          resourceId: "res-1",
+          priority: 0,
+          linkedAt: "2026-01-01T00:00:00.000Z",
+          title: "Web Security",
+          category: "Web",
+          level: "beginner",
+          resourceType: "course",
+        },
+      ],
+    });
+  });
 });

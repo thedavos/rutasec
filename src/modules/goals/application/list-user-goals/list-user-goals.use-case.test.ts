@@ -23,6 +23,8 @@ describe("ListUserGoalsUseCase", () => {
     const goals: GoalsPort = {
       createForUser: vi.fn(),
       listForUser,
+      linkResource: vi.fn(),
+      listLinkedResourcesForUser: vi.fn(),
     };
     const input = { userId: "app-1" };
 
@@ -38,6 +40,8 @@ describe("ListUserGoalsUseCase", () => {
     const goals: GoalsPort = {
       createForUser: vi.fn(),
       listForUser: vi.fn().mockResolvedValue(err({ type: "query_failed", message: "D1 down" })),
+      linkResource: vi.fn(),
+      listLinkedResourcesForUser: vi.fn(),
     };
 
     const useCase = new ListUserGoalsUseCase(goals);
