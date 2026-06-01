@@ -27,9 +27,7 @@ test("resource detail shows linked attribution", async ({ page }) => {
   await expect(page.getByText(/Original source:/)).toBeVisible();
   await expect(page.getByText(/Curated from:/)).toBeVisible();
   await expect(
-    page
-      .getByRole("link", { name: /Linux Journey/i })
-      .filter({ has: page.locator('[target="_blank"]') }),
+    page.locator('a[target="_blank"]').filter({ hasText: /Linux Journey/i }),
   ).toBeVisible();
 });
 
