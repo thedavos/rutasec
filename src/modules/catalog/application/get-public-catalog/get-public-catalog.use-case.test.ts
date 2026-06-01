@@ -58,6 +58,22 @@ describe("GetPublicCatalogUseCase", () => {
     });
   });
 
+  it("passes search query to listPublished", async () => {
+    const listPublished = vi.fn().mockResolvedValue(ok([resource]));
+    const getFilterOptions = vi.fn().mockResolvedValue(ok(filterOptions));
+    const catalog: CatalogPort = {
+      listPublished,
+      getFilterOptions,
+      getPublishedById: vi.fn(),
+    };
+
+    const useCase = new GetPublicCatalogUseCase(catalog);
+    const result = await useCase.execute({ q: "  linux  " });
+
+    expect(result.ok).toBe(true);
+    expect(listPublished).toHaveBeenCalledWith({ q: "linux" });
+  });
+
   it("propagates listPublished errors", async () => {
     const listPublished = vi
       .fn()

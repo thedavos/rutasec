@@ -17,6 +17,7 @@ export type CatalogFilters = {
   category?: string;
   level?: ResourceLevel;
   resourceType?: ResourceType;
+  q?: string;
 };
 
 export type CatalogListInput = CatalogFilters;

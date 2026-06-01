@@ -23,6 +23,31 @@ export type ListResourcesQuery = {
   bindings: unknown[];
 };
 
+export function tokenizeSearchQuery(q: string): string[] {
+  return q.trim().split(/\s+/).filter(Boolean);
+}
+
+function appendSearchTokenCondition(
+  conditions: string[],
+  bindings: unknown[],
+  token: string,
+): void {
+  const pattern = `%${token}%`;
+  conditions.push(`(
+    LOWER(title) LIKE LOWER(?)
+    OR LOWER(topic) LIKE LOWER(?)
+    OR LOWER(category) LIKE LOWER(?)
+    OR EXISTS (
+      SELECT 1
+      FROM resource_tags rt
+      INNER JOIN tags t ON t.id = rt.tag_id
+      WHERE rt.resource_id = resources.id
+        AND (LOWER(t.slug) LIKE LOWER(?) OR LOWER(t.name) LIKE LOWER(?))
+    )
+  )`);
+  bindings.push(pattern, pattern, pattern, pattern, pattern);
+}
+
 export function buildListResourcesQuery(filters: CatalogFilters): ListResourcesQuery {
   const conditions = ["is_published = 1"];
   const bindings: unknown[] = [];
@@ -40,6 +65,12 @@ export function buildListResourcesQuery(filters: CatalogFilters): ListResourcesQ
   if (filters.resourceType) {
     conditions.push("resource_type = ?");
     bindings.push(filters.resourceType);
+  }
+
+  if (filters.q) {
+    for (const token of tokenizeSearchQuery(filters.q)) {
+      appendSearchTokenCondition(conditions, bindings, token);
+    }
   }
 
   const sql = `

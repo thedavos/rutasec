@@ -32,4 +32,21 @@ describe("parseCatalogFilters", () => {
   it("ignores blank category values after trimming", () => {
     expect(parseCatalogFilters({ category: "   " })).toEqual({});
   });
+
+  it("trims search query and ignores blank q", () => {
+    expect(parseCatalogFilters({ q: "  sql injection  " })).toEqual({ q: "sql injection" });
+    expect(parseCatalogFilters({ q: "   " })).toEqual({});
+  });
+
+  it("keeps q alongside other filters", () => {
+    expect(
+      parseCatalogFilters({
+        q: "linux",
+        level: "beginner",
+      }),
+    ).toEqual({
+      q: "linux",
+      level: "beginner",
+    });
+  });
 });

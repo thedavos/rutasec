@@ -32,7 +32,8 @@ export function CatalogPage({ catalog }: CatalogPageProps) {
           <CardHeader className="text-center">
             <CardTitle className="display-title text-xl">No resources match</CardTitle>
             <CardDescription>
-              Try clearing filters or choosing a different category, level, or type.
+              Try a different search term, clearing filters, or choosing another category, level, or
+              type.
             </CardDescription>
           </CardHeader>
         </Card>

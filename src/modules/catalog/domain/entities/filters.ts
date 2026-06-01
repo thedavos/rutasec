@@ -25,5 +25,10 @@ export function parseCatalogFilters(input?: CatalogListInput): CatalogFilters {
     filters.resourceType = input.resourceType;
   }
 
+  const q = input.q?.trim();
+  if (q) {
+    filters.q = q;
+  }
+
   return filters;
 }
