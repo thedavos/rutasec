@@ -67,4 +67,4 @@ Production: `wrangler secret put BETTER_AUTH_SECRET` and `wrangler secret put BE
 
 Keep `nodejs_compat` enabled in `wrangler.jsonc`.
 
-Protect personal actions (save resource, library) with `requireAuthenticatedAppUser()` on the server. Use `getSessionFn` only for read-only session UI state.
+Protect personal actions (save resource, library, goals) with `requireAuthenticatedAppUser()` on the server. Use `getSessionFn` only for read-only session UI state.

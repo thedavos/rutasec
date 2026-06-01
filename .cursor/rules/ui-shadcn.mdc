@@ -32,6 +32,6 @@ Match existing layout patterns in `src/routes/__root.tsx`. Theme tokens live in 
 
 ## MVP UI focus
 
-Catalog browsing, resource detail, auth flows, save-to-library CTA.
+Catalog browsing, resource detail, auth flows, save-to-library CTA, learning goals.
 
 Do not add dashboard, timeline, or admin UI unless the current milestone explicitly requires it.

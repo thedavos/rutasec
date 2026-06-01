@@ -30,4 +30,4 @@ export const getResources = createServerFn({ method: 'GET' }).handler(async () =
 
 ## UI surfaces (MVP)
 
-Public catalog, resource detail, auth, library. Match existing route and component conventions.
+Public catalog, resource detail, auth, library, goals. Match existing route and component conventions.
