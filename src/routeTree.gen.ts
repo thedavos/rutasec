@@ -13,6 +13,7 @@ import { Route as SignUpRouteImport } from './routes/sign-up'
 import { Route as SignInRouteImport } from './routes/sign-in'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as LibraryIndexRouteImport } from './routes/library/index'
+import { Route as GoalsIndexRouteImport } from './routes/goals/index'
 import { Route as ResourcesIdRouteImport } from './routes/resources/$id'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 
@@ -36,6 +37,11 @@ const LibraryIndexRoute = LibraryIndexRouteImport.update({
   path: '/library/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GoalsIndexRoute = GoalsIndexRouteImport.update({
+  id: '/goals/',
+  path: '/goals/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ResourcesIdRoute = ResourcesIdRouteImport.update({
   id: '/resources/$id',
   path: '/resources/$id',
@@ -52,6 +58,7 @@ export interface FileRoutesByFullPath {
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
   '/resources/$id': typeof ResourcesIdRoute
+  '/goals/': typeof GoalsIndexRoute
   '/library/': typeof LibraryIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
@@ -60,6 +67,7 @@ export interface FileRoutesByTo {
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
   '/resources/$id': typeof ResourcesIdRoute
+  '/goals': typeof GoalsIndexRoute
   '/library': typeof LibraryIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
@@ -69,6 +77,7 @@ export interface FileRoutesById {
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
   '/resources/$id': typeof ResourcesIdRoute
+  '/goals/': typeof GoalsIndexRoute
   '/library/': typeof LibraryIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
@@ -79,6 +88,7 @@ export interface FileRouteTypes {
     | '/sign-in'
     | '/sign-up'
     | '/resources/$id'
+    | '/goals/'
     | '/library/'
     | '/api/auth/$'
   fileRoutesByTo: FileRoutesByTo
@@ -87,6 +97,7 @@ export interface FileRouteTypes {
     | '/sign-in'
     | '/sign-up'
     | '/resources/$id'
+    | '/goals'
     | '/library'
     | '/api/auth/$'
   id:
@@ -95,6 +106,7 @@ export interface FileRouteTypes {
     | '/sign-in'
     | '/sign-up'
     | '/resources/$id'
+    | '/goals/'
     | '/library/'
     | '/api/auth/$'
   fileRoutesById: FileRoutesById
@@ -104,6 +116,7 @@ export interface RootRouteChildren {
   SignInRoute: typeof SignInRoute
   SignUpRoute: typeof SignUpRoute
   ResourcesIdRoute: typeof ResourcesIdRoute
+  GoalsIndexRoute: typeof GoalsIndexRoute
   LibraryIndexRoute: typeof LibraryIndexRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
@@ -138,6 +151,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LibraryIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/goals/': {
+      id: '/goals/'
+      path: '/goals'
+      fullPath: '/goals/'
+      preLoaderRoute: typeof GoalsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/resources/$id': {
       id: '/resources/$id'
       path: '/resources/$id'
@@ -160,6 +180,7 @@ const rootRouteChildren: RootRouteChildren = {
   SignInRoute: SignInRoute,
   SignUpRoute: SignUpRoute,
   ResourcesIdRoute: ResourcesIdRoute,
+  GoalsIndexRoute: GoalsIndexRoute,
   LibraryIndexRoute: LibraryIndexRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
 }

@@ -4,6 +4,7 @@ import { TanStackDevtools } from "@tanstack/react-devtools";
 
 import { AuthHeader } from "#/modules/identity/presentation/auth-header";
 import { LibraryNavLink } from "#/modules/identity/presentation/library-nav-link";
+import { GoalsNavLink } from "#/modules/goals/presentation/goals-nav-link";
 import { Button } from "#/shared/presentation/ui/button";
 import { Card, CardDescription, CardHeader, CardTitle } from "#/shared/presentation/ui/card";
 
@@ -73,6 +74,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
                   </Link>
                 </Button>
                 <LibraryNavLink />
+                <GoalsNavLink />
               </nav>
               <AuthHeader />
             </div>
