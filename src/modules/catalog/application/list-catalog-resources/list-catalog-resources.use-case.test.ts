@@ -21,7 +21,9 @@ const resource: CatalogResourceCard = {
   language: null,
   attribution: {
     originalSourceName: "Source",
+    originalSourceUrl: "https://example.com/source",
     curatedFromName: "Roadmap",
+    curatedFromUrl: "https://example.com/roadmap",
   },
 };
 

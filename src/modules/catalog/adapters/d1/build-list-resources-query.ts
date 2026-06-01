@@ -15,7 +15,9 @@ const CARD_SELECT = `
   is_free,
   language,
   original_source_name,
-  curated_from_name
+  original_source_url,
+  curated_from_name,
+  curated_from_url
 `.trim();
 
 export type ListResourcesQuery = {

@@ -20,7 +20,9 @@ describe("mapResourceRowToCard", () => {
         is_free: 1,
         language: "en",
         original_source_name: "Linux Journey",
+        original_source_url: "https://linuxjourney.com/",
         curated_from_name: "Cybersecurity-Mastery-Roadmap",
+        curated_from_url: "https://github.com/Hamed233/Cybersecurity-Mastery-Roadmap",
       }),
     ).toEqual({
       id: "res-1",
@@ -38,7 +40,9 @@ describe("mapResourceRowToCard", () => {
       language: "en",
       attribution: {
         originalSourceName: "Linux Journey",
+        originalSourceUrl: "https://linuxjourney.com/",
         curatedFromName: "Cybersecurity-Mastery-Roadmap",
+        curatedFromUrl: "https://github.com/Hamed233/Cybersecurity-Mastery-Roadmap",
       },
     });
   });
@@ -60,7 +64,9 @@ describe("mapResourceRowToCard", () => {
         is_free: 0,
         language: null,
         original_source_name: "Source",
+        original_source_url: "https://example.com/source",
         curated_from_name: "Roadmap",
+        curated_from_url: "https://example.com/roadmap",
       }).isFree,
     ).toBe(false);
   });

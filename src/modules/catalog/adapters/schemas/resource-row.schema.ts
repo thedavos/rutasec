@@ -17,7 +17,9 @@ export const resourceRowSchema = z.object({
   is_free: z.number(),
   language: z.string().nullable(),
   original_source_name: z.string(),
+  original_source_url: z.string(),
   curated_from_name: z.string(),
+  curated_from_url: z.string(),
 });
 
 export type ResourceRow = z.infer<typeof resourceRowSchema>;
@@ -25,8 +27,6 @@ export type ResourceRow = z.infer<typeof resourceRowSchema>;
 export const resourceRowListSchema = z.array(resourceRowSchema);
 
 export const resourceDetailRowSchema = resourceRowSchema.extend({
-  original_source_url: z.string(),
-  curated_from_url: z.string(),
   roadmap_section: z.string().nullable(),
   path_id: z.string().nullable(),
   path_slug: z.string().nullable(),

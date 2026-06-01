@@ -21,13 +21,13 @@ const validRow = {
   is_free: 1,
   language: "en",
   original_source_name: "Linux Journey",
+  original_source_url: "https://linuxjourney.com/",
   curated_from_name: "Cybersecurity-Mastery-Roadmap",
+  curated_from_url: "https://github.com/Hamed233/Cybersecurity-Mastery-Roadmap",
 };
 
 const validDetailRow = {
   ...validRow,
-  original_source_url: "https://linuxjourney.com/",
-  curated_from_url: "https://github.com/Hamed233/Cybersecurity-Mastery-Roadmap",
   roadmap_section: "Foundational Knowledge Phase > Operating Systems",
   path_id: "path-1",
   path_slug: "web-pentesting-bug-bounty-starter",
@@ -98,8 +98,11 @@ describe("resourceDetailRowSchema", () => {
   });
 
   it("rejects rows missing attribution urls", () => {
-    expect(resourceDetailRowSchema.safeParse({ ...validRow, roadmap_section: null }).success).toBe(
-      false,
-    );
+    expect(
+      resourceRowSchema.safeParse({
+        ...validRow,
+        original_source_url: undefined,
+      }).success,
+    ).toBe(false);
   });
 });

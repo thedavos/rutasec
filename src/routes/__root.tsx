@@ -5,6 +5,10 @@ import { TanStackDevtools } from "@tanstack/react-devtools";
 import { AuthHeader } from "#/modules/identity/presentation/auth-header";
 import { LibraryNavLink } from "#/modules/identity/presentation/library-nav-link";
 import { GoalsNavLink } from "#/modules/goals/presentation/goals-nav-link";
+import {
+  footerSignInPrompt,
+  footerTransparencyCopy,
+} from "#/modules/catalog/presentation/copy/transparency-copy";
 import { Button } from "#/shared/presentation/ui/button";
 import { Card, CardDescription, CardHeader, CardTitle } from "#/shared/presentation/ui/card";
 
@@ -83,9 +87,9 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           <main className="page-wrap flex flex-1 flex-col py-10">{children}</main>
 
           <footer className="site-footer py-6">
-            <div className="page-wrap text-sm text-[var(--sea-ink-soft)]">
-              Curated cybersecurity resources with source attribution. Sign in to save resources to
-              your personal library.
+            <div className="page-wrap space-y-1 text-sm text-[var(--sea-ink-soft)]">
+              <p>{footerTransparencyCopy}</p>
+              <p>{footerSignInPrompt}</p>
             </div>
           </footer>
         </div>

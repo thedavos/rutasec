@@ -18,7 +18,9 @@ export function mapResourceRowToCard(row: ResourceRow): CatalogResourceCard {
     language: row.language,
     attribution: {
       originalSourceName: row.original_source_name,
+      originalSourceUrl: row.original_source_url,
       curatedFromName: row.curated_from_name,
+      curatedFromUrl: row.curated_from_url,
     },
   };
 }
