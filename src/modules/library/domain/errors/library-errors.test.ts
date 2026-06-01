@@ -14,4 +14,10 @@ describe("libraryErrorMessage", () => {
   it("returns a stable message for resource_not_found errors", () => {
     expect(libraryErrorMessage({ type: "resource_not_found" })).toBe("Resource not found");
   });
+
+  it("returns a stable message for user_resource_not_found errors", () => {
+    expect(libraryErrorMessage({ type: "user_resource_not_found" })).toBe(
+      "Resource is not in your library",
+    );
+  });
 });

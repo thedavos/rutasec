@@ -3,7 +3,9 @@ import { Link } from "@tanstack/react-router";
 import type { CatalogResourceDetail } from "#/modules/catalog/domain/entities/resource";
 import { ResourceAttribution } from "#/modules/catalog/presentation/components/resource-attribution";
 import { detailAttributionDescription } from "#/modules/catalog/presentation/copy/transparency-copy";
+import type { SavedUserResource } from "#/modules/library/domain/entities/user-resource";
 import { SaveToLibraryCta } from "#/modules/library/presentation/save-to-library-cta";
+import { ResourceProgressPanel } from "#/modules/library/presentation/resource-progress-panel";
 import { Badge } from "#/shared/presentation/ui/badge";
 import { Button } from "#/shared/presentation/ui/button";
 import {
@@ -19,6 +21,7 @@ import { cn } from "#/shared/utils";
 type ResourceDetailPageProps = {
   resource: CatalogResourceDetail;
   isSaved: boolean;
+  userResource: SavedUserResource | null;
 };
 
 const levelLabels: Record<CatalogResourceDetail["level"], string> = {
@@ -59,7 +62,7 @@ function TaxonomyTrail({ resource }: { resource: CatalogResourceDetail }) {
   );
 }
 
-export function ResourceDetailPage({ resource, isSaved }: ResourceDetailPageProps) {
+export function ResourceDetailPage({ resource, isSaved, userResource }: ResourceDetailPageProps) {
   return (
     <div className="pb-16">
       <nav aria-label="Breadcrumb" className="rise-in mb-6">
@@ -182,6 +185,13 @@ export function ResourceDetailPage({ resource, isSaved }: ResourceDetailPageProp
                 signInRedirect={`/resources/${resource.id}`}
                 initialIsSaved={isSaved}
               />
+
+              {userResource ? (
+                <ResourceProgressPanel
+                  resourceId={resource.id}
+                  initialUserResource={userResource}
+                />
+              ) : null}
             </CardContent>
           </Card>
         </aside>

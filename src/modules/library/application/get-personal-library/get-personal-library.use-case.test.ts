@@ -23,6 +23,7 @@ describe("GetPersonalLibraryUseCase", () => {
     const library: LibraryPort = {
       saveForUser: vi.fn(),
       getForUser: vi.fn(),
+      updateForUser: vi.fn(),
       listForUser,
     };
     const input = { userId: "app-1" };
@@ -45,6 +46,7 @@ describe("GetPersonalLibraryUseCase", () => {
     const library: LibraryPort = {
       saveForUser: vi.fn(),
       getForUser: vi.fn(),
+      updateForUser: vi.fn(),
       listForUser,
     };
 
@@ -64,6 +66,7 @@ describe("GetPersonalLibraryUseCase", () => {
     const library: LibraryPort = {
       saveForUser: vi.fn(),
       getForUser: vi.fn(),
+      updateForUser: vi.fn(),
       listForUser: vi.fn().mockResolvedValue(err({ type: "query_failed", message: "D1 down" })),
     };
 

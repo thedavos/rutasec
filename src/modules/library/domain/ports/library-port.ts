@@ -16,10 +16,18 @@ export type ListForUserInput = {
   status?: UserResourceStatus;
 };
 
+export type UpdateForUserInput = UserResourceLookupInput & {
+  status: UserResourceStatus;
+  progressPercentage: number;
+  startedAt: string | null;
+  completedAt: string | null;
+};
+
 export interface LibraryPort {
   saveForUser(input: UserResourceLookupInput): Promise<Result<SavedUserResource, LibraryError>>;
   getForUser(
     input: UserResourceLookupInput,
   ): Promise<Result<SavedUserResource | null, LibraryError>>;
+  updateForUser(input: UpdateForUserInput): Promise<Result<SavedUserResource, LibraryError>>;
   listForUser(input: ListForUserInput): Promise<Result<PersonalLibraryItem[], LibraryError>>;
 }

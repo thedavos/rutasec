@@ -20,6 +20,7 @@ function createMockDb(options: {
   row?: Record<string, unknown> | null;
   selectError?: Error;
   selectOnly?: boolean;
+  changes?: number;
 }) {
   let callIndex = 0;
   const prepare = vi.fn(() => {
@@ -39,7 +40,7 @@ function createMockDb(options: {
         if (options.runError) {
           throw options.runError;
         }
-        return { success: true };
+        return { success: true, meta: { changes: options.changes ?? 1 } };
       });
       return { bind: vi.fn().mockReturnValue({ run }), run };
     }
@@ -177,6 +178,76 @@ describe("createD1LibraryAdapter", () => {
     });
 
     expect(result).toEqual({ ok: true, value: null });
+  });
+});
+
+const updatedRow = {
+  ...validRow,
+  status: "in_progress",
+  progress_percentage: 50,
+  started_at: "2026-06-01T12:00:00.000Z",
+  updated_at: "2026-06-01T12:00:00.000Z",
+};
+
+describe("createD1LibraryAdapter updateForUser", () => {
+  it("updates and returns the mapped user resource", async () => {
+    const { prepare } = createMockDb({ row: updatedRow });
+    const adapter = createD1LibraryAdapter({ prepare } as unknown as D1Database);
+
+    const result = await adapter.updateForUser({
+      userId: "app-1",
+      resourceId: "res-linux-journey",
+      status: "in_progress",
+      progressPercentage: 50,
+      startedAt: "2026-06-01T12:00:00.000Z",
+      completedAt: null,
+    });
+
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.value.status).toBe("in_progress");
+      expect(result.value.progressPercentage).toBe(50);
+    }
+    expect(prepare).toHaveBeenCalledTimes(2);
+  });
+
+  it("returns user_resource_not_found when no row is updated", async () => {
+    const { prepare } = createMockDb({ changes: 0 });
+    const adapter = createD1LibraryAdapter({ prepare } as unknown as D1Database);
+
+    const result = await adapter.updateForUser({
+      userId: "app-1",
+      resourceId: "missing",
+      status: "pending",
+      progressPercentage: 0,
+      startedAt: null,
+      completedAt: null,
+    });
+
+    expect(result).toEqual({
+      ok: false,
+      error: { type: "user_resource_not_found" },
+    });
+    expect(prepare).toHaveBeenCalledTimes(1);
+  });
+
+  it("returns query_failed when update throws", async () => {
+    const { prepare } = createMockDb({ runError: new Error("update failed") });
+    const adapter = createD1LibraryAdapter({ prepare } as unknown as D1Database);
+
+    const result = await adapter.updateForUser({
+      userId: "app-1",
+      resourceId: "res-linux-journey",
+      status: "completed",
+      progressPercentage: 100,
+      startedAt: "2026-06-01T12:00:00.000Z",
+      completedAt: "2026-06-01T12:00:00.000Z",
+    });
+
+    expect(result).toEqual({
+      ok: false,
+      error: { type: "query_failed", message: "update failed" },
+    });
   });
 });
 

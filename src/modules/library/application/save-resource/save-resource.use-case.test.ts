@@ -60,7 +60,12 @@ describe("SaveResourceUseCase", () => {
       getFilterOptions: vi.fn(),
       getPublishedById,
     };
-    const library: LibraryPort = { saveForUser, getForUser: vi.fn(), listForUser: vi.fn() };
+    const library: LibraryPort = {
+      saveForUser,
+      getForUser: vi.fn(),
+      updateForUser: vi.fn(),
+      listForUser: vi.fn(),
+    };
 
     const useCase = new SaveResourceUseCase(library, catalog);
     const result = await useCase.execute({
@@ -84,7 +89,12 @@ describe("SaveResourceUseCase", () => {
       getFilterOptions: vi.fn(),
       getPublishedById,
     };
-    const library: LibraryPort = { saveForUser, getForUser: vi.fn(), listForUser: vi.fn() };
+    const library: LibraryPort = {
+      saveForUser,
+      getForUser: vi.fn(),
+      updateForUser: vi.fn(),
+      listForUser: vi.fn(),
+    };
 
     const useCase = new SaveResourceUseCase(library, catalog);
     const result = await useCase.execute({
@@ -106,7 +116,12 @@ describe("SaveResourceUseCase", () => {
       getFilterOptions: vi.fn(),
       getPublishedById,
     };
-    const library: LibraryPort = { saveForUser, getForUser: vi.fn(), listForUser: vi.fn() };
+    const library: LibraryPort = {
+      saveForUser,
+      getForUser: vi.fn(),
+      updateForUser: vi.fn(),
+      listForUser: vi.fn(),
+    };
 
     const useCase = new SaveResourceUseCase(library, catalog);
     const result = await useCase.execute({
@@ -128,7 +143,12 @@ describe("SaveResourceUseCase", () => {
       getFilterOptions: vi.fn(),
       getPublishedById,
     };
-    const library: LibraryPort = { saveForUser, getForUser: vi.fn(), listForUser: vi.fn() };
+    const library: LibraryPort = {
+      saveForUser,
+      getForUser: vi.fn(),
+      updateForUser: vi.fn(),
+      listForUser: vi.fn(),
+    };
 
     const useCase = new SaveResourceUseCase(library, catalog);
     const result = await useCase.execute({

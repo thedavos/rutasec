@@ -4,12 +4,14 @@ import {
   GetPersonalLibraryUseCase,
   GetUserResourceUseCase,
   SaveResourceUseCase,
+  UpdateUserResourceUseCase,
 } from "#/modules/library/application";
 import { getDb } from "#/shared/db";
 
 export type LibraryModule = {
   saveResource: SaveResourceUseCase;
   getUserResource: GetUserResourceUseCase;
+  updateUserResource: UpdateUserResourceUseCase;
   getPersonalLibrary: GetPersonalLibraryUseCase;
 };
 
@@ -20,6 +22,7 @@ export function createLibraryModule(db: D1Database): LibraryModule {
   return {
     saveResource: new SaveResourceUseCase(library, catalog),
     getUserResource: new GetUserResourceUseCase(library),
+    updateUserResource: new UpdateUserResourceUseCase(library),
     getPersonalLibrary: new GetPersonalLibraryUseCase(library),
   };
 }

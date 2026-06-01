@@ -23,6 +23,8 @@ describe("CreateGoalUseCase", () => {
     const goals: GoalsPort = {
       createForUser,
       listForUser: vi.fn(),
+      linkResource: vi.fn(),
+      listLinkedResourcesForUser: vi.fn(),
     };
     const input = {
       userId: "app-1",
