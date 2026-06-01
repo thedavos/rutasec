@@ -31,6 +31,10 @@ function parseCatalogSearch(search: Record<string, unknown>): CatalogListInput {
     }
   }
 
+  if (typeof search.q === "string" && search.q.trim()) {
+    input.q = search.q.trim();
+  }
+
   return input;
 }
 

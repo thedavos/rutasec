@@ -18,6 +18,7 @@ function parseCatalogListInput(input?: CatalogListInput): CatalogListInput | und
     category: input.category,
     level: input.level,
     resourceType: input.resourceType,
+    q: input.q,
   };
 }
 

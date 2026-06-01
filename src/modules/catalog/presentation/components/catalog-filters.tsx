@@ -1,7 +1,9 @@
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 
 import { Button } from "#/shared/presentation/ui/button";
 import { Card, CardContent, CardHeader } from "#/shared/presentation/ui/card";
+import { Input } from "#/shared/presentation/ui/input";
 import { Label } from "#/shared/presentation/ui/label";
 import {
   Select,
@@ -16,6 +18,7 @@ import type {
 } from "#/modules/catalog/domain/entities/resource";
 
 const ALL_FILTER_VALUE = "__all__";
+const SEARCH_DEBOUNCE_MS = 300;
 
 type CatalogFiltersProps = {
   filters: CatalogListInput;
@@ -28,16 +31,75 @@ function buildSearch(next: CatalogListInput): CatalogListInput {
   if (next.category) search.category = next.category;
   if (next.level) search.level = next.level;
   if (next.resourceType) search.resourceType = next.resourceType;
+  if (next.q) search.q = next.q;
   return search;
+}
+
+type CatalogSearchFieldProps = {
+  filters: CatalogListInput;
+  onApply: (next: CatalogListInput) => void;
+};
+
+function CatalogSearchField({ filters, onApply }: CatalogSearchFieldProps) {
+  const [value, setValue] = useState(filters.q ?? "");
+  const filtersRef = useRef(filters);
+  filtersRef.current = filters;
+
+  useEffect(() => {
+    setValue(filters.q ?? "");
+  }, [filters.q]);
+
+  useEffect(() => {
+    const trimmed = value.trim();
+    const current = filtersRef.current.q?.trim() ?? "";
+    if (trimmed === current) {
+      return;
+    }
+
+    const timer = window.setTimeout(() => {
+      onApply({ ...filtersRef.current, q: trimmed || undefined });
+    }, SEARCH_DEBOUNCE_MS);
+
+    return () => window.clearTimeout(timer);
+  }, [value, onApply]);
+
+  function applyNow() {
+    const trimmed = value.trim();
+    onApply({ ...filtersRef.current, q: trimmed || undefined });
+  }
+
+  return (
+    <div className="grid gap-2">
+      <Label htmlFor="catalog-search">Search</Label>
+      <Input
+        id="catalog-search"
+        type="search"
+        placeholder="Search by title, topic, category, or tag"
+        value={value}
+        onChange={(event) => setValue(event.target.value)}
+        onKeyDown={(event) => {
+          if (event.key === "Enter") {
+            applyNow();
+          }
+        }}
+        aria-label="Search catalog"
+      />
+    </div>
+  );
 }
 
 export function CatalogFiltersBar({ filters, filterOptions, total }: CatalogFiltersProps) {
   const navigate = useNavigate();
-  const hasFilters = Boolean(filters.category || filters.level || filters.resourceType);
+  const hasFilters = Boolean(
+    filters.category || filters.level || filters.resourceType || filters.q,
+  );
 
-  function applyFilters(next: CatalogListInput) {
-    void navigate({ to: "/", search: buildSearch(next) });
-  }
+  const applyFilters = useCallback(
+    (next: CatalogListInput) => {
+      void navigate({ to: "/", search: buildSearch(next) });
+    },
+    [navigate],
+  );
 
   return (
     <Card
@@ -60,46 +122,49 @@ export function CatalogFiltersBar({ filters, filterOptions, total }: CatalogFilt
         </div>
       </CardHeader>
 
-      <CardContent className="grid gap-4 px-5 pt-4 pb-5 sm:grid-cols-3">
-        <FilterSelect
-          label="Category"
-          value={filters.category ?? ""}
-          options={filterOptions.categories.map((value) => ({ value, label: value }))}
-          onSelect={(category) =>
-            applyFilters({
-              ...filters,
-              category: category || undefined,
-            })
-          }
-        />
-        <FilterSelect
-          label="Level"
-          value={filters.level ?? ""}
-          options={filterOptions.levels.map((value) => ({
-            value,
-            label: value.charAt(0).toUpperCase() + value.slice(1),
-          }))}
-          onSelect={(level) =>
-            applyFilters({
-              ...filters,
-              level: (level || undefined) as CatalogListInput["level"],
-            })
-          }
-        />
-        <FilterSelect
-          label="Type"
-          value={filters.resourceType ?? ""}
-          options={filterOptions.resourceTypes.map((value) => ({
-            value,
-            label: value.charAt(0).toUpperCase() + value.slice(1),
-          }))}
-          onSelect={(resourceType) =>
-            applyFilters({
-              ...filters,
-              resourceType: (resourceType || undefined) as CatalogListInput["resourceType"],
-            })
-          }
-        />
+      <CardContent className="grid gap-4 px-5 pt-4 pb-5">
+        <CatalogSearchField filters={filters} onApply={applyFilters} />
+        <div className="grid gap-4 sm:grid-cols-3">
+          <FilterSelect
+            label="Category"
+            value={filters.category ?? ""}
+            options={filterOptions.categories.map((value) => ({ value, label: value }))}
+            onSelect={(category) =>
+              applyFilters({
+                ...filters,
+                category: category || undefined,
+              })
+            }
+          />
+          <FilterSelect
+            label="Level"
+            value={filters.level ?? ""}
+            options={filterOptions.levels.map((value) => ({
+              value,
+              label: value.charAt(0).toUpperCase() + value.slice(1),
+            }))}
+            onSelect={(level) =>
+              applyFilters({
+                ...filters,
+                level: (level || undefined) as CatalogListInput["level"],
+              })
+            }
+          />
+          <FilterSelect
+            label="Type"
+            value={filters.resourceType ?? ""}
+            options={filterOptions.resourceTypes.map((value) => ({
+              value,
+              label: value.charAt(0).toUpperCase() + value.slice(1),
+            }))}
+            onSelect={(resourceType) =>
+              applyFilters({
+                ...filters,
+                resourceType: (resourceType || undefined) as CatalogListInput["resourceType"],
+              })
+            }
+          />
+        </div>
       </CardContent>
     </Card>
   );
