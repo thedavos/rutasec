@@ -27,6 +27,7 @@
     "db:seed:sql": "node scripts/import-seed-to-d1.mjs",
     "db:seed:local": "npm run db:seed:sql && wrangler d1 execute rutasec-db --local --file=db/seed/import.sql",
     "db:seed:remote": "npm run db:seed:sql && wrangler d1 execute rutasec-db --remote --file=db/seed/import.sql",
+    "db:seed:verify": "node scripts/verify-seed-links.mjs",
     "prepare": "vp config"
   },
   "dependencies": {

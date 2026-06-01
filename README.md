@@ -82,6 +82,7 @@ npm run db:auth-schema:generate  # regenerate db/auth-schema.sql from Better Aut
 npm run db:tables:local    # list tables
 npm run db:seed:sql        # generate db/seed/import.sql
 npm run db:seed:local      # generate + load seed (local)
+npm run db:seed:verify     # check seed URLs are reachable
 npm run db:seed:remote     # generate + load seed (remote)
 ```
 
