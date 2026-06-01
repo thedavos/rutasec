@@ -23,7 +23,7 @@ test("resource detail shows linked attribution", async ({ page }) => {
     .first()
     .click();
 
-  await expect(page.getByText("Attribution")).toBeVisible();
+  await expect(page.getByText("Attribution", { exact: true })).toBeVisible();
   await expect(page.getByText(/Original source:/)).toBeVisible();
   await expect(page.getByText(/Curated from:/)).toBeVisible();
   await expect(
