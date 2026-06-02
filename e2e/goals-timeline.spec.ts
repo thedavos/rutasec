@@ -1,7 +1,9 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type Page, type TestInfo } from "@playwright/test";
 
-async function signUp(page: Page) {
-  const email = `e2e-${Date.now()}@example.com`;
+import { uniqueE2eEmail, uniqueE2eLabel } from "./test-data";
+
+async function signUp(page: Page, testInfo: TestInfo) {
+  const email = uniqueE2eEmail(testInfo);
   const password = "test-password-123";
 
   await page.goto("/");
@@ -58,16 +60,12 @@ async function createGoalWithLinkedResource(page: Page, goalTitle: string) {
   await page.getByLabel("Title").fill(goalTitle);
   await page.getByLabel("Hours per week").fill("5");
   await page.getByRole("button", { name: "Create goal" }).click();
-  await expect(page.getByRole("button", { name: "Create goal" })).toBeEnabled({ timeout: 15_000 });
 
-  await expect(async () => {
-    await page.goto("/goals");
-    await expect(
-      page.locator('[data-slot="card"]').filter({ hasText: goalTitle }).getByRole("link", {
-        name: "View study timeline",
-      }),
-    ).toBeVisible();
-  }).toPass({ timeout: 15_000 });
+  await expect(
+    page.locator('[data-slot="card"]').filter({ hasText: goalTitle }).getByRole("link", {
+      name: "View study timeline",
+    }),
+  ).toBeVisible({ timeout: 15_000 });
 
   const goalCard = page.locator('[data-slot="card"]').filter({ hasText: goalTitle });
   await goalCard.getByLabel("Add from library").click();
@@ -77,10 +75,12 @@ async function createGoalWithLinkedResource(page: Page, goalTitle: string) {
   });
 }
 
-test("authenticated user can open, generate, and view weekly study timeline", async ({ page }) => {
-  const goalTitle = `E2E timeline ${Date.now()}`;
+test("authenticated user can open, generate, and view weekly study timeline", async ({
+  page,
+}, testInfo) => {
+  const goalTitle = uniqueE2eLabel("E2E timeline", testInfo);
 
-  await signUp(page);
+  await signUp(page, testInfo);
   await saveLinuxJourneyResource(page);
   await createGoalWithLinkedResource(page, goalTitle);
 

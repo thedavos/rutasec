@@ -1,5 +1,7 @@
 import { expect, test } from "@playwright/test";
 
+import { uniqueE2eEmail } from "./test-data";
+
 test("visitor sees sign-in CTA on resource detail", async ({ page }) => {
   await page.goto("/");
 
@@ -8,8 +10,8 @@ test("visitor sees sign-in CTA on resource detail", async ({ page }) => {
   await expect(page.getByRole("link", { name: "Sign in to save" })).toBeVisible();
 });
 
-test("authenticated user can save a resource from detail", async ({ page }) => {
-  const email = `e2e-${Date.now()}@example.com`;
+test("authenticated user can save a resource from detail", async ({ page }, testInfo) => {
+  const email = uniqueE2eEmail(testInfo);
   const password = "test-password-123";
 
   await page.goto("/");

@@ -1,7 +1,9 @@
 import { expect, test } from "@playwright/test";
 
-test("user can register, stay signed in, and sign out", async ({ page }) => {
-  const email = `e2e-${Date.now()}@example.com`;
+import { uniqueE2eEmail } from "./test-data";
+
+test("user can register, stay signed in, and sign out", async ({ page }, testInfo) => {
+  const email = uniqueE2eEmail(testInfo);
   const password = "test-password-123";
 
   await page.goto("/");
