@@ -1,9 +1,12 @@
+import { Link } from "@tanstack/react-router";
+
 import type { GoalLinkedResource } from "#/modules/goals/domain/entities/goal-linked-resource";
 import type { LearningGoal } from "#/modules/goals/domain/entities/goal";
 import { AddGoalResourceSelect } from "#/modules/goals/presentation/components/add-goal-resource-select";
 import { GoalLinkedResources } from "#/modules/goals/presentation/components/goal-linked-resources";
 import type { PersonalLibraryItem } from "#/modules/library/domain/entities/personal-library-item";
 import { Badge } from "#/shared/presentation/ui/badge";
+import { Button } from "#/shared/presentation/ui/button";
 import {
   Card,
   CardContent,
@@ -57,6 +60,14 @@ export function GoalCard({ goal, linkedResources, libraryItems }: GoalCardProps)
           {" · "}
           Created {new Date(goal.createdAt).toLocaleDateString()}
         </CardDescription>
+
+        <div className="mt-4 border-t border-[var(--line)] pt-4">
+          <Button asChild variant="outline" size="sm" className="w-full sm:w-auto">
+            <Link to="/goals/$goalId/timeline" params={{ goalId: goal.id }}>
+              View study timeline
+            </Link>
+          </Button>
+        </div>
 
         <div className="mt-4 space-y-3 border-t border-[var(--line)] pt-4">
           <h3 className="text-sm font-semibold text-[var(--sea-ink)]">Linked resources</h3>

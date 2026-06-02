@@ -92,8 +92,13 @@ export function DashboardPage({ dashboard }: DashboardPageProps) {
                   : "No target date"}
               </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="flex flex-wrap gap-2">
               <Button asChild variant="outline" size="sm">
+                <Link to="/goals/$goalId/timeline" params={{ goalId: dashboard.focusGoal.id }}>
+                  View study timeline
+                </Link>
+              </Button>
+              <Button asChild variant="ghost" size="sm">
                 <Link to="/goals">View all goals</Link>
               </Button>
             </CardContent>
