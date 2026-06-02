@@ -12,7 +12,11 @@ export function LibraryNavLink() {
 
   return (
     <Button variant="ghost" size="sm" asChild className="font-semibold">
-      <Link to="/library" className="nav-link">
+      <Link
+        to="/library"
+        className="nav-link"
+        activeProps={{ className: "is-active", "aria-current": "page" }}
+      >
         Library
       </Link>
     </Button>

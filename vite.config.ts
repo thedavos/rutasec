@@ -27,13 +27,20 @@ const config = defineConfig({
   },
   resolve: { tsconfigPaths: true },
   test: {
-    include: ["src/**/*.test.ts"],
+    include: ["src/**/*.test.ts", "src/**/*.test.tsx"],
     coverage: {
       provider: "v8",
       reporter: ["text", "html", "lcov"],
       reportsDirectory: "./coverage",
       include: ["src/modules/**/*.ts", "src/shared/**/*.ts"],
-      exclude: ["**/*.test.ts", "**/index.ts", "src/routes/**", "src/routeTree.gen.ts"],
+      exclude: [
+        "**/*.test.ts",
+        "**/*.test.tsx",
+        "**/index.ts",
+        "src/routes/**",
+        "src/routeTree.gen.ts",
+        "src/shared/presentation/testing/**",
+      ],
       thresholds: {
         statements: 80,
         branches: 80,
