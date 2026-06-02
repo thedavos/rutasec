@@ -41,7 +41,7 @@ const typeLabels: Record<CatalogResourceDetail["resourceType"], string> = {
 };
 
 const detailCardClassName = cn(
-  "island-shell gap-0 rounded-2xl border-[var(--line)] py-0 shadow-none",
+  "island-shell gap-0 rounded-2xl border-[var(--border-default)] py-0 shadow-none",
 );
 
 function TaxonomyTrail({ resource }: { resource: CatalogResourceDetail }) {
@@ -51,7 +51,7 @@ function TaxonomyTrail({ resource }: { resource: CatalogResourceDetail }) {
   }
 
   return (
-    <p className="mt-3 text-sm text-[var(--sea-ink-soft)]">
+    <p className="mt-3 text-sm text-[var(--text-secondary)]">
       {segments.map((segment, index) => (
         <span key={`${segment}-${index}`}>
           {index > 0 ? <span aria-hidden="true"> · </span> : null}
@@ -67,7 +67,7 @@ export function ResourceDetailPage({ resource, isSaved, userResource }: Resource
     <div className="pb-16">
       <nav aria-label="Breadcrumb" className="rise-in mb-6">
         <Button variant="ghost" size="sm" asChild className="h-auto px-0 py-0 font-semibold">
-          <Link to="/" className="text-[var(--sea-ink-soft)] hover:text-[var(--sea-ink)]">
+          <Link to="/" className="text-[var(--text-secondary)] hover:text-[var(--text-primary)]">
             ← Back to catalog
           </Link>
         </Button>
@@ -79,25 +79,25 @@ export function ResourceDetailPage({ resource, isSaved, userResource }: Resource
             <div className="mb-3 flex flex-wrap items-center gap-2">
               <Badge
                 variant="secondary"
-                className="island-kicker rounded-full border-[var(--chip-line)]"
+                className="island-kicker rounded-full border-[var(--primary-border)]"
               >
                 {resource.category}
               </Badge>
               <Badge variant="outline">{levelLabels[resource.level]}</Badge>
               <Badge variant="outline">{typeLabels[resource.resourceType]}</Badge>
               {resource.isFree ? (
-                <Badge className="border-[var(--chip-line)] bg-[var(--chip-bg)] text-[var(--palm)]">
+                <Badge className="border-[var(--primary-border)] bg-[var(--primary-soft)] text-[var(--success)]">
                   Free
                 </Badge>
               ) : null}
             </div>
 
-            <h1 className="display-title text-4xl font-bold tracking-tight text-[var(--sea-ink)] sm:text-5xl">
+            <h1 className="display-title text-4xl font-bold text-[var(--text-primary)] sm:text-5xl">
               {resource.title}
             </h1>
 
             {resource.description ? (
-              <p className="mt-4 max-w-3xl text-base leading-relaxed text-[var(--sea-ink-soft)]">
+              <p className="mt-4 max-w-3xl text-base leading-relaxed text-[var(--text-secondary)]">
                 {resource.description}
               </p>
             ) : null}
@@ -105,7 +105,7 @@ export function ResourceDetailPage({ resource, isSaved, userResource }: Resource
             <TaxonomyTrail resource={resource} />
 
             {resource.roadmapSection ? (
-              <p className="mt-2 text-sm text-[var(--sea-ink-soft)]">
+              <p className="mt-2 text-sm text-[var(--text-secondary)]">
                 Roadmap: {resource.roadmapSection}
               </p>
             ) : null}
@@ -116,7 +116,7 @@ export function ResourceDetailPage({ resource, isSaved, userResource }: Resource
               <Card className={detailCardClassName}>
                 <CardHeader className="gap-2 px-5 pt-5 pb-5">
                   <CardTitle className="display-title text-lg font-bold">Learning path</CardTitle>
-                  <CardDescription className="text-[var(--sea-ink-soft)]">
+                  <CardDescription className="text-[var(--text-secondary)]">
                     Step {resource.pathContext.itemOrder} of {resource.pathContext.totalItems} in{" "}
                     {resource.pathContext.pathTitle}
                   </CardDescription>
@@ -144,12 +144,12 @@ export function ResourceDetailPage({ resource, isSaved, userResource }: Resource
             <Card className={detailCardClassName}>
               <CardHeader className="gap-2 px-5 pt-5 pb-0">
                 <CardTitle className="display-title text-lg font-bold">Attribution</CardTitle>
-                <CardDescription className="text-[var(--sea-ink-soft)]">
+                <CardDescription className="text-[var(--text-secondary)]">
                   {detailAttributionDescription}
                 </CardDescription>
               </CardHeader>
               <CardContent className="px-5 pt-3 pb-5">
-                <ResourceAttribution attribution={resource.attribution} variant="full" />
+                <ResourceAttribution attribution={resource.attribution} />
               </CardContent>
             </Card>
           </div>
@@ -161,18 +161,18 @@ export function ResourceDetailPage({ resource, isSaved, userResource }: Resource
               <CardTitle className="display-title text-lg font-bold">Actions</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 px-5 pt-3 pb-5">
-              <dl className="grid grid-cols-[minmax(0,1fr)_auto] gap-x-4 gap-y-2 text-sm text-[var(--sea-ink-soft)]">
-                <dt className="font-semibold text-[var(--sea-ink)]">Estimated time</dt>
+              <dl className="grid grid-cols-[minmax(0,1fr)_auto] gap-x-4 gap-y-2 text-sm text-[var(--text-secondary)]">
+                <dt className="font-semibold text-[var(--text-primary)]">Estimated time</dt>
                 <dd className="text-right">{resource.estimatedHours}h</dd>
                 {resource.language ? (
                   <>
-                    <dt className="font-semibold text-[var(--sea-ink)]">Language</dt>
+                    <dt className="font-semibold text-[var(--text-primary)]">Language</dt>
                     <dd className="text-right uppercase">{resource.language}</dd>
                   </>
                 ) : null}
               </dl>
 
-              <Separator className="bg-[var(--line)]" />
+              <Separator className="bg-[var(--border-default)]" />
 
               <Button asChild className="w-full">
                 <a href={resource.url} target="_blank" rel="noopener noreferrer">

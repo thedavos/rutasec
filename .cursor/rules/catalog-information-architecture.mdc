@@ -1,0 +1,66 @@
+---
+description: Catalog information architecture inspired by dense resource libraries
+globs: src/routes/index.tsx,src/modules/catalog/**,src/modules/library/**/presentation/**
+alwaysApply: false
+---
+
+# Catalog Information Architecture
+
+Use this rule when creating or substantially revising catalog, library, or resource-listing UI.
+
+## Source Of Inspiration
+
+The reference pattern is a dense public resource library: minimal utility navigation, a short value
+proposition, visible resource count, category navigation, grouped sections, and compact resource
+entries.
+
+Do not copy HTML, CSS, class names, visual styling, content, icons, colors, or exact wording from any
+external reference. Extract only the information order and interaction model.
+
+## Page Order
+
+Catalog-like pages should make the resource set scannable before they become decorative:
+
+1. Utility header/navigation for primary routes and account actions.
+2. Short hero with the catalog promise and a quantitative signal when available.
+3. Primary catalog/library heading.
+4. Search, category navigation, and filters close to the heading.
+5. Result count and clear/reset action when filters are active.
+6. Grouped resource sections or a dense resource list.
+7. Clear empty states tied to the current search/filter.
+
+Avoid long marketing introductions, oversized hero sections, nested cards, and purely decorative
+panels before the user can see or filter resources.
+
+## Grouping Model
+
+Prefer stable editorial groups over arbitrary visual grids:
+
+- Use category, phase, topic, or learning path as section boundaries.
+- Each group should expose a label, item count, and one sentence explaining why the group exists.
+- Category shortcuts should jump to, filter, or otherwise reveal those groups quickly.
+- Preserve a visible result count after search/filter changes.
+
+If the current data model does not support grouped sections yet, keep the UI compatible with adding
+them later: do not bury category metadata inside card-only layouts.
+
+## Resource Entry Model
+
+Resource entries should be compact and decision-oriented:
+
+- Title is the primary link to RutaSec detail.
+- Show enough metadata to compare quickly: source/author, type, level, estimated time, free status,
+  and topic when available.
+- Keep actions explicit and few: open detail, visit source, save to library when authenticated.
+- Attribution remains visible because RutaSec is an editorial catalog of third-party resources.
+
+Do not turn every entry into a large promotional card unless the page is intentionally highlighting a
+small curated subset.
+
+## States
+
+- Empty catalog: explain that no resources are available and suggest checking seed/import state.
+- Empty filtered result: mention search/filter mismatch and offer clear filters.
+- Authenticated personal lists: keep personal progress separate from editorial resource metadata.
+- Loading states should preserve page structure enough that filters and counts do not jump
+  dramatically.
