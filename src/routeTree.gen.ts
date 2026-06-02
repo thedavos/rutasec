@@ -16,6 +16,7 @@ import { Route as LibraryIndexRouteImport } from './routes/library/index'
 import { Route as GoalsIndexRouteImport } from './routes/goals/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
 import { Route as ResourcesIdRouteImport } from './routes/resources/$id'
+import { Route as GoalsGoalIdTimelineRouteImport } from './routes/goals/$goalId/timeline'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 
 const SignUpRoute = SignUpRouteImport.update({
@@ -53,6 +54,11 @@ const ResourcesIdRoute = ResourcesIdRouteImport.update({
   path: '/resources/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GoalsGoalIdTimelineRoute = GoalsGoalIdTimelineRouteImport.update({
+  id: '/goals/$goalId/timeline',
+  path: '/goals/$goalId/timeline',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
@@ -68,6 +74,7 @@ export interface FileRoutesByFullPath {
   '/goals/': typeof GoalsIndexRoute
   '/library/': typeof LibraryIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/goals/$goalId/timeline': typeof GoalsGoalIdTimelineRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -78,6 +85,7 @@ export interface FileRoutesByTo {
   '/goals': typeof GoalsIndexRoute
   '/library': typeof LibraryIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/goals/$goalId/timeline': typeof GoalsGoalIdTimelineRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -89,6 +97,7 @@ export interface FileRoutesById {
   '/goals/': typeof GoalsIndexRoute
   '/library/': typeof LibraryIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/goals/$goalId/timeline': typeof GoalsGoalIdTimelineRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -101,6 +110,7 @@ export interface FileRouteTypes {
     | '/goals/'
     | '/library/'
     | '/api/auth/$'
+    | '/goals/$goalId/timeline'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -111,6 +121,7 @@ export interface FileRouteTypes {
     | '/goals'
     | '/library'
     | '/api/auth/$'
+    | '/goals/$goalId/timeline'
   id:
     | '__root__'
     | '/'
@@ -121,6 +132,7 @@ export interface FileRouteTypes {
     | '/goals/'
     | '/library/'
     | '/api/auth/$'
+    | '/goals/$goalId/timeline'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -132,6 +144,7 @@ export interface RootRouteChildren {
   GoalsIndexRoute: typeof GoalsIndexRoute
   LibraryIndexRoute: typeof LibraryIndexRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
+  GoalsGoalIdTimelineRoute: typeof GoalsGoalIdTimelineRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -185,6 +198,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResourcesIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/goals/$goalId/timeline': {
+      id: '/goals/$goalId/timeline'
+      path: '/goals/$goalId/timeline'
+      fullPath: '/goals/$goalId/timeline'
+      preLoaderRoute: typeof GoalsGoalIdTimelineRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/auth/$': {
       id: '/api/auth/$'
       path: '/api/auth/$'
@@ -204,6 +224,7 @@ const rootRouteChildren: RootRouteChildren = {
   GoalsIndexRoute: GoalsIndexRoute,
   LibraryIndexRoute: LibraryIndexRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
+  GoalsGoalIdTimelineRoute: GoalsGoalIdTimelineRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

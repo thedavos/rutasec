@@ -34,4 +34,4 @@ Match existing layout patterns in `src/routes/__root.tsx`. Theme tokens live in 
 
 Catalog browsing, resource detail, auth flows, save-to-library CTA, learning goals, basic user dashboard (v2 milestone).
 
-Do not add broad dashboard, timeline, or admin UI unless the current milestone explicitly requires it. The v2 basic dashboard at `/dashboard` is in scope.
+Do not add broad dashboard or admin UI unless the current milestone explicitly requires it. The v2 basic dashboard at `/dashboard` and the v3 goal timeline at `/goals/$goalId/timeline` are in scope.

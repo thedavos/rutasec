@@ -31,7 +31,7 @@ Do not introduce Astro, Next.js, Durable Objects, Queues, KV, or R2 unless expli
 ```
 src/routes/                    file-based routes (presentation)
 src/app/di/                    composition root (*.module.ts, incl. timeline.module.ts)
-src/modules/<feature>/         feature modules (catalog, library, identity, goals, dashboard, timeline — study plan generate/get server fns)
+src/modules/<feature>/         feature modules (catalog, library, identity, goals, dashboard, timeline — study plan generate/get + weekly view)
 src/shared/                    cross-cutting (db, domain/Result, utils)
 db/schema.sql                  D1 schema
 docs/timeline-rules.md         frozen MVP timeline scheduling rules
@@ -80,7 +80,7 @@ A change belongs in v1 if it supports this loop:
 3. Sign in
 4. Save a resource
 
-Defer timeline UI, study plan persistence, full goals, broad dashboard, admin panel, scraping, and social features.
+Defer drag-and-drop timeline editing, automatic plan regeneration, full goals analytics, broad dashboard, admin panel, scraping, and social features.
 
 ## Before finishing work
 
@@ -93,7 +93,7 @@ vp test run
 
 - Business logic and D1 access in server functions / loaders, not client components.
 - `resources` = editorial catalog; `user_resources` = personal state — keep them separate.
-- `src/modules/timeline` owns pure timeline rules. D1 persistence and weekly UI are v3 follow-ups.
+- `src/modules/timeline` owns scheduling rules, study plan persistence (DAV-118), and the weekly timeline route (DAV-119).
 - Instrument `createServerFn` handlers with `Sentry.startSpan` (see `sentry.mdc`).
 - Add shadcn components: `pnpm dlx shadcn@latest add <component>`.
 - Minimize scope — match existing patterns; don't over-engineer.
