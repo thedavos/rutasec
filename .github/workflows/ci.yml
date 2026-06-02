@@ -15,7 +15,7 @@ env:
   BETTER_AUTH_SECRET: ci-only-not-for-production-use-32chars!!
 
 jobs:
-  install:
+  check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -24,40 +24,17 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - uses: actions/upload-artifact@v4
-        with:
-          name: node-modules
-          path: node_modules/
-          retention-days: 1
-
-  check:
-    runs-on: ubuntu-latest
-    needs: install
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-      - uses: actions/download-artifact@v4
-        with:
-          name: node-modules
-          path: node_modules/
-      - run: npx vp check
+      - run: ./node_modules/.bin/vp check
 
   unit:
     runs-on: ubuntu-latest
-    needs: install
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
-      - uses: actions/download-artifact@v4
-        with:
-          name: node-modules
-          path: node_modules/
+      - run: npm ci
       - run: npm run test:coverage
       - uses: actions/upload-artifact@v4
         if: always()
@@ -68,17 +45,13 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
-    needs: install
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
-      - uses: actions/download-artifact@v4
-        with:
-          name: node-modules
-          path: node_modules/
+      - run: npm ci
       - run: npm run build
       - uses: actions/upload-artifact@v4
         with:
@@ -88,7 +61,6 @@ jobs:
 
   e2e:
     runs-on: ubuntu-latest
-    needs: install
     container:
       image: mcr.microsoft.com/playwright:v1.60.0-noble
     env:
@@ -99,10 +71,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
-      - uses: actions/download-artifact@v4
-        with:
-          name: node-modules
-          path: node_modules/
+      - run: npm ci
       - run: npm run db:schema:local
       - run: npm run db:seed:local
       - run: |
