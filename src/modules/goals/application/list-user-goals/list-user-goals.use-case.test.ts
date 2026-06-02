@@ -22,6 +22,7 @@ describe("ListUserGoalsUseCase", () => {
     const listForUser = vi.fn().mockResolvedValue(ok([goal]));
     const goals: GoalsPort = {
       createForUser: vi.fn(),
+      getByIdForUser: vi.fn(),
       listForUser,
       linkResource: vi.fn(),
       listLinkedResourcesForUser: vi.fn(),
@@ -39,6 +40,7 @@ describe("ListUserGoalsUseCase", () => {
   it("propagates goals port errors", async () => {
     const goals: GoalsPort = {
       createForUser: vi.fn(),
+      getByIdForUser: vi.fn(),
       listForUser: vi.fn().mockResolvedValue(err({ type: "query_failed", message: "D1 down" })),
       linkResource: vi.fn(),
       listLinkedResourcesForUser: vi.fn(),

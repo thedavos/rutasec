@@ -9,6 +9,7 @@ describe("LinkResourceToGoalUseCase", () => {
     const linkResource = vi.fn().mockResolvedValue(ok(undefined));
     const goals: GoalsPort = {
       createForUser: vi.fn(),
+      getByIdForUser: vi.fn(),
       listForUser: vi.fn(),
       linkResource,
       listLinkedResourcesForUser: vi.fn(),

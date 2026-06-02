@@ -22,6 +22,7 @@ describe("CreateGoalUseCase", () => {
     const createForUser = vi.fn().mockResolvedValue(ok(goal));
     const goals: GoalsPort = {
       createForUser,
+      getByIdForUser: vi.fn(),
       listForUser: vi.fn(),
       linkResource: vi.fn(),
       listLinkedResourcesForUser: vi.fn(),

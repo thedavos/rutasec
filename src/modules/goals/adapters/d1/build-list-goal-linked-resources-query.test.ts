@@ -9,6 +9,7 @@ describe("buildListGoalLinkedResourcesQuery", () => {
     expect(query.sql).toContain("FROM goal_resources gr");
     expect(query.sql).toContain("INNER JOIN goals g ON g.id = gr.goal_id");
     expect(query.sql).toContain("INNER JOIN resources r ON r.id = gr.resource_id");
+    expect(query.sql).toContain("r.estimated_hours");
     expect(query.sql).toContain("WHERE g.user_id = ?");
     expect(query.sql).toContain("ORDER BY gr.goal_id, gr.priority, gr.created_at");
     expect(query.bindings).toEqual({ userId: "user-1" });

@@ -9,6 +9,7 @@ export function mapGoalLinkedResourceRow(row: GoalLinkedResourceRow): GoalLinked
     category: row.category,
     level: row.level,
     resourceType: row.resource_type,
+    estimatedHours: row.estimated_hours,
     priority: row.priority,
     linkedAt: row.linked_at,
   };

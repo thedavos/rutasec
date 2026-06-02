@@ -337,6 +337,31 @@ describe("createD1GoalsAdapter", () => {
     });
   });
 
+  it("getByIdForUser returns the goal when owned", async () => {
+    const { prepare } = createMockDb({ row: validRow, selectOnly: true });
+    const adapter = createD1GoalsAdapter({ prepare } as unknown as D1Database);
+
+    const result = await adapter.getByIdForUser("app-1", "goal-1");
+
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.value.id).toBe("goal-1");
+    }
+    expect(prepare).toHaveBeenCalledTimes(1);
+  });
+
+  it("getByIdForUser returns goal_not_found when missing", async () => {
+    const { prepare } = createMockDb({ row: null, selectOnly: true });
+    const adapter = createD1GoalsAdapter({ prepare } as unknown as D1Database);
+
+    const result = await adapter.getByIdForUser("app-1", "goal-missing");
+
+    expect(result).toEqual({
+      ok: false,
+      error: { type: "goal_not_found", message: "Goal not found." },
+    });
+  });
+
   it("listLinkedResourcesForUser returns mapped links scoped to the user", async () => {
     const { prepare } = createListMockDb([
       {
@@ -348,6 +373,7 @@ describe("createD1GoalsAdapter", () => {
         category: "Web",
         level: "beginner",
         resource_type: "course",
+        estimated_hours: 6,
       },
     ]);
     const adapter = createD1GoalsAdapter({ prepare } as unknown as D1Database);
@@ -366,6 +392,7 @@ describe("createD1GoalsAdapter", () => {
           category: "Web",
           level: "beginner",
           resourceType: "course",
+          estimatedHours: 6,
         },
       ],
     });

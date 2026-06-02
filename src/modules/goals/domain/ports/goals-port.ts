@@ -19,6 +19,7 @@ export type LinkResourceToGoalInput = {
 
 export interface GoalsPort {
   createForUser(input: CreateGoalForUserInput): Promise<Result<LearningGoal, GoalError>>;
+  getByIdForUser(userId: string, goalId: string): Promise<Result<LearningGoal, GoalError>>;
   listForUser(userId: string): Promise<Result<LearningGoal[], GoalError>>;
   linkResource(input: LinkResourceToGoalInput): Promise<Result<void, GoalError>>;
   listLinkedResourcesForUser(userId: string): Promise<Result<GoalLinkedResource[], GoalError>>;
