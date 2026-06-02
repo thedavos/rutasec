@@ -27,7 +27,9 @@ Do not introduce Astro, Next.js, Durable Objects, Queues, KV, or R2 unless expli
 
 Ship gate: browse catalog → resource detail → sign in → save a resource.
 
-v1 excludes timeline, full goals, broad dashboard, social features, admin panel, scraping, and advanced AI.
+v1 excludes timeline UI, study plan persistence, full goals, broad dashboard, social features, admin panel, scraping, and advanced AI.
+
+The v3 timeline rules live in `src/modules/timeline` and `docs/timeline-rules.md`. Keep them pure until study plan persistence ships.
 
 Build order: foundation → D1/seed → public catalog → auth → save resource → library/goals/progress → timeline.
 
