@@ -1,5 +1,5 @@
 import { useRouter } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { createGoalFn } from "#/modules/goals";
 import { Button } from "#/shared/presentation/ui/button";
@@ -16,8 +16,13 @@ function getFormString(formData: FormData, name: string): string {
 
 export function CreateGoalForm() {
   const router = useRouter();
+  const [isHydrated, setIsHydrated] = useState(false);
   const [formState, setFormState] = useState<FormState>("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -57,6 +62,7 @@ export function CreateGoalForm() {
   }
 
   const isSubmitting = formState === "submitting";
+  const isSubmitDisabled = !isHydrated || isSubmitting;
 
   return (
     <form
@@ -75,7 +81,7 @@ export function CreateGoalForm() {
             required
             maxLength={200}
             placeholder="e.g. Web pentesting fundamentals"
-            disabled={isSubmitting}
+            disabled={isSubmitDisabled}
           />
         </div>
         <div className="space-y-2 sm:col-span-2">
@@ -85,13 +91,13 @@ export function CreateGoalForm() {
             name="description"
             maxLength={2000}
             placeholder="What do you want to achieve?"
-            disabled={isSubmitting}
+            disabled={isSubmitDisabled}
             rows={3}
           />
         </div>
         <div className="space-y-2">
           <Label htmlFor="goal-target-date">Target date (optional)</Label>
-          <Input id="goal-target-date" name="targetDate" type="date" disabled={isSubmitting} />
+          <Input id="goal-target-date" name="targetDate" type="date" disabled={isSubmitDisabled} />
         </div>
         <div className="space-y-2">
           <Label htmlFor="goal-hours">Hours per week</Label>
@@ -103,12 +109,12 @@ export function CreateGoalForm() {
             step={0.5}
             required
             placeholder="5"
-            disabled={isSubmitting}
+            disabled={isSubmitDisabled}
           />
         </div>
       </div>
       <div className="mt-4 flex flex-wrap items-center gap-3">
-        <Button type="submit" disabled={isSubmitting}>
+        <Button type="submit" disabled={isSubmitDisabled}>
           {isSubmitting ? "Creating…" : "Create goal"}
         </Button>
         {errorMessage ? (
