@@ -62,7 +62,7 @@ export function SaveToLibraryCta({
           Saved to library
         </Button>
         <p className="text-xs leading-relaxed text-[var(--sea-ink-soft)]">
-          This resource is in your library. Your library view ships next.
+          This resource is in your library. Open your library to track progress.
         </p>
       </div>
     );
