@@ -14,6 +14,7 @@ describe("mapGoalLinkedResourceRow", () => {
         category: "Web",
         level: "beginner",
         resource_type: "course",
+        estimated_hours: 6,
       }),
     ).toEqual({
       goalId: "goal-1",
@@ -24,6 +25,7 @@ describe("mapGoalLinkedResourceRow", () => {
       category: "Web",
       level: "beginner",
       resourceType: "course",
+      estimatedHours: 6,
     });
   });
 });

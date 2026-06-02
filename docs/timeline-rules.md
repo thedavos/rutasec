@@ -1,6 +1,6 @@
 # Timeline rules
 
-DAV-117 freezes the first study plan scheduling rules for RutaSec. The rules are intentionally small. DAV-118 will persist plans in D1, and DAV-119 will render the weekly view.
+DAV-117 freezes the first study plan scheduling rules for RutaSec. The rules are intentionally small. DAV-118 persists generated plans in D1 (`study_plans`, `study_plan_items`). DAV-119 will render the weekly view.
 
 ## Input
 
@@ -28,7 +28,7 @@ type TimelineResourceInput = {
 
 ## Output
 
-The rule engine returns a draft. It does not write `study_plans` or `study_plan_items`.
+The rule engine returns a draft. `generateStudyPlanForGoalFn` runs the draft through this logic and writes `study_plans` / `study_plan_items` (replacing any existing active plan for the goal).
 
 ```ts
 type StudyPlanDraft = {
@@ -106,4 +106,4 @@ The draft item status is `in_progress` only when the library status is `in_progr
 
 ## Non-scope
 
-The first version does not persist plans, split a single resource across weeks, reorder by path phase, regenerate plans automatically, call AI, support drag and drop, or render the timeline UI.
+The first version does not split a single resource across weeks, reorder by path phase, regenerate plans automatically on library changes, call AI, support drag and drop, or render the timeline UI.

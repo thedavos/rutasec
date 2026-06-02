@@ -14,6 +14,7 @@ describe("ListGoalLinkedResourcesUseCase", () => {
         category: "Web",
         level: "beginner",
         resourceType: "course",
+        estimatedHours: 6,
         priority: 0,
         linkedAt: "2026-01-01T00:00:00.000Z",
       },
@@ -21,6 +22,7 @@ describe("ListGoalLinkedResourcesUseCase", () => {
     const listLinkedResourcesForUser = vi.fn().mockResolvedValue(ok(linked));
     const goals: GoalsPort = {
       createForUser: vi.fn(),
+      getByIdForUser: vi.fn(),
       listForUser: vi.fn(),
       linkResource: vi.fn(),
       listLinkedResourcesForUser,

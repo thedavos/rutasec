@@ -87,6 +87,27 @@ export function createD1GoalsAdapter(db: D1Database): GoalsPort {
       return selectById(db, id, input.userId);
     },
 
+    async getByIdForUser(userId: string, goalId: string): Promise<Result<LearningGoal, GoalError>> {
+      const { sql, bindings } = buildSelectGoalByIdQuery(goalId, userId);
+
+      try {
+        const row = await db.prepare(sql).bind(bindings.id, bindings.userId).first<unknown>();
+
+        if (!row) {
+          return err({ type: "goal_not_found", message: "Goal not found." });
+        }
+
+        const parsed = goalRowSchema.safeParse(row);
+        if (!parsed.success) {
+          return err(invalidRowError(parsed.error.message));
+        }
+
+        return ok(mapGoalRow(parsed.data));
+      } catch (error) {
+        return err(mapD1Error(error));
+      }
+    },
+
     async listForUser(userId: string): Promise<Result<LearningGoal[], GoalError>> {
       const { sql, bindings } = buildListGoalsQuery(userId);
 

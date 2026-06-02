@@ -9,6 +9,7 @@ export const goalLinkedResourceRowSchema = z.object({
   category: z.string().min(1),
   level: z.string().min(1),
   resource_type: z.string().min(1),
+  estimated_hours: z.number(),
 });
 
 export type GoalLinkedResourceRow = z.infer<typeof goalLinkedResourceRowSchema>;

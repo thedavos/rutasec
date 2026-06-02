@@ -5,6 +5,7 @@ export type GoalLinkedResource = {
   category: string;
   level: string;
   resourceType: string;
+  estimatedHours: number;
   priority: number;
   linkedAt: string;
 };

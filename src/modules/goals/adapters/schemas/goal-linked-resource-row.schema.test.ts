@@ -13,6 +13,7 @@ describe("goalLinkedResourceRowSchema", () => {
       category: "Web",
       level: "beginner",
       resource_type: "course",
+      estimated_hours: 6,
     });
 
     expect(parsed.success).toBe(true);
