@@ -3,7 +3,7 @@ import { defineConfig, devices } from "@playwright/test";
 const port = 3000;
 const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? `http://localhost:${port}`;
 
-/** CI default when GitLab variable is unset or empty (empty string bypasses `??`). */
+/** CI default when the secret is unset or empty (empty string bypasses `??`). */
 const ciAuthSecret = process.env.BETTER_AUTH_SECRET || "ci-only-not-for-production-use-32chars!!";
 const ciAuthUrl = process.env.BETTER_AUTH_URL || `http://localhost:${port}`;
 

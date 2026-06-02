@@ -1,6 +1,6 @@
 ---
 name: ship-linear-issue
-description: Ship a RutaSec Linear issue (worktree, poteto-mode, GitLab MR, Linear status).
+description: Ship a RutaSec Linear issue (worktree, poteto-mode, GitHub PR, Linear status).
 ---
 
 # Ship Linear issue
@@ -22,9 +22,9 @@ Reglas:
 1. Lee **{ISSUE_ID}** por MCP (no uses solo el título).
 2. Plan mode primero; no edites el archivo del plan.
 3. Worktree obligatorio: **{WORKTREE_PATH}** y rama **{GIT_BRANCH_NAME}** desde origin/main.
-4. Linear → In Progress al empezar; Done cuando el MR mergee.
-5. Al terminar: vp check, vp test run, MR en GitLab a main (glab), quitar worktree.
-6. No abras GitHub PR. origin es gitlab.com:davos/rutasec.
+4. Linear → In Progress al empezar; Done cuando el PR mergee.
+5. Al terminar: vp check, vp test run, PR en GitHub a main (gh), quitar worktree.
+6. No uses GitLab MR. origin es git@github.com:thedavos/rutasec.git.
 7. Actualiza `.cursor/rules/`, `AGENTS.md`, `README.md` o `db/README.md` si el cambio lo requiere.
 
 Si el issue pide cuenta local de prueba, sigue db/README.md y npm run db:smoke-user:local.
