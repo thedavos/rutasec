@@ -54,7 +54,7 @@ export function AddGoalResourceSelect({
 
   if (libraryItems.length === 0) {
     return (
-      <p className="text-sm text-[var(--sea-ink-soft)]">
+      <p className="text-sm text-[var(--text-secondary)]">
         Save resources from the catalog to your library before linking them to a goal.
       </p>
     );
@@ -62,7 +62,7 @@ export function AddGoalResourceSelect({
 
   if (availableItems.length === 0) {
     return (
-      <p className="text-sm text-[var(--sea-ink-soft)]">
+      <p className="text-sm text-[var(--text-secondary)]">
         All saved library resources are already linked to this goal.
       </p>
     );
@@ -70,13 +70,13 @@ export function AddGoalResourceSelect({
 
   return (
     <div className="space-y-2">
-      <Label htmlFor={`add-resource-${goalId}`} className="text-sm text-[var(--sea-ink-soft)]">
+      <Label htmlFor={`add-resource-${goalId}`} className="text-sm text-[var(--text-secondary)]">
         Add from library
       </Label>
       <Select onValueChange={handleValueChange} disabled={isLinking}>
         <SelectTrigger
           id={`add-resource-${goalId}`}
-          className="w-full border-[var(--line)] bg-transparent"
+          className="w-full border-[var(--border-default)] bg-transparent"
           size="sm"
         >
           <SelectValue placeholder={isLinking ? "Linking…" : "Choose a saved resource"} />

@@ -45,7 +45,7 @@ export function SignUpPage() {
   return (
     <div className="flex flex-1 flex-col items-center justify-center">
       <div className="w-full max-w-md">
-        <Card className="island-shell rounded-2xl border-[var(--line)] shadow-none">
+        <Card className="island-shell rounded-2xl border-[var(--border-default)] shadow-none">
           <CardHeader>
             <CardTitle className="display-title text-2xl">Create account</CardTitle>
             <CardDescription>Register with email and password to use RutaSec.</CardDescription>
@@ -95,11 +95,11 @@ export function SignUpPage() {
                 {isSubmitting ? "Creating account…" : "Create account"}
               </Button>
             </form>
-            <p className="mt-4 text-center text-sm text-[var(--sea-ink-soft)]">
+            <p className="mt-4 text-center text-sm text-[var(--text-secondary)]">
               Already have an account?{" "}
               <Link
                 to="/sign-in"
-                className="font-semibold text-[var(--sea-ink)] underline-offset-4 hover:underline"
+                className="font-semibold text-[var(--text-primary)] underline-offset-4 hover:underline"
               >
                 Sign in
               </Link>

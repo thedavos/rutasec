@@ -1,0 +1,200 @@
+---
+description: RutaSec cybertech design system — tokens, typography, components, tone
+globs: src/**/*.tsx,src/routes/**,src/modules/**/presentation/**,src/shared/presentation/**,src/styles.css
+alwaysApply: false
+---
+
+# RutaSec Design System
+
+RutaSec is a **Cyber Learning OS**: structured, technical, calm, and progress-driven. The visual direction is **Cybertech Learning Workspace** (Linear + Huly + Pirsch + Slite, with Raycast/Resend polish).
+
+This rule covers **visual design and tokens**. Page structure for catalog/library listings lives in `catalog-information-architecture.mdc`. shadcn primitive usage lives in `ui-shadcn.mdc`.
+
+## Brand personality
+
+**Feel:** technical, calm, focused, practical, structured, premium, developer-first, security-oriented, progress-driven.
+
+**Avoid:** childish UI, over-gamification, generic academy templates, cyberpunk clichés, fake hacker aesthetics, neon green as brand color, matrix effects, skulls, excessive glow on every element.
+
+Cybertech comes from **structure + data + precision + route systems + security language**, not decoration.
+
+## Color tokens
+
+All colors live in `src/styles.css` `:root`. Use CSS variables, never hardcode hex in components.
+
+### Base surfaces
+
+| Token | Usage |
+| ----- | ----- |
+| `--bg-base`, `--background-soft`, `--background-muted` | Page backgrounds |
+| `--surface`, `--surface-raised`, `--surface-hover`, `--surface-active` | Cards, panels |
+| `--border-subtle`, `--border-default`, `--border-strong` | Borders |
+| `--text-primary`, `--text-secondary`, `--text-muted`, `--text-disabled` | Text hierarchy |
+
+### Brand
+
+| Token | Usage |
+| ----- | ----- |
+| `--primary-color`, `--primary-hover`, `--primary-active` | Primary actions, active nav, focus |
+| `--primary-soft`, `--primary-border`, `--primary-glow` | Soft fills, chip borders, glow |
+| `--cyber`, `--cyber-hover`, `--cyber-soft`, `--cyber-border` | Lighter indigo accents, kickers, hero glow |
+
+Indigo is the main identity color. Lighter indigo (`--cyber` / `--primary-hover`) is for secondary accents only.
+
+### State
+
+| Token | Usage |
+| ----- | ----- |
+| `--success`, `--success-soft`, `--success-border` | Completed checkpoints, success |
+| `--warning`, `--warning-soft`, `--warning-border` | In-progress, pending, review |
+| `--danger`, `--danger-soft`, `--danger-border` | Errors, blocked, critical |
+| `--info`, `--info-soft`, `--info-border` | Informational alerts |
+
+shadcn tokens (`--primary`, `--ring`, `--border`, etc.) map to indigo. Components should prefer design tokens (`--text-primary`, `--border-default`) in Tailwind arbitrary values: `text-[var(--text-primary)]`.
+
+## Typography
+
+| Role | Font | Class |
+| ---- | ---- | ----- |
+| Display headings | Sora | `.display-title` |
+| Body | IBM Plex Sans | default / `font-sans` |
+| Technical metadata | IBM Plex Mono | `.type-mono`, `font-mono` |
+
+Use monospace for: route IDs, resource types, skill tags, checkpoint codes, status labels, keyboard shortcuts, kickers (`.island-kicker`).
+
+Do not use monospace for long prose or page titles.
+
+## Spacing and radius
+
+8px spacing system: `--space-1` (4px) through `--space-20` (80px).
+
+| Element | Radius token |
+| ------- | ------------ |
+| Buttons | `--radius-md` (10px) |
+| Cards | `--radius-lg` (14px) |
+| Large panels / modals | `--radius-xl` (18px) |
+| Badges / pills | `--radius-full` |
+
+Content widths: `--content-narrow` (760px), `--content-default` (1120px), `--content-wide` (1440px).
+
+## Glow and gradients
+
+Glow is reserved for **active or important** elements only.
+
+Utility classes in `styles.css`:
+
+- `.cyber-glow` — hero / empty-state atmosphere
+- `.route-active` — current route highlight
+- `.route-completed` — completed route
+- `.route-warning` — blocked / warning state
+
+Default cards use **border**, not shadow. Floating menus and modals may use `--shadow-md` / `--shadow-lg`.
+
+Never apply glow to every card in a grid.
+
+## Component patterns
+
+### Cards
+
+Use shadcn `Card` with `.island-shell` for elevated panels and `.feature-card` for interactive resource entries.
+
+```tsx
+<Card className="island-shell rounded-2xl border-[var(--border-default)] shadow-none">
+```
+
+Hover: `translateY(-1px)` via `.feature-card:hover`. Active: indigo border + subtle radial gradient.
+
+### Buttons
+
+Use shadcn `Button`. Primary actions get indigo fill + `--primary-glow` shadow. Secondary uses border + `--surface`. Ghost for low emphasis.
+
+### Badges
+
+Use shadcn `Badge`. Technical metadata (level, type, status, route ID) uses `variant="outline"` or `font-mono`. Free/success badges use `--success` text on `--primary-soft` background.
+
+### Page headers
+
+```txt
+[island-kicker label]
+[display-title h1]
+[one sentence of practical copy]
+```
+
+Copy must answer what the user should do next. Avoid motivational fluff.
+
+### Empty states
+
+Be useful, not decorative:
+
+```txt
+No resources saved yet.
+Start with the Web Pentesting route and save resources you want to review later.
+```
+
+### Progress panels
+
+Compact, data-focused. Simple bars and numbers. Muted grid lines. No chart clutter unless data warrants it.
+
+## Layout utilities
+
+| Class | Purpose |
+| ----- | ------- |
+| `.page-wrap` | Centered content at `--content-default` |
+| `.island-shell` | Elevated card/panel shell |
+| `.feature-card` | Interactive card with hover |
+| `.island-kicker` | Uppercase mono section label |
+| `.display-title` | Sora heading |
+| `.type-mono` | IBM Plex Mono block |
+| `.rise-in` | Entry animation (700ms) |
+| `.brand-mark` | Logo icon container |
+| `.nav-link` | Header nav with indigo underline |
+
+## Motion
+
+Default transition: 160ms ease on background, border, color, transform.
+
+Allowed: card hover lift, route node activation, progress completion, drawer transitions.
+
+Avoid: bouncy animation, parallax, glitch effects, gaming-style level-up effects.
+
+## Accessibility
+
+- Maintain strong contrast on `--text-primary` against dark surfaces.
+- Do not rely on color alone for status. Pair with text or icon.
+- Keep `:focus-visible` outline (2px indigo, 2px offset). Do not remove focus rings.
+- Interactive targets must meet minimum touch size.
+- Font sizes must remain readable. Avoid tiny low-contrast metadata.
+
+## Content tone
+
+**Use:** "Continue your route.", "Complete the next checkpoint.", "Save this resource.", "Review weak areas."
+
+**Avoid:** "Become an elite hacker.", "Hack the planet.", "Master cybersecurity overnight."
+
+Button labels: Continue route, Start checkpoint, Save resource, Add note, Mark completed.
+
+Status labels: Not started, In progress, Completed, Blocked, Recommended, Saved, Reviewed.
+
+## Do / Do not
+
+**Do**
+
+- Use dark surfaces with thin borders
+- Use indigo for primary actions and active states
+- Use lighter indigo sparingly for kickers and glow accents
+- Use technical badges and monospace metadata
+- Use practical, direct copy
+- Prefer borders over heavy shadows
+
+**Do not**
+
+- Hardcode colors in components (use CSS variables)
+- Use teal, neon green, or ocean-themed token names
+- Apply glow to every card
+- Use skulls, matrix backgrounds, or fake terminal screens
+- Copy Linear/Huly/Pirsch layouts verbatim
+- Add decorative sections that do not help learning progress
+
+## Reference
+
+Full design specification: Projects Vault `DESIGN.md` or the design doc provided at implementation time. Token source of truth: `src/styles.css`.

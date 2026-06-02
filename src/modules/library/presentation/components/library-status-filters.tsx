@@ -36,14 +36,14 @@ export function LibraryStatusFilters({ statusFilter, total }: LibraryStatusFilte
 
   return (
     <Card
-      className="island-shell rise-in rounded-2xl border-[var(--line)] py-0 shadow-none"
+      className="island-shell rise-in rounded-2xl border-[var(--border-default)] py-0 shadow-none"
       aria-label="Library status filters"
     >
       <CardHeader className="gap-4 px-5 pt-5 pb-0">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="island-kicker mb-1">Filter by status</p>
-            <p className="text-sm text-[var(--sea-ink-soft)]">
+            <p className="text-sm text-[var(--text-secondary)]">
               {total} saved resource{total === 1 ? "" : "s"} shown
             </p>
           </div>

@@ -48,7 +48,7 @@ export function SaveToLibraryCta({
             Sign in to save
           </Link>
         </Button>
-        <p className="text-xs leading-relaxed text-[var(--sea-ink-soft)]">
+        <p className="text-xs leading-relaxed text-[var(--text-secondary)]">
           Sign in to add this resource to your personal library.
         </p>
       </div>
@@ -61,7 +61,7 @@ export function SaveToLibraryCta({
         <Button type="button" variant="secondary" className="w-full" disabled>
           Saved to library
         </Button>
-        <p className="text-xs leading-relaxed text-[var(--sea-ink-soft)]">
+        <p className="text-xs leading-relaxed text-[var(--text-secondary)]">
           This resource is in your library. Open your library to track progress.
         </p>
       </div>
@@ -88,7 +88,7 @@ export function SaveToLibraryCta({
           {errorMessage}
         </p>
       ) : (
-        <p className="text-xs leading-relaxed text-[var(--sea-ink-soft)]">
+        <p className="text-xs leading-relaxed text-[var(--text-secondary)]">
           Track this resource in your personal library.
         </p>
       )}

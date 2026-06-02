@@ -37,23 +37,23 @@ export function GoalCard({ goal, linkedResources, libraryItems }: GoalCardProps)
           <Badge variant="outline">{statusLabels[goal.status]}</Badge>
           <Badge
             variant="secondary"
-            className="island-kicker rounded-full border-[var(--chip-line)]"
+            className="island-kicker rounded-full border-[var(--primary-border)]"
           >
             {goal.hoursPerWeek} h/week
           </Badge>
         </div>
-        <CardTitle className="display-title text-xl font-bold leading-tight text-[var(--sea-ink)]">
+        <CardTitle className="display-title text-xl font-bold leading-tight text-[var(--text-primary)]">
           {goal.title}
         </CardTitle>
       </CardHeader>
 
       <CardContent className="px-5 pt-2 pb-5">
         {goal.description ? (
-          <CardDescription className="mb-2 line-clamp-3 text-sm text-[var(--sea-ink-soft)]">
+          <CardDescription className="mb-2 line-clamp-3 text-sm text-[var(--text-secondary)]">
             {goal.description}
           </CardDescription>
         ) : null}
-        <CardDescription className="text-sm text-[var(--sea-ink-soft)]">
+        <CardDescription className="text-sm text-[var(--text-secondary)]">
           {goal.targetDate
             ? `Target ${new Date(`${goal.targetDate}T00:00:00`).toLocaleDateString()}`
             : "No target date"}
@@ -61,7 +61,7 @@ export function GoalCard({ goal, linkedResources, libraryItems }: GoalCardProps)
           Created {new Date(goal.createdAt).toLocaleDateString()}
         </CardDescription>
 
-        <div className="mt-4 border-t border-[var(--line)] pt-4">
+        <div className="mt-4 border-t border-[var(--border-default)] pt-4">
           <Button asChild variant="outline" size="sm" className="w-full sm:w-auto">
             <Link to="/goals/$goalId/timeline" params={{ goalId: goal.id }}>
               View study timeline
@@ -69,8 +69,8 @@ export function GoalCard({ goal, linkedResources, libraryItems }: GoalCardProps)
           </Button>
         </div>
 
-        <div className="mt-4 space-y-3 border-t border-[var(--line)] pt-4">
-          <h3 className="text-sm font-semibold text-[var(--sea-ink)]">Linked resources</h3>
+        <div className="mt-4 space-y-3 border-t border-[var(--border-default)] pt-4">
+          <h3 className="text-sm font-semibold text-[var(--text-primary)]">Linked resources</h3>
           <GoalLinkedResources resources={linkedResources} />
           <AddGoalResourceSelect
             goalId={goal.id}

@@ -15,10 +15,10 @@ export function PersonalLibraryPage({ library }: PersonalLibraryPageProps) {
     <div className="pb-16">
       <header className="rise-in mb-8">
         <p className="island-kicker mb-2">Personal library</p>
-        <h1 className="display-title text-4xl font-bold tracking-tight text-[var(--sea-ink)] sm:text-5xl">
+        <h1 className="display-title text-4xl font-bold text-[var(--text-primary)] sm:text-5xl">
           Your saved resources
         </h1>
-        <p className="mt-3 max-w-2xl text-base leading-relaxed text-[var(--sea-ink-soft)]">
+        <p className="mt-3 max-w-2xl text-base leading-relaxed text-[var(--text-secondary)]">
           Resources you saved from the catalog. Open a card for full detail or continue browsing to
           add more.
         </p>
@@ -27,7 +27,7 @@ export function PersonalLibraryPage({ library }: PersonalLibraryPageProps) {
       <LibraryStatusFilters statusFilter={library.statusFilter} total={library.items.length} />
 
       {library.items.length === 0 ? (
-        <Card className="island-shell mt-8 rounded-2xl border-[var(--line)] py-8 shadow-none">
+        <Card className="island-shell mt-8 rounded-2xl border-[var(--border-default)] py-8 shadow-none">
           <CardHeader className="text-center">
             <CardTitle className="display-title text-xl">
               {library.statusFilter ? "No resources with this status" : "Nothing saved yet"}

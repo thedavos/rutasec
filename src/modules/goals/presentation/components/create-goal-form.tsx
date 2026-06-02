@@ -69,9 +69,9 @@ export function CreateGoalForm() {
       onSubmit={(event) => {
         void handleSubmit(event);
       }}
-      className="island-shell rounded-2xl border-[var(--line)] p-6"
+      className="island-shell rounded-2xl border-[var(--border-default)] p-6"
     >
-      <h2 className="display-title mb-4 text-xl font-bold text-[var(--sea-ink)]">New goal</h2>
+      <h2 className="display-title mb-4 text-xl font-bold text-[var(--text-primary)]">New goal</h2>
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2 sm:col-span-2">
           <Label htmlFor="goal-title">Title</Label>

@@ -28,15 +28,15 @@ export function DashboardPage({ dashboard }: DashboardPageProps) {
       <div className="pb-16">
         <header className="rise-in mb-8">
           <p className="island-kicker mb-2">Your dashboard</p>
-          <h1 className="display-title text-4xl font-bold tracking-tight text-[var(--sea-ink)] sm:text-5xl">
+          <h1 className="display-title text-4xl font-bold text-[var(--text-primary)] sm:text-5xl">
             Learning overview
           </h1>
-          <p className="mt-3 max-w-2xl text-base leading-relaxed text-[var(--sea-ink-soft)]">
+          <p className="mt-3 max-w-2xl text-base leading-relaxed text-[var(--text-secondary)]">
             Save resources from the catalog and set a learning goal to see your progress here.
           </p>
         </header>
 
-        <Card className="island-shell mt-8 rounded-2xl border-[var(--line)] py-8 shadow-none">
+        <Card className="island-shell mt-8 rounded-2xl border-[var(--border-default)] py-8 shadow-none">
           <CardHeader className="text-center">
             <CardTitle className="display-title text-xl">Nothing to summarize yet</CardTitle>
             <CardDescription>
@@ -61,29 +61,29 @@ export function DashboardPage({ dashboard }: DashboardPageProps) {
     <div className="pb-16">
       <header className="rise-in mb-8">
         <p className="island-kicker mb-2">Your dashboard</p>
-        <h1 className="display-title text-4xl font-bold tracking-tight text-[var(--sea-ink)] sm:text-5xl">
+        <h1 className="display-title text-4xl font-bold text-[var(--text-primary)] sm:text-5xl">
           Learning overview
         </h1>
-        <p className="mt-3 max-w-2xl text-base leading-relaxed text-[var(--sea-ink-soft)]">
+        <p className="mt-3 max-w-2xl text-base leading-relaxed text-[var(--text-secondary)]">
           A snapshot of your active goal, library progress, and what to work on next.
         </p>
       </header>
 
       <div className="grid gap-6 lg:grid-cols-2">
         {dashboard.focusGoal ? (
-          <Card className="island-shell rounded-2xl border-[var(--line)] shadow-none">
+          <Card className="island-shell rounded-2xl border-[var(--border-default)] shadow-none">
             <CardHeader>
               <p className="island-kicker mb-1">Focus goal</p>
               <div className="flex flex-wrap items-center gap-2">
                 <Badge variant="outline">{goalStatusLabels[dashboard.focusGoal.status]}</Badge>
                 <Badge
                   variant="secondary"
-                  className="island-kicker rounded-full border-[var(--chip-line)]"
+                  className="island-kicker rounded-full border-[var(--primary-border)]"
                 >
                   {dashboard.focusGoal.hoursPerWeek} h/week
                 </Badge>
               </div>
-              <CardTitle className="display-title text-2xl font-bold text-[var(--sea-ink)]">
+              <CardTitle className="display-title text-2xl font-bold text-[var(--text-primary)]">
                 {dashboard.focusGoal.title}
               </CardTitle>
               <CardDescription>
@@ -104,7 +104,7 @@ export function DashboardPage({ dashboard }: DashboardPageProps) {
             </CardContent>
           </Card>
         ) : (
-          <Card className="island-shell rounded-2xl border-[var(--line)] shadow-none">
+          <Card className="island-shell rounded-2xl border-[var(--border-default)] shadow-none">
             <CardHeader>
               <CardTitle className="display-title text-xl">No learning goal yet</CardTitle>
               <CardDescription>
@@ -117,10 +117,10 @@ export function DashboardPage({ dashboard }: DashboardPageProps) {
           </Card>
         )}
 
-        <Card className="island-shell rounded-2xl border-[var(--line)] shadow-none">
+        <Card className="island-shell rounded-2xl border-[var(--border-default)] shadow-none">
           <CardHeader>
             <p className="island-kicker mb-1">Pending effort</p>
-            <CardTitle className="display-title text-3xl font-bold text-[var(--sea-ink)]">
+            <CardTitle className="display-title text-3xl font-bold text-[var(--text-primary)]">
               {dashboard.pendingHoursEstimate}h
             </CardTitle>
             <CardDescription>
@@ -133,7 +133,7 @@ export function DashboardPage({ dashboard }: DashboardPageProps) {
       <section className="mt-10" aria-labelledby="progress-summary-heading">
         <h2
           id="progress-summary-heading"
-          className="display-title mb-4 text-2xl font-bold text-[var(--sea-ink)]"
+          className="display-title mb-4 text-2xl font-bold text-[var(--text-primary)]"
         >
           Library progress
         </h2>
@@ -153,7 +153,7 @@ export function DashboardPage({ dashboard }: DashboardPageProps) {
         <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
           <h2
             id="next-resources-heading"
-            className="display-title text-2xl font-bold text-[var(--sea-ink)]"
+            className="display-title text-2xl font-bold text-[var(--text-primary)]"
           >
             Next up
           </h2>
@@ -163,7 +163,7 @@ export function DashboardPage({ dashboard }: DashboardPageProps) {
         </div>
 
         {dashboard.nextResources.length === 0 ? (
-          <Card className="island-shell rounded-2xl border-[var(--line)] py-6 shadow-none">
+          <Card className="island-shell rounded-2xl border-[var(--border-default)] py-6 shadow-none">
             <CardHeader>
               <CardTitle className="display-title text-lg">No active resources</CardTitle>
               <CardDescription>
@@ -178,7 +178,7 @@ export function DashboardPage({ dashboard }: DashboardPageProps) {
           <ul className="grid gap-4">
             {dashboard.nextResources.map((resource) => (
               <li key={resource.resourceId}>
-                <Card className="island-shell rounded-2xl border-[var(--line)] shadow-none">
+                <Card className="island-shell rounded-2xl border-[var(--border-default)] shadow-none">
                   <CardHeader className="gap-2">
                     <div className="flex flex-wrap items-center gap-2">
                       <Badge variant="outline">{statusLabels[resource.status]}</Badge>
@@ -191,7 +191,7 @@ export function DashboardPage({ dashboard }: DashboardPageProps) {
                       <Link
                         to="/resources/$id"
                         params={{ id: resource.resourceId }}
-                        className="text-[var(--sea-ink)] no-underline hover:text-[var(--lagoon-deep)]"
+                        className="text-[var(--text-primary)] no-underline hover:text-[var(--primary-hover)]"
                       >
                         {resource.title}
                       </Link>
@@ -216,10 +216,10 @@ export function DashboardPage({ dashboard }: DashboardPageProps) {
 function ProgressStat({ label, value }: { label: string; value: number | string }) {
   return (
     <li>
-      <Card className="island-shell rounded-2xl border-[var(--line)] shadow-none">
+      <Card className="island-shell rounded-2xl border-[var(--border-default)] shadow-none">
         <CardHeader className="gap-1">
           <CardDescription>{label}</CardDescription>
-          <CardTitle className="display-title text-2xl font-bold text-[var(--sea-ink)]">
+          <CardTitle className="display-title text-2xl font-bold text-[var(--text-primary)]">
             {value}
           </CardTitle>
         </CardHeader>
