@@ -1,0 +1,62 @@
+name: Preview deploy
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+  pull_request:
+    types: [closed]
+
+concurrency:
+  group: preview-${{ github.event.pull_request.number || github.event.workflow_run.head_branch }}
+  cancel-in-progress: true
+
+env:
+  CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+  CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+jobs:
+  deploy-preview:
+    if: >
+      github.event_name == 'workflow_run' &&
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'pull_request'
+    runs-on: ubuntu-latest
+    environment:
+      name: review/pr-${{ github.event.workflow_run.pull_requests[0].number }}
+      url: https://rutasec-pr-${{ github.event.workflow_run.pull_requests[0].number }}.davidvargas-d45.workers.dev
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Deploy preview worker
+        env:
+          PR_NUMBER: ${{ github.event.workflow_run.pull_requests[0].number }}
+          BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
+        run: |
+          preview_worker_name="rutasec-pr-${PR_NUMBER}"
+          preview_url="https://${preview_worker_name}.davidvargas-d45.workers.dev"
+          auth_secret="${BETTER_AUTH_SECRET:-ci-only-not-for-production-use-32chars!!}"
+          printf '%s\n' \
+            "BETTER_AUTH_SECRET=${auth_secret}" \
+            "BETTER_AUTH_URL=${preview_url}" \
+            > .preview.vars
+          npx wrangler deploy --config dist/server/wrangler.json --name "$preview_worker_name" --secrets-file .preview.vars
+
+  cleanup-preview:
+    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx wrangler delete "rutasec-pr-${{ github.event.pull_request.number }}" --force
