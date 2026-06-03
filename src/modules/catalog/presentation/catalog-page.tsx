@@ -16,7 +16,17 @@ type CatalogResourceGroup = {
   topics: string[];
 };
 
-function groupResourcesByCategory(resources: CatalogResourceCard[]): CatalogResourceGroup[] {
+function slugifyCategory(category: string) {
+  return category
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
+function groupResourcesByCategory(
+  resources: CatalogResourceCard[],
+  categoryOrder: string[],
+): CatalogResourceGroup[] {
   const groups = new Map<string, CatalogResourceCard[]>();
 
   for (const resource of resources) {
@@ -25,11 +35,27 @@ function groupResourcesByCategory(resources: CatalogResourceCard[]): CatalogReso
     groups.set(resource.category, categoryResources);
   }
 
-  return Array.from(groups.entries()).map(([category, categoryResources]) => ({
-    category,
-    resources: categoryResources,
-    topics: Array.from(new Set(categoryResources.map((resource) => resource.topic))).slice(0, 4),
-  }));
+  const orderedCategories = [
+    ...categoryOrder.filter((category) => groups.has(category)),
+    ...Array.from(groups.keys()).filter((category) => !categoryOrder.includes(category)),
+  ];
+
+  return orderedCategories.map((category) => {
+    const categoryResources = groups.get(category) ?? [];
+    return {
+      category,
+      resources: categoryResources,
+      topics: Array.from(new Set(categoryResources.map((resource) => resource.topic))).slice(0, 4),
+    };
+  });
+}
+
+function categorySectionIds(category: string) {
+  const categorySlug = slugifyCategory(category);
+  return {
+    sectionId: `catalog-category-${categorySlug}`,
+    headingId: `catalog-category-heading-${categorySlug}`,
+  };
 }
 
 function formatResourceCount(count: number) {
@@ -37,7 +63,10 @@ function formatResourceCount(count: number) {
 }
 
 export function CatalogPage({ catalog }: CatalogPageProps) {
-  const groupedResources = groupResourcesByCategory(catalog.resources);
+  const groupedResources = groupResourcesByCategory(
+    catalog.resources,
+    catalog.filterOptions.categories,
+  );
   const hasFilters = Boolean(
     catalog.filters.category ||
     catalog.filters.level ||
@@ -77,39 +106,42 @@ export function CatalogPage({ catalog }: CatalogPageProps) {
           </Card>
         ) : (
           <div className="space-y-8">
-            {groupedResources.map((group) => (
-              <section
-                key={group.category}
-                id={`catalog-category-${group.category.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`}
-                className="scroll-mt-24"
-                aria-labelledby={`catalog-category-heading-${group.category}`}
-              >
-                <div className="mb-4 border-t border-[var(--border-default)] pt-4">
-                  <div className="flex flex-wrap items-baseline justify-between gap-3">
-                    <h3
-                      id={`catalog-category-heading-${group.category}`}
-                      className="display-title text-xl font-bold text-[var(--text-primary)]"
-                    >
-                      {group.category}
-                    </h3>
-                    <p className="text-sm font-semibold text-[var(--text-secondary)]">
-                      {formatResourceCount(group.resources.length)}
+            {groupedResources.map((group) => {
+              const { sectionId, headingId } = categorySectionIds(group.category);
+              return (
+                <section
+                  key={group.category}
+                  id={sectionId}
+                  className="scroll-mt-24"
+                  aria-labelledby={headingId}
+                >
+                  <div className="mb-4 border-t border-[var(--border-default)] pt-4">
+                    <div className="flex flex-wrap items-baseline justify-between gap-3">
+                      <h3
+                        id={headingId}
+                        className="display-title text-xl font-bold text-[var(--text-primary)]"
+                      >
+                        {group.category}
+                      </h3>
+                      <p className="text-sm font-semibold text-[var(--text-secondary)]">
+                        {formatResourceCount(group.resources.length)}
+                      </p>
+                    </div>
+                    <p className="mt-1 text-sm leading-relaxed text-[var(--text-secondary)]">
+                      Focus: {group.topics.join(", ")}
+                      {group.topics.length === 4 ? ", and related topics" : ""}.
                     </p>
                   </div>
-                  <p className="mt-1 text-sm leading-relaxed text-[var(--text-secondary)]">
-                    Focus: {group.topics.join(", ")}
-                    {group.topics.length === 4 ? ", and related topics" : ""}.
-                  </p>
-                </div>
-                <ul className="grid gap-4 lg:grid-cols-2">
-                  {group.resources.map((resource) => (
-                    <li key={resource.id}>
-                      <ResourceCard resource={resource} />
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            ))}
+                  <ul className="grid gap-4 lg:grid-cols-2">
+                    {group.resources.map((resource) => (
+                      <li key={resource.id}>
+                        <ResourceCard resource={resource} />
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              );
+            })}
           </div>
         )}
       </section>

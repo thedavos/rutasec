@@ -121,7 +121,7 @@ export function CatalogFiltersBar({ filters, filterOptions, resultLabel }: Catal
                 "shrink-0",
                 isActive
                   ? ""
-                  : "border-[var(--primary-border)] bg-[var(--primary-soft)] text-[var(--primary-hover)] hover:bg-[var(--primary-soft)] hover:text-[var(--primary-hover)]",
+                  : "border-[var(--primary-border)] bg-[var(--primary-soft)] text-[var(--primary-hover)]",
               )}
               onClick={() =>
                 applyFilters({
