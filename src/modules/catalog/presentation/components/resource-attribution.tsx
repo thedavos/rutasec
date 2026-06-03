@@ -1,4 +1,5 @@
 import type { CatalogResourceCardAttribution } from "#/modules/catalog/domain/entities/resource";
+import { areNamedSourcesEqual } from "#/shared/utils/are-named-sources-equal";
 import { cn } from "#/shared/utils";
 
 type ResourceAttributionProps = {
@@ -20,6 +21,17 @@ function AttributionRow({ label, href, name }: { label: string; href: string; na
 }
 
 export function ResourceAttribution({ attribution, className }: ResourceAttributionProps) {
+  const showCuratedFrom = !areNamedSourcesEqual(
+    {
+      name: attribution.originalSourceName,
+      url: attribution.originalSourceUrl,
+    },
+    {
+      name: attribution.curatedFromName,
+      url: attribution.curatedFromUrl,
+    },
+  );
+
   return (
     <div
       className={cn("space-y-3 text-sm leading-relaxed text-[var(--text-secondary)]", className)}
@@ -29,11 +41,13 @@ export function ResourceAttribution({ attribution, className }: ResourceAttribut
         href={attribution.originalSourceUrl}
         name={attribution.originalSourceName}
       />
-      <AttributionRow
-        label="Curated from"
-        href={attribution.curatedFromUrl}
-        name={attribution.curatedFromName}
-      />
+      {showCuratedFrom ? (
+        <AttributionRow
+          label="Curated from"
+          href={attribution.curatedFromUrl}
+          name={attribution.curatedFromName}
+        />
+      ) : null}
     </div>
   );
 }
