@@ -1,0 +1,35 @@
+---
+description: Where to place generic pure helpers (shared utils vs feature code)
+globs: src/**/*.ts,src/**/*.tsx
+alwaysApply: false
+---
+
+# Shared utilities
+
+Use `src/shared/utils/` for **generic, reusable pure functions** that are not tied to one feature module.
+
+## When to add a shared util
+
+- The function has **no feature-specific types or business rules** (e.g. trim/lowercase text, normalize URLs for comparison, safe redirect parsing).
+- Another module could reuse it without importing catalog/library/domain code.
+- It is **framework-agnostic** (no React, TanStack, D1, Better Auth, or Zod).
+
+## When to keep code in a module
+
+- The helper encodes **feature rules** (catalog filters, library save semantics, timeline scheduling).
+- It depends on **domain entities**, ports, or module-only types.
+- It is only used in one presentation component and is a thin glue line — prefer inlining unless it is genuinely reusable.
+
+## File layout
+
+- One concern per file: `normalize-comparable-url.ts`, `are-named-sources-equal.ts`.
+- Colocate tests: `*.test.ts` beside the util (same pattern as `safe-redirect-path.ts`).
+- `src/shared/utils.ts` stays for `cn()` only; do not grow it with unrelated helpers.
+
+## Imports
+
+```ts
+import { areNamedSourcesEqual } from "#/shared/utils/are-named-sources-equal";
+```
+
+Do not duplicate generic helpers under `modules/<feature>/presentation/` or `components/`.

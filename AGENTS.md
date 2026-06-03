@@ -19,6 +19,7 @@ Detailed rules live in **`.cursor/rules/`** (`.mdc` files). Prefer those over ge
 | `sentry.mdc`         | `src/**` — instrument server functions                  |
 | `testing.mdc`        | Always — Vitest, Playwright, coverage, layer boundaries |
 | `ui-shadcn.mdc`      | UI files — shadcn/ui required for pages and components  |
+| `shared-utils.mdc`   | `src/**` — generic pure helpers → `src/shared/utils/`   |
 
 ## Stack
 
@@ -32,7 +33,8 @@ Do not introduce Astro, Next.js, Durable Objects, Queues, KV, or R2 unless expli
 src/routes/                    file-based routes (presentation)
 src/app/di/                    composition root (*.module.ts, incl. timeline.module.ts)
 src/modules/<feature>/         feature modules (catalog, library, identity, goals, dashboard, timeline — study plan generate/get + weekly view)
-src/shared/                    cross-cutting (db, domain/Result, utils)
+src/shared/                    cross-cutting (db, domain/Result, utils/)
+src/shared/utils.ts            cn() only; other helpers in src/shared/utils/
 db/schema.sql                  D1 schema
 docs/timeline-rules.md         frozen MVP timeline scheduling rules
 ```
@@ -91,6 +93,7 @@ vp test run
 
 ## Conventions
 
+- **Generic pure helpers** (no feature-specific rules) live in `src/shared/utils/` as one function per file with colocated `*.test.ts` — see `shared-utils.mdc`. Do not park reusable string/URL/compare helpers under a module’s `presentation/` folder.
 - Business logic and D1 access in server functions / loaders, not client components.
 - `resources` = editorial catalog; `user_resources` = personal state — keep them separate.
 - `src/modules/timeline` owns scheduling rules, study plan persistence (DAV-118), and the weekly timeline route (DAV-119).

@@ -1,5 +1,5 @@
 import type { CatalogResourceCardAttribution } from "#/modules/catalog/domain/entities/resource";
-import { areAttributionSourcesEqual } from "#/modules/catalog/presentation/components/compare-attribution-sources";
+import { areNamedSourcesEqual } from "#/shared/utils/are-named-sources-equal";
 import { cn } from "#/shared/utils";
 
 type ResourceAttributionProps = {
@@ -21,7 +21,7 @@ function AttributionRow({ label, href, name }: { label: string; href: string; na
 }
 
 export function ResourceAttribution({ attribution, className }: ResourceAttributionProps) {
-  const showCuratedFrom = !areAttributionSourcesEqual(
+  const showCuratedFrom = !areNamedSourcesEqual(
     {
       name: attribution.originalSourceName,
       url: attribution.originalSourceUrl,

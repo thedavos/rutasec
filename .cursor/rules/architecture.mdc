@@ -54,7 +54,8 @@ src/
     domain/                    # Result.ts and cross-module domain primitives
     adapters/                  # shared infra (if needed)
     db.ts                      # getDb() accessor
-    utils/
+    utils.ts                   # cn() only
+    utils/                     # generic pure helpers (see shared-utils.mdc)
   routes/                      # TanStack Start file-based routes — loaders call modules
   integrations/                # cross-cutting UI glue (prefer feature presentation/ when owned by a module)
 ```
