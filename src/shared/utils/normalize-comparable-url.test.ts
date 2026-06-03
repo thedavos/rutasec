@@ -7,6 +7,13 @@ describe("normalizeComparableUrl", () => {
     expect(normalizeComparableUrl("HTTPS://WWW.Example.COM/path/")).toBe("example.com/path");
   });
 
+  it("preserves non-default ports in the normalized host", () => {
+    expect(normalizeComparableUrl("http://Example.com:8080/path/")).toBe("example.com:8080/path");
+    expect(normalizeComparableUrl("http://example.com:9090/path")).not.toBe(
+      normalizeComparableUrl("http://example.com:8080/path"),
+    );
+  });
+
   it("falls back to trimmed lowercase strings for invalid urls", () => {
     expect(normalizeComparableUrl("  not-a-valid-url/  ")).toBe("not-a-valid-url");
   });
