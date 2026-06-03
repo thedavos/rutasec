@@ -40,21 +40,21 @@ export function GoalTimelinePage({ goal, plan, weeks }: GoalTimelinePageProps) {
           <Badge variant="outline">{goalStatusLabels[goal.status]}</Badge>
           <Badge
             variant="secondary"
-            className="island-kicker rounded-full border-[var(--chip-line)]"
+            className="island-kicker rounded-full border-[var(--primary-border)]"
           >
             {goal.hoursPerWeek} h/week
           </Badge>
         </div>
-        <h1 className="display-title mt-3 text-4xl font-bold tracking-tight text-[var(--sea-ink)] sm:text-5xl">
+        <h1 className="display-title mt-3 text-4xl font-bold text-[var(--text-primary)] sm:text-5xl">
           {goal.title}
         </h1>
-        <p className="mt-3 max-w-2xl text-base leading-relaxed text-[var(--sea-ink-soft)]">
+        <p className="mt-3 max-w-2xl text-base leading-relaxed text-[var(--text-secondary)]">
           Your weekly study plan for this goal, based on linked resources and your available hours.
         </p>
       </header>
 
       {!plan ? (
-        <Card className="island-shell rounded-2xl border-[var(--line)] py-8 shadow-none">
+        <Card className="island-shell rounded-2xl border-[var(--border-default)] py-8 shadow-none">
           <CardHeader>
             <CardTitle className="display-title text-xl">No study plan yet</CardTitle>
             <CardDescription>
@@ -67,14 +67,14 @@ export function GoalTimelinePage({ goal, plan, weeks }: GoalTimelinePageProps) {
         </Card>
       ) : (
         <>
-          <Card className="island-shell mb-8 rounded-2xl border-[var(--line)] shadow-none">
+          <Card className="island-shell mb-8 rounded-2xl border-[var(--border-default)] shadow-none">
             <CardHeader className="gap-2">
               <div className="flex flex-wrap items-center gap-2">
                 <Badge variant="outline">{studyPlanStatusLabels[plan.status]}</Badge>
                 <Badge variant="secondary">{plan.estimatedWeeks} weeks</Badge>
                 <Badge variant="secondary">{plan.totalEstimatedHours}h total</Badge>
               </div>
-              <CardTitle className="display-title text-xl font-bold text-[var(--sea-ink)]">
+              <CardTitle className="display-title text-xl font-bold text-[var(--text-primary)]">
                 {plan.title}
               </CardTitle>
               <CardDescription>

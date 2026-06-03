@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
+import { Search } from "lucide-react";
 
 import { Button } from "#/shared/presentation/ui/button";
-import { Card, CardContent, CardHeader } from "#/shared/presentation/ui/card";
 import { Input } from "#/shared/presentation/ui/input";
 import { Label } from "#/shared/presentation/ui/label";
 import {
@@ -16,6 +16,7 @@ import type {
   CatalogFilterOptions,
   CatalogListInput,
 } from "#/modules/catalog/domain/entities/resource";
+import { cn } from "#/shared/utils";
 
 const ALL_FILTER_VALUE = "__all__";
 const SEARCH_DEBOUNCE_MS = 300;
@@ -23,7 +24,7 @@ const SEARCH_DEBOUNCE_MS = 300;
 type CatalogFiltersProps = {
   filters: CatalogListInput;
   filterOptions: CatalogFilterOptions;
-  total: number;
+  resultLabel: string;
 };
 
 function buildSearch(next: CatalogListInput): CatalogListInput {
@@ -69,12 +70,16 @@ function CatalogSearchField({ filters, onApply }: CatalogSearchFieldProps) {
   }
 
   return (
-    <div className="grid gap-2">
-      <Label htmlFor="catalog-search">Search</Label>
+    <div className="relative w-full">
+      <Search
+        className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-[var(--text-muted)]"
+        aria-hidden="true"
+      />
       <Input
         id="catalog-search"
         type="search"
         placeholder="Search by title, topic, category, or tag"
+        className="w-full pl-9"
         value={value}
         onChange={(event) => setValue(event.target.value)}
         onKeyDown={(event) => {
@@ -88,7 +93,7 @@ function CatalogSearchField({ filters, onApply }: CatalogSearchFieldProps) {
   );
 }
 
-export function CatalogFiltersBar({ filters, filterOptions, total }: CatalogFiltersProps) {
+export function CatalogFiltersBar({ filters, filterOptions, resultLabel }: CatalogFiltersProps) {
   const navigate = useNavigate();
   const hasFilters = Boolean(
     filters.category || filters.level || filters.resourceType || filters.q,
@@ -102,71 +107,90 @@ export function CatalogFiltersBar({ filters, filterOptions, total }: CatalogFilt
   );
 
   return (
-    <Card
-      className="island-shell rise-in rounded-2xl border-[var(--line)] py-0 shadow-none"
-      aria-label="Catalog filters"
-    >
-      <CardHeader className="gap-4 px-5 pt-5 pb-0">
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <p className="island-kicker mb-1">Filter catalog</p>
-            <p className="text-sm text-[var(--sea-ink-soft)]">
-              {total} resource{total === 1 ? "" : "s"} shown
-            </p>
-          </div>
-          {hasFilters ? (
-            <Button type="button" variant="outline" size="sm" onClick={() => applyFilters({})}>
-              Clear filters
+    <section className="rise-in mx-auto grid w-full max-w-3xl gap-5" aria-label="Catalog filters">
+      <div className="flex flex-wrap justify-center gap-2" aria-label="Catalog categories">
+        {filterOptions.categories.map((category) => {
+          const isActive = filters.category === category;
+          return (
+            <Button
+              key={category}
+              type="button"
+              variant={isActive ? "default" : "outline"}
+              size="sm"
+              className={cn(
+                "shrink-0",
+                isActive
+                  ? ""
+                  : "border-[var(--primary-border)] bg-[var(--primary-soft)] text-[var(--primary-hover)] hover:bg-[var(--primary-soft)] hover:text-[var(--primary-hover)]",
+              )}
+              onClick={() =>
+                applyFilters({
+                  ...filters,
+                  category: isActive ? undefined : category,
+                })
+              }
+            >
+              {category}
             </Button>
-          ) : null}
-        </div>
-      </CardHeader>
+          );
+        })}
+      </div>
 
-      <CardContent className="grid gap-4 px-5 pt-4 pb-5">
+      <div className="w-full">
         <CatalogSearchField filters={filters} onApply={applyFilters} />
-        <div className="grid gap-4 sm:grid-cols-3">
-          <FilterSelect
-            label="Category"
-            value={filters.category ?? ""}
-            options={filterOptions.categories.map((value) => ({ value, label: value }))}
-            onSelect={(category) =>
-              applyFilters({
-                ...filters,
-                category: category || undefined,
-              })
-            }
-          />
-          <FilterSelect
-            label="Level"
-            value={filters.level ?? ""}
-            options={filterOptions.levels.map((value) => ({
-              value,
-              label: value.charAt(0).toUpperCase() + value.slice(1),
-            }))}
-            onSelect={(level) =>
-              applyFilters({
-                ...filters,
-                level: (level || undefined) as CatalogListInput["level"],
-              })
-            }
-          />
-          <FilterSelect
-            label="Type"
-            value={filters.resourceType ?? ""}
-            options={filterOptions.resourceTypes.map((value) => ({
-              value,
-              label: value.charAt(0).toUpperCase() + value.slice(1),
-            }))}
-            onSelect={(resourceType) =>
-              applyFilters({
-                ...filters,
-                resourceType: (resourceType || undefined) as CatalogListInput["resourceType"],
-              })
-            }
-          />
+        <p className="mt-2 text-sm text-[var(--text-secondary)]">{resultLabel}</p>
+      </div>
+
+      <div className="grid w-full gap-4 sm:grid-cols-3">
+        <FilterSelect
+          label="Category"
+          value={filters.category ?? ""}
+          options={filterOptions.categories.map((value) => ({ value, label: value }))}
+          onSelect={(category) =>
+            applyFilters({
+              ...filters,
+              category: category || undefined,
+            })
+          }
+        />
+        <FilterSelect
+          label="Level"
+          value={filters.level ?? ""}
+          options={filterOptions.levels.map((value) => ({
+            value,
+            label: value.charAt(0).toUpperCase() + value.slice(1),
+          }))}
+          onSelect={(level) =>
+            applyFilters({
+              ...filters,
+              level: (level || undefined) as CatalogListInput["level"],
+            })
+          }
+        />
+        <FilterSelect
+          label="Type"
+          value={filters.resourceType ?? ""}
+          options={filterOptions.resourceTypes.map((value) => ({
+            value,
+            label: value.charAt(0).toUpperCase() + value.slice(1),
+          }))}
+          onSelect={(resourceType) =>
+            applyFilters({
+              ...filters,
+              resourceType: (resourceType || undefined) as CatalogListInput["resourceType"],
+            })
+          }
+        />
+      </div>
+
+      {hasFilters ? (
+        <div className="flex justify-center">
+          <Button type="button" variant="outline" size="sm" onClick={() => applyFilters({})}>
+            Clear filters
+          </Button>
         </div>
-      </CardContent>
-    </Card>
+      ) : null}
+    </section>
   );
 }
 

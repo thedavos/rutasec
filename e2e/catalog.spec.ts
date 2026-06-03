@@ -10,10 +10,10 @@ test("public catalog lists resources without login", async ({ page }) => {
   await expect(
     page.getByRole("heading", { name: /Cybersecurity learning resources/i }),
   ).toBeVisible();
-  await expect(page.getByLabel("Catalog filters")).toBeVisible();
-  await expect(page.getByLabel("Catalog transparency")).toBeVisible();
-  await expect(page.getByText(/Original source:/).first()).toBeVisible();
-  await expect(page.getByText(/Curated from:/).first()).toBeVisible();
+  await expect(catalogResourceTitleLink(page, /Linux Journey/i)).toBeVisible();
+  await expect(page.getByText("Beginner").first()).toBeVisible();
+  await expect(page.getByText("Free").first()).toBeVisible();
+  await expect(page.getByText("Hours").first()).toBeVisible();
 });
 
 test("resource detail shows linked attribution", async ({ page }) => {

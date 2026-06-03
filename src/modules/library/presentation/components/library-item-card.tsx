@@ -24,7 +24,7 @@ export function LibraryItemCard({ item }: LibraryItemCardProps) {
         <div className="flex flex-wrap items-center gap-2">
           <Badge
             variant="secondary"
-            className="island-kicker rounded-full border-[var(--chip-line)]"
+            className="island-kicker rounded-full border-[var(--primary-border)]"
           >
             {item.category}
           </Badge>
@@ -38,7 +38,7 @@ export function LibraryItemCard({ item }: LibraryItemCardProps) {
           <Link
             to="/resources/$id"
             params={{ id: item.resourceId }}
-            className="text-[var(--sea-ink)] no-underline hover:text-[var(--lagoon-deep)]"
+            className="text-[var(--text-primary)] no-underline hover:text-[var(--primary-hover)]"
           >
             {item.title}
           </Link>
@@ -46,7 +46,7 @@ export function LibraryItemCard({ item }: LibraryItemCardProps) {
       </CardHeader>
 
       <CardContent className="px-5 pt-2 pb-5">
-        <CardDescription className="text-sm text-[var(--sea-ink-soft)]">
+        <CardDescription className="text-sm text-[var(--text-secondary)]">
           Saved {new Date(item.savedAt).toLocaleDateString()}
           {item.progressPercentage > 0 ? ` · ${item.progressPercentage}% progress` : null}
         </CardDescription>

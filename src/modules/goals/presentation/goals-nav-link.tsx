@@ -12,7 +12,11 @@ export function GoalsNavLink() {
 
   return (
     <Button variant="ghost" size="sm" asChild className="font-semibold">
-      <Link to="/goals" className="nav-link">
+      <Link
+        to="/goals"
+        className="nav-link"
+        activeProps={{ className: "is-active", "aria-current": "page" }}
+      >
         Goals
       </Link>
     </Button>

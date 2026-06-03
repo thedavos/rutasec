@@ -79,11 +79,11 @@ export function ResourceProgressPanel({
 
   return (
     <div className="space-y-4">
-      <Separator className="bg-[var(--line)]" />
+      <Separator className="bg-[var(--border-default)]" />
 
       <div className="space-y-1">
-        <p className="text-sm font-semibold text-[var(--sea-ink)]">Learning progress</p>
-        <p className="text-xs leading-relaxed text-[var(--sea-ink-soft)]">
+        <p className="text-sm font-semibold text-[var(--text-primary)]">Learning progress</p>
+        <p className="text-xs leading-relaxed text-[var(--text-secondary)]">
           Track status and completion for this saved resource.
         </p>
       </div>
@@ -126,12 +126,12 @@ export function ResourceProgressPanel({
       </div>
 
       {userResource.startedAt ? (
-        <p className="text-xs text-[var(--sea-ink-soft)]">
+        <p className="text-xs text-[var(--text-secondary)]">
           Started {formatDate(userResource.startedAt)}
         </p>
       ) : null}
       {userResource.completedAt ? (
-        <p className="text-xs text-[var(--sea-ink-soft)]">
+        <p className="text-xs text-[var(--text-secondary)]">
           Completed {formatDate(userResource.completedAt)}
         </p>
       ) : null}

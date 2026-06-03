@@ -3,16 +3,15 @@ import { cn } from "#/shared/utils";
 
 type ResourceAttributionProps = {
   attribution: CatalogResourceCardAttribution;
-  variant?: "compact" | "full";
   className?: string;
 };
 
-const linkClassName = "font-semibold text-[var(--sea-ink)] underline-offset-2 hover:underline";
+const linkClassName = "font-semibold text-[var(--text-primary)] underline-offset-2 hover:underline";
 
 function AttributionRow({ label, href, name }: { label: string; href: string; name: string }) {
   return (
     <p>
-      <span className="font-semibold text-[var(--sea-ink)]">{label}: </span>
+      <span className="font-semibold text-[var(--text-primary)]">{label}: </span>
       <a href={href} target="_blank" rel="noopener noreferrer" className={linkClassName}>
         {name}
       </a>
@@ -20,18 +19,10 @@ function AttributionRow({ label, href, name }: { label: string; href: string; na
   );
 }
 
-export function ResourceAttribution({
-  attribution,
-  variant = "compact",
-  className,
-}: ResourceAttributionProps) {
+export function ResourceAttribution({ attribution, className }: ResourceAttributionProps) {
   return (
     <div
-      className={cn(
-        "leading-relaxed text-[var(--sea-ink-soft)]",
-        variant === "compact" ? "space-y-1 text-xs" : "space-y-3 text-sm",
-        className,
-      )}
+      className={cn("space-y-3 text-sm leading-relaxed text-[var(--text-secondary)]", className)}
     >
       <AttributionRow
         label="Original source"

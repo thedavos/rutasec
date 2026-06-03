@@ -18,7 +18,7 @@ type WeeklyTimelineProps = {
 export function WeeklyTimeline({ weeks }: WeeklyTimelineProps) {
   if (weeks.length === 0) {
     return (
-      <Card className="island-shell rounded-2xl border-[var(--line)] py-6 shadow-none">
+      <Card className="island-shell rounded-2xl border-[var(--border-default)] py-6 shadow-none">
         <CardHeader>
           <CardTitle className="display-title text-lg">No scheduled resources</CardTitle>
           <CardDescription>
@@ -33,7 +33,7 @@ export function WeeklyTimeline({ weeks }: WeeklyTimelineProps) {
     <ol className="grid gap-4">
       {weeks.map((week) => (
         <li key={week.weekNumber}>
-          <Card className="island-shell rounded-2xl border-[var(--line)] shadow-none">
+          <Card className="island-shell rounded-2xl border-[var(--border-default)] shadow-none">
             <CardHeader className="gap-2">
               <p className="island-kicker mb-0">Week {week.weekNumber}</p>
               <CardDescription>
@@ -45,12 +45,12 @@ export function WeeklyTimeline({ weeks }: WeeklyTimelineProps) {
                 {week.items.map((item) => (
                   <li
                     key={item.id}
-                    className="flex flex-wrap items-center justify-between gap-2 border-t border-[var(--line)] pt-3 first:border-t-0 first:pt-0"
+                    className="flex flex-wrap items-center justify-between gap-2 border-t border-[var(--border-default)] pt-3 first:border-t-0 first:pt-0"
                   >
                     <Link
                       to="/resources/$id"
                       params={{ id: item.resourceId }}
-                      className="font-semibold text-[var(--sea-ink)] no-underline hover:text-[var(--lagoon-deep)]"
+                      className="font-semibold text-[var(--text-primary)] no-underline hover:text-[var(--primary-hover)]"
                     >
                       {item.title}
                     </Link>

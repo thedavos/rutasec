@@ -12,7 +12,11 @@ export function DashboardNavLink() {
 
   return (
     <Button variant="ghost" size="sm" asChild className="font-semibold">
-      <Link to="/dashboard" className="nav-link">
+      <Link
+        to="/dashboard"
+        className="nav-link"
+        activeProps={{ className: "is-active", "aria-current": "page" }}
+      >
         Dashboard
       </Link>
     </Button>

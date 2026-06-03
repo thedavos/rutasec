@@ -9,7 +9,7 @@ type GoalLinkedResourcesProps = {
 export function GoalLinkedResources({ resources }: GoalLinkedResourcesProps) {
   if (resources.length === 0) {
     return (
-      <p className="text-sm text-[var(--sea-ink-soft)]">No resources linked to this goal yet.</p>
+      <p className="text-sm text-[var(--text-secondary)]">No resources linked to this goal yet.</p>
     );
   }
 
@@ -20,11 +20,11 @@ export function GoalLinkedResources({ resources }: GoalLinkedResourcesProps) {
           <Link
             to="/resources/$id"
             params={{ id: resource.resourceId }}
-            className="text-sm font-medium text-[var(--sea-ink)] underline-offset-4 hover:underline"
+            className="text-sm font-medium text-[var(--text-primary)] underline-offset-4 hover:underline"
           >
             {resource.title}
           </Link>
-          <span className="ml-2 text-xs text-[var(--sea-ink-soft)]">
+          <span className="ml-2 text-xs text-[var(--text-secondary)]">
             {resource.category} · {resource.level}
           </span>
         </li>
