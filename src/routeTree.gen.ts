@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SignUpRouteImport } from './routes/sign-up'
 import { Route as SignInRouteImport } from './routes/sign-in'
+import { Route as SendResourceRouteImport } from './routes/send-resource'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as LibraryIndexRouteImport } from './routes/library/index'
 import { Route as GoalsIndexRouteImport } from './routes/goals/index'
@@ -27,6 +28,11 @@ const SignUpRoute = SignUpRouteImport.update({
 const SignInRoute = SignInRouteImport.update({
   id: '/sign-in',
   path: '/sign-in',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SendResourceRoute = SendResourceRouteImport.update({
+  id: '/send-resource',
+  path: '/send-resource',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -67,6 +73,7 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/send-resource': typeof SendResourceRoute
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
   '/resources/$id': typeof ResourcesIdRoute
@@ -78,6 +85,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/send-resource': typeof SendResourceRoute
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
   '/resources/$id': typeof ResourcesIdRoute
@@ -90,6 +98,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/send-resource': typeof SendResourceRoute
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
   '/resources/$id': typeof ResourcesIdRoute
@@ -103,6 +112,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/send-resource'
     | '/sign-in'
     | '/sign-up'
     | '/resources/$id'
@@ -114,6 +124,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/send-resource'
     | '/sign-in'
     | '/sign-up'
     | '/resources/$id'
@@ -125,6 +136,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/send-resource'
     | '/sign-in'
     | '/sign-up'
     | '/resources/$id'
@@ -137,6 +149,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  SendResourceRoute: typeof SendResourceRoute
   SignInRoute: typeof SignInRoute
   SignUpRoute: typeof SignUpRoute
   ResourcesIdRoute: typeof ResourcesIdRoute
@@ -161,6 +174,13 @@ declare module '@tanstack/react-router' {
       path: '/sign-in'
       fullPath: '/sign-in'
       preLoaderRoute: typeof SignInRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/send-resource': {
+      id: '/send-resource'
+      path: '/send-resource'
+      fullPath: '/send-resource'
+      preLoaderRoute: typeof SendResourceRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -217,6 +237,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  SendResourceRoute: SendResourceRoute,
   SignInRoute: SignInRoute,
   SignUpRoute: SignUpRoute,
   ResourcesIdRoute: ResourcesIdRoute,
