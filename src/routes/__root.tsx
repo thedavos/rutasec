@@ -5,6 +5,7 @@ import { ShieldCheck } from "lucide-react";
 
 import { AuthHeader } from "#/modules/identity/presentation/auth-header";
 import { AuthenticatedNavGroup } from "#/shared/presentation/layout/authenticated-nav-group";
+import { PublicNavGroup } from "#/shared/presentation/layout/public-nav-group";
 import {
   footerSignInPrompt,
   footerTransparencyCopy,
@@ -78,7 +79,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
               </Link>
               <nav aria-label="Main" className="flex max-w-[48vw] items-center gap-1 sm:max-w-none">
                 <AuthenticatedNavGroup />
-                {/* PublicNavLinks — DAV-127 */}
+                <PublicNavGroup />
               </nav>
               <AuthHeader />
             </div>

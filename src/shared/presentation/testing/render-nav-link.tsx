@@ -45,6 +45,11 @@ function createNavTestRouteTree(NavLink: ComponentType) {
     path: "/resources/$id",
   });
 
+  const sendResourceRoute = createRoute({
+    getParentRoute: () => rootRoute,
+    path: "/send-resource",
+  });
+
   return rootRoute.addChildren([
     indexRoute,
     dashboardRoute,
@@ -52,6 +57,7 @@ function createNavTestRouteTree(NavLink: ComponentType) {
     goalsRoute,
     goalTimelineRoute,
     resourceRoute,
+    sendResourceRoute,
   ]);
 }
 
