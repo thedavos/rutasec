@@ -5,12 +5,12 @@ export type ProposalLanguage = "en" | "es";
 export type ResourceProposalConfirmations = {
   isFree: boolean;
   isEnglishOrSpanish: boolean;
-  doesNotModifyCatalog: boolean;
 };
 
 export type ResourceProposalInput = {
   url: string;
   title: string;
+  authorOrProject: string;
   category: string;
   format: ResourceType;
   language: ProposalLanguage;
@@ -35,6 +35,7 @@ export type ResourceProposalValidation =
 export const EMPTY_RESOURCE_PROPOSAL_INPUT: ResourceProposalInput = {
   url: "",
   title: "",
+  authorOrProject: "",
   category: "",
   format: "article",
   language: "en",
@@ -42,6 +43,5 @@ export const EMPTY_RESOURCE_PROPOSAL_INPUT: ResourceProposalInput = {
   confirmations: {
     isFree: false,
     isEnglishOrSpanish: false,
-    doesNotModifyCatalog: false,
   },
 };

@@ -18,11 +18,12 @@ type CopyFeedback = "idle" | "copied" | "failed";
 export function SendResourcePage() {
   const [input, setInput] = useState<ResourceProposalInput>(EMPTY_RESOURCE_PROPOSAL_INPUT);
   const [copyFeedback, setCopyFeedback] = useState<CopyFeedback>("idle");
+  const [showValidation, setShowValidation] = useState(false);
 
   const validation = useMemo(() => validateResourceProposal(input), [input]);
   const issue = useMemo(() => buildResourceProposalIssue(input), [input]);
   const isComplete = validation.ok;
-  const errors = validation.ok ? {} : validation.errors;
+  const errors = showValidation && !validation.ok ? validation.errors : {};
 
   function updateField<K extends keyof ResourceProposalInput>(
     key: K,
@@ -39,6 +40,7 @@ export function SendResourcePage() {
   }
 
   function handleOpenGitHubIssue() {
+    setShowValidation(true);
     if (!isComplete) {
       return;
     }
@@ -47,21 +49,17 @@ export function SendResourcePage() {
   }
 
   async function handleCopyProposal() {
-    if (!isComplete) {
-      return;
-    }
-
     const copied = await copyTextToClipboard(issue.bodyMarkdown);
     setCopyFeedback(copied ? "copied" : "failed");
     window.setTimeout(() => setCopyFeedback("idle"), 2000);
   }
 
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-col gap-8">
+    <div className="mx-auto flex w-full max-w-6xl flex-col gap-12">
       <header className="max-w-3xl">
         <p className="island-kicker mb-2">Send Resource</p>
         <h1 className="display-title text-3xl font-bold text-[var(--text-primary)] sm:text-4xl">
-          Proponer recursos gratuitos
+          Propose free resources
         </h1>
         <p className="mt-3 text-[var(--text-secondary)]">
           Prepare a GitHub issue with the minimum fields we review: link, title, category, format,
@@ -73,7 +71,6 @@ export function SendResourcePage() {
         <ResourceProposalForm
           input={input}
           errors={errors}
-          isComplete={isComplete}
           copyFeedback={copyFeedback}
           onFieldChange={updateField}
           onConfirmationChange={updateConfirmation}

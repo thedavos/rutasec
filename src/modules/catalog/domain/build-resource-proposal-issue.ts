@@ -1,4 +1,4 @@
-import { RESOURCE_TYPES } from "#/modules/catalog/domain/entities/resource";
+import { RESOURCE_TYPES, type ResourceType } from "#/modules/catalog/domain/entities/resource";
 import type {
   ProposalLanguage,
   ResourceProposalField,
@@ -8,13 +8,50 @@ import type {
 } from "#/modules/catalog/domain/entities/resource-proposal";
 import { RUTASEC_GITHUB_ISSUES_NEW_URL } from "#/shared/constants/rutasec-github";
 
+const PROPOSAL_FORMAT_SLUGS: Record<ResourceType, string> = {
+  course: "course",
+  book: "book",
+  documentation: "documentation",
+  video: "video",
+  lab: "lab",
+  tool: "tool",
+  article: "article",
+};
+
+const PROPOSAL_FORMAT_LABELS: Record<ResourceType, string> = {
+  course: "Course",
+  book: "Book",
+  documentation: "Documentation",
+  video: "Video",
+  lab: "Lab",
+  tool: "Tool",
+  article: "Article",
+};
+
 const PROPOSAL_LANGUAGE_LABELS: Record<ProposalLanguage, string> = {
   en: "English",
   es: "Spanish",
 };
 
-export function escapeMarkdownTableCell(value: string): string {
-  return value.replace(/\|/g, "\\|");
+const MAINTAINER_CHECKLIST = [
+  "The resource is free and legal",
+  "It is available in English or Spanish",
+  "It is not a standalone blog post",
+  "It fits the suggested category or was adjusted to another",
+  "It does not duplicate an existing entry except new edition/translation",
+] as const;
+
+function confirmationCheckbox(checked: boolean, label: string): string {
+  return `- [${checked ? "x" : " "}] ${label}`;
+}
+
+function languageConfirmationLabel(language: ProposalLanguage): string {
+  return language === "es" ? "It is in Spanish" : "It is in English";
+}
+
+function authorOrProjectLabel(authorOrProject: string): string {
+  const trimmed = authorOrProject.trim();
+  return trimmed.length > 0 ? trimmed : "Not specified";
 }
 
 export function isValidHttpUrl(url: string): boolean {
@@ -63,8 +100,6 @@ export function validateResourceProposal(raw: ResourceProposalInput): ResourcePr
     errors.confirmations = "Confirm the resource is free.";
   } else if (!raw.confirmations.isEnglishOrSpanish) {
     errors.confirmations = "Confirm the resource is available in English or Spanish.";
-  } else if (!raw.confirmations.doesNotModifyCatalog) {
-    errors.confirmations = "Confirm this proposal does not modify the catalog directly.";
   }
 
   if (Object.keys(errors).length > 0) {
@@ -76,6 +111,7 @@ export function validateResourceProposal(raw: ResourceProposalInput): ResourcePr
     value: {
       url,
       title,
+      authorOrProject: raw.authorOrProject.trim(),
       category,
       format: raw.format,
       language: raw.language,
@@ -86,27 +122,38 @@ export function validateResourceProposal(raw: ResourceProposalInput): ResourcePr
 }
 
 export function buildResourceProposalIssue(input: ResourceProposalInput): ResourceProposalIssue {
-  const title = `[Resource proposal] ${input.title.trim()}`;
-  const notesSection = input.notes.trim() ? input.notes.trim() : "_No additional notes._";
+  const titleText = input.title.trim();
+  const formatSlug = PROPOSAL_FORMAT_SLUGS[input.format] ?? "resource";
+  const title = `[new-${formatSlug}] ${titleText || "New free resource"}`;
+  const notesSection = input.notes.trim() ? input.notes.trim() : "No additional note.";
+  const formatLabel = PROPOSAL_FORMAT_LABELS[input.format] ?? input.format;
+  const languageLabel = PROPOSAL_LANGUAGE_LABELS[input.language] ?? input.language;
 
   const bodyMarkdown = [
-    "## Resource proposal",
+    "## Resource details",
     "",
-    "| Field | Value |",
-    "| --- | --- |",
-    `| URL | ${escapeMarkdownTableCell(input.url.trim())} |`,
-    `| Title | ${escapeMarkdownTableCell(input.title.trim())} |`,
-    `| Category | ${escapeMarkdownTableCell(input.category.trim())} |`,
-    `| Format | ${escapeMarkdownTableCell(input.format)} |`,
-    `| Language | ${escapeMarkdownTableCell(PROPOSAL_LANGUAGE_LABELS[input.language])} |`,
+    `- **Title:** ${titleText}`,
+    `- **Author or project:** ${authorOrProjectLabel(input.authorOrProject)}`,
+    `- **Link:** ${input.url.trim()}`,
+    `- **Suggested category:** ${input.category.trim()}`,
+    `- **Format:** ${formatLabel}`,
+    `- **Language:** ${languageLabel}`,
     "",
-    "### Notes",
+    "## Confirmations",
+    "",
+    confirmationCheckbox(input.confirmations.isFree, "It is free, with no paywall or trial"),
+    confirmationCheckbox(
+      input.confirmations.isEnglishOrSpanish,
+      languageConfirmationLabel(input.language),
+    ),
+    "",
+    "## Why it should be in the catalog",
+    "",
     notesSection,
     "",
-    "### Eligibility",
-    "- [x] Free resource",
-    "- [x] Available in English or Spanish",
-    "- [x] Proposal only — does not modify the catalog directly",
+    "## Maintainer checklist",
+    "",
+    ...MAINTAINER_CHECKLIST.map((item) => confirmationCheckbox(false, item)),
   ].join("\n");
 
   const issueUrl = `${RUTASEC_GITHUB_ISSUES_NEW_URL}?title=${encodeURIComponent(title)}&body=${encodeURIComponent(bodyMarkdown)}`;
