@@ -3,11 +3,8 @@ import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { TanStackDevtools } from "@tanstack/react-devtools";
 import { ShieldCheck } from "lucide-react";
 
-import { CatalogNavLink } from "#/modules/catalog/presentation/catalog-nav-link";
 import { AuthHeader } from "#/modules/identity/presentation/auth-header";
-import { DashboardNavLink } from "#/modules/dashboard/presentation/dashboard-nav-link";
-import { LibraryNavLink } from "#/modules/identity/presentation/library-nav-link";
-import { GoalsNavLink } from "#/modules/goals/presentation/goals-nav-link";
+import { AuthenticatedNavGroup } from "#/shared/presentation/layout/authenticated-nav-group";
 import {
   footerSignInPrompt,
   footerTransparencyCopy,
@@ -79,14 +76,9 @@ function RootDocument({ children }: { children: React.ReactNode }) {
                   </span>
                 </span>
               </Link>
-              <nav
-                aria-label="Main"
-                className="flex max-w-[48vw] items-center gap-1 overflow-x-auto rounded-md border border-[var(--border-default)] bg-[var(--surface)] p-1 sm:max-w-none"
-              >
-                <CatalogNavLink />
-                <DashboardNavLink />
-                <LibraryNavLink />
-                <GoalsNavLink />
+              <nav aria-label="Main" className="flex max-w-[48vw] items-center gap-1 sm:max-w-none">
+                <AuthenticatedNavGroup />
+                {/* PublicNavLinks — DAV-127 */}
               </nav>
               <AuthHeader />
             </div>
