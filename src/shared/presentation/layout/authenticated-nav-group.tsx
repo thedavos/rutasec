@@ -1,22 +1,31 @@
-import { CatalogNavLink } from "#/modules/catalog/presentation/catalog-nav-link";
 import { DashboardNavLink } from "#/modules/dashboard/presentation/dashboard-nav-link";
-import { GoalsNavLink } from "#/modules/goals/presentation/goals-nav-link";
 import { authClient } from "#/modules/identity";
-import { LibraryNavLink } from "#/modules/identity/presentation/library-nav-link";
+import { GithubNavLink } from "#/shared/presentation/layout/github-nav-link";
+import {
+  navGroupContainerClass,
+  type NavGroupLayout,
+} from "#/shared/presentation/layout/nav-group-layout";
+import { ResourcesNavLink } from "#/shared/presentation/layout/resources-nav-link";
+import { SendResourceNavLink } from "#/shared/presentation/layout/send-resource-nav-link";
 
-export function AuthenticatedNavGroup() {
+type AuthenticatedNavGroupProps = {
+  layout?: NavGroupLayout;
+};
+
+export function AuthenticatedNavGroup({ layout = "inline" }: AuthenticatedNavGroupProps) {
   const { data: session, isPending } = authClient.useSession();
+  const stacked = layout === "stacked";
 
   if (isPending || !session?.user) {
     return null;
   }
 
   return (
-    <div className="flex items-center gap-1 overflow-x-auto rounded-md border border-[var(--border-default)] bg-[var(--surface)] p-1">
-      <CatalogNavLink />
-      <DashboardNavLink />
-      <LibraryNavLink />
-      <GoalsNavLink />
+    <div className={navGroupContainerClass(layout)}>
+      <ResourcesNavLink stacked={stacked} />
+      <DashboardNavLink stacked={stacked} />
+      <GithubNavLink stacked={stacked} />
+      <SendResourceNavLink stacked={stacked} />
     </div>
   );
 }

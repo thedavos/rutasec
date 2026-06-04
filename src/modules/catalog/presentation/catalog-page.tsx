@@ -93,7 +93,7 @@ export function CatalogPage({ catalog }: CatalogPageProps) {
         }`}
       />
 
-      <section className="rise-in mt-12" aria-label="Catalog resources">
+      <section className="rise-in mt-12 md:mt-20" aria-label="Catalog resources">
         {catalog.resources.length === 0 ? (
           <Card className="island-shell mt-8 rounded-2xl border-[var(--border-default)] py-8 shadow-none">
             <CardHeader className="text-center">

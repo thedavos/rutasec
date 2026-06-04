@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-import { SendResourcePlaceholderPage } from "#/modules/catalog/presentation/send-resource-placeholder-page";
+import { SendResourcePage } from "#/modules/catalog/presentation/send-resource-page";
 
 export const Route = createFileRoute("/send-resource")({
   head: () => ({
@@ -10,5 +10,5 @@ export const Route = createFileRoute("/send-resource")({
 });
 
 function SendResourceRoute() {
-  return <SendResourcePlaceholderPage />;
+  return <SendResourcePage />;
 }

@@ -1,18 +1,29 @@
-import { Github } from "lucide-react";
+import { authClient } from "#/modules/identity";
+import { GithubNavLink } from "#/shared/presentation/layout/github-nav-link";
+import {
+  navGroupContainerClass,
+  type NavGroupLayout,
+} from "#/shared/presentation/layout/nav-group-layout";
+import { ResourcesNavLink } from "#/shared/presentation/layout/resources-nav-link";
+import { SendResourceNavLink } from "#/shared/presentation/layout/send-resource-nav-link";
 
-import { MainNavExternalLink } from "#/shared/presentation/layout/main-nav-external-link";
-import { MainNavLink } from "#/shared/presentation/layout/main-nav-link";
-import { RUTASEC_GITHUB_URL } from "#/shared/presentation/layout/public-nav.constants";
+type PublicNavGroupProps = {
+  layout?: NavGroupLayout;
+};
 
-export function PublicNavGroup() {
+export function PublicNavGroup({ layout = "inline" }: PublicNavGroupProps) {
+  const { data: session, isPending } = authClient.useSession();
+  const stacked = layout === "stacked";
+
+  if (!isPending && session?.user) {
+    return null;
+  }
+
   return (
-    <div className="flex items-center gap-1 overflow-x-auto rounded-md border border-[var(--border-default)] bg-[var(--surface)] p-1">
-      <MainNavExternalLink
-        href={RUTASEC_GITHUB_URL}
-        label="GitHub"
-        icon={<Github className="size-4" aria-hidden />}
-      />
-      <MainNavLink to="/send-resource" label="Send Resource" />
+    <div className={navGroupContainerClass(layout)}>
+      <ResourcesNavLink stacked={stacked} />
+      <GithubNavLink stacked={stacked} />
+      <SendResourceNavLink stacked={stacked} />
     </div>
   );
 }

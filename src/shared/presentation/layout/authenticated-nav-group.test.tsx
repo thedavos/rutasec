@@ -55,7 +55,7 @@ describe("AuthenticatedNavGroup", () => {
     mockSignedOutSession();
     await renderNavLink("/", AuthenticatedNavGroup);
 
-    expect(screen.queryByRole("link", { name: "Catalog" })).toBeNull();
+    expect(screen.queryByRole("link", { name: "Resources" })).toBeNull();
     expect(screen.queryByRole("link", { name: "Dashboard" })).toBeNull();
     expect(screen.queryByRole("link", { name: "Library" })).toBeNull();
     expect(screen.queryByRole("link", { name: "Goals" })).toBeNull();
@@ -65,7 +65,7 @@ describe("AuthenticatedNavGroup", () => {
     mockPendingSession();
     await renderNavLink("/", AuthenticatedNavGroup);
 
-    expect(screen.queryByRole("link", { name: "Catalog" })).toBeNull();
+    expect(screen.queryByRole("link", { name: "Resources" })).toBeNull();
     expect(screen.queryByRole("link", { name: "Dashboard" })).toBeNull();
   });
 
@@ -73,9 +73,11 @@ describe("AuthenticatedNavGroup", () => {
     mockAuthenticatedSession();
     await renderNavLink("/", AuthenticatedNavGroup);
 
-    expect(screen.getByRole("link", { name: "Catalog" })).toBeTruthy();
+    expect(screen.getByRole("link", { name: "Resources" })).toBeTruthy();
     expect(screen.getByRole("link", { name: "Dashboard" })).toBeTruthy();
-    expect(screen.getByRole("link", { name: "Library" })).toBeTruthy();
-    expect(screen.getByRole("link", { name: "Goals" })).toBeTruthy();
+    expect(screen.queryByRole("link", { name: "Library" })).toBeNull();
+    expect(screen.queryByRole("link", { name: "Goals" })).toBeNull();
+    expect(screen.getByRole("link", { name: "GitHub" })).toBeTruthy();
+    expect(screen.getByRole("link", { name: "Send Resource" })).toBeTruthy();
   });
 });
