@@ -1,14 +1,26 @@
 name: Preview deploy
 
 on:
-  workflow_run:
-    workflows: [CI]
-    types: [completed]
-  pull_request:
-    types: [closed]
+  workflow_dispatch:
+    inputs:
+      target:
+        description: Preview action
+        required: true
+        type: choice
+        options:
+          - deploy
+          - cleanup
+      pr_number:
+        description: Pull request number
+        required: true
+        type: string
+      ref:
+        description: Git ref to deploy (branch, tag, or SHA; defaults to selected ref)
+        required: false
+        type: string
 
 concurrency:
-  group: preview-${{ github.event.pull_request.number || github.event.workflow_run.head_branch }}
+  group: preview-${{ inputs.pr_number }}
   cancel-in-progress: true
 
 env:
@@ -17,18 +29,15 @@ env:
 
 jobs:
   deploy-preview:
-    if: >
-      github.event_name == 'workflow_run' &&
-      github.event.workflow_run.conclusion == 'success' &&
-      github.event.workflow_run.event == 'pull_request'
+    if: inputs.target == 'deploy'
     runs-on: ubuntu-latest
     environment:
-      name: review/pr-${{ github.event.workflow_run.pull_requests[0].number }}
-      url: https://rutasec-pr-${{ github.event.workflow_run.pull_requests[0].number }}.davidvargas-d45.workers.dev
+      name: review/pr-${{ inputs.pr_number }}
+      url: https://rutasec-pr-${{ inputs.pr_number }}.davidvargas-d45.workers.dev
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.workflow_run.head_sha }}
+          ref: ${{ inputs.ref || github.ref }}
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -37,7 +46,7 @@ jobs:
       - run: npm run build
       - name: Deploy preview worker
         env:
-          PR_NUMBER: ${{ github.event.workflow_run.pull_requests[0].number }}
+          PR_NUMBER: ${{ inputs.pr_number }}
           BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
         run: |
           preview_worker_name="rutasec-pr-${PR_NUMBER}"
@@ -50,7 +59,7 @@ jobs:
           npx wrangler deploy --config dist/server/wrangler.json --name "$preview_worker_name" --secrets-file .preview.vars
 
   cleanup-preview:
-    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+    if: inputs.target == 'cleanup'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -59,4 +68,4 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npx wrangler delete "rutasec-pr-${{ github.event.pull_request.number }}" --force
+      - run: npx wrangler delete "rutasec-pr-${{ inputs.pr_number }}" --force
