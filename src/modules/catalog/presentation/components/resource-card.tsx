@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 
 import type { CatalogResourceCard } from "#/modules/catalog/domain/entities/resource";
+import { AddToLibraryButton } from "#/modules/library/presentation/add-to-library-button";
 import { Badge } from "#/shared/presentation/ui/badge";
 import { Button } from "#/shared/presentation/ui/button";
 import { Card } from "#/shared/presentation/ui/card";
@@ -74,11 +75,14 @@ export function ResourceCard({ resource }: ResourceCardProps) {
           </dl>
         </div>
 
-        <Button asChild size="sm" className="mt-auto w-fit text-white">
-          <a href={resource.url} target="_blank" rel="noopener noreferrer">
-            Visit resource
-          </a>
-        </Button>
+        <div className="mt-auto flex flex-wrap items-center gap-2">
+          <Button asChild size="sm" className="text-white">
+            <a href={resource.url} target="_blank" rel="noopener noreferrer">
+              Visit resource
+            </a>
+          </Button>
+          <AddToLibraryButton resourceId={resource.id} />
+        </div>
       </article>
     </Card>
   );
