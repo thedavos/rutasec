@@ -6,13 +6,16 @@ import type {
   ResourceProposalIssue,
   ResourceProposalValidation,
 } from "#/modules/catalog/domain/entities/resource-proposal";
-
-const RUTASEC_GITHUB_ISSUES_NEW_URL = "https://github.com/thedavos/rutasec/issues/new";
+import { RUTASEC_GITHUB_ISSUES_NEW_URL } from "#/shared/constants/rutasec-github";
 
 const PROPOSAL_LANGUAGE_LABELS: Record<ProposalLanguage, string> = {
   en: "English",
   es: "Spanish",
 };
+
+export function escapeMarkdownTableCell(value: string): string {
+  return value.replace(/\|/g, "\\|");
+}
 
 export function isValidHttpUrl(url: string): boolean {
   const trimmed = url.trim();
@@ -91,11 +94,11 @@ export function buildResourceProposalIssue(input: ResourceProposalInput): Resour
     "",
     "| Field | Value |",
     "| --- | --- |",
-    `| URL | ${input.url.trim()} |`,
-    `| Title | ${input.title.trim()} |`,
-    `| Category | ${input.category.trim()} |`,
-    `| Format | ${input.format} |`,
-    `| Language | ${PROPOSAL_LANGUAGE_LABELS[input.language]} |`,
+    `| URL | ${escapeMarkdownTableCell(input.url.trim())} |`,
+    `| Title | ${escapeMarkdownTableCell(input.title.trim())} |`,
+    `| Category | ${escapeMarkdownTableCell(input.category.trim())} |`,
+    `| Format | ${escapeMarkdownTableCell(input.format)} |`,
+    `| Language | ${escapeMarkdownTableCell(PROPOSAL_LANGUAGE_LABELS[input.language])} |`,
     "",
     "### Notes",
     notesSection,

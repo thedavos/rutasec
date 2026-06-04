@@ -32,7 +32,7 @@ type ResourceProposalFormProps = {
   input: ResourceProposalInput;
   errors: Partial<Record<ResourceProposalField, string>>;
   isComplete: boolean;
-  copyFeedback: boolean;
+  copyFeedback: "idle" | "copied" | "failed";
   onFieldChange: <K extends keyof ResourceProposalInput>(
     key: K,
     value: ResourceProposalInput[K],
@@ -220,9 +220,18 @@ export function ResourceProposalForm({
           Open GitHub issue
         </Button>
         <Button type="button" variant="outline" disabled={!isComplete} onClick={onCopyProposal}>
-          {copyFeedback ? "Copied" : "Copy proposal"}
+          {copyFeedback === "copied"
+            ? "Copied"
+            : copyFeedback === "failed"
+              ? "Copy failed"
+              : "Copy proposal"}
         </Button>
       </div>
+      {copyFeedback === "failed" ? (
+        <p className="mt-3 text-sm text-destructive" role="alert">
+          Could not copy automatically. Select the preview text and copy it manually.
+        </p>
+      ) : null}
     </div>
   );
 }

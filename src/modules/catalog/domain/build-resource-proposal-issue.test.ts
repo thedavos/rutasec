@@ -2,6 +2,7 @@ import { describe, expect, it } from "vite-plus/test";
 
 import {
   buildResourceProposalIssue,
+  escapeMarkdownTableCell,
   isValidHttpUrl,
   validateResourceProposal,
 } from "#/modules/catalog/domain/build-resource-proposal-issue";
@@ -103,5 +104,22 @@ describe("buildResourceProposalIssue", () => {
   it("uses a placeholder when notes are empty", () => {
     const issue = buildResourceProposalIssue({ ...validInput, notes: "   " });
     expect(issue.bodyMarkdown).toContain("_No additional notes._");
+  });
+
+  it("escapes pipe characters in markdown table cells", () => {
+    const issue = buildResourceProposalIssue({
+      ...validInput,
+      title: "A | B",
+      category: "Web | Security",
+    });
+
+    expect(issue.bodyMarkdown).toContain("| Title | A \\| B |");
+    expect(issue.bodyMarkdown).toContain("| Category | Web \\| Security |");
+  });
+});
+
+describe("escapeMarkdownTableCell", () => {
+  it("escapes pipe characters", () => {
+    expect(escapeMarkdownTableCell("a|b")).toBe("a\\|b");
   });
 });

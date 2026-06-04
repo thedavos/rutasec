@@ -11,10 +11,13 @@ import {
 } from "#/modules/catalog/domain/entities/resource-proposal";
 import { ResourceProposalForm } from "#/modules/catalog/presentation/components/resource-proposal-form";
 import { ResourceProposalPreview } from "#/modules/catalog/presentation/components/resource-proposal-preview";
+import { copyTextToClipboard } from "#/shared/utils/copy-text-to-clipboard";
+
+type CopyFeedback = "idle" | "copied" | "failed";
 
 export function SendResourcePage() {
   const [input, setInput] = useState<ResourceProposalInput>(EMPTY_RESOURCE_PROPOSAL_INPUT);
-  const [copyFeedback, setCopyFeedback] = useState(false);
+  const [copyFeedback, setCopyFeedback] = useState<CopyFeedback>("idle");
 
   const validation = useMemo(() => validateResourceProposal(input), [input]);
   const issue = useMemo(() => buildResourceProposalIssue(input), [input]);
@@ -48,9 +51,9 @@ export function SendResourcePage() {
       return;
     }
 
-    await navigator.clipboard.writeText(issue.bodyMarkdown);
-    setCopyFeedback(true);
-    window.setTimeout(() => setCopyFeedback(false), 2000);
+    const copied = await copyTextToClipboard(issue.bodyMarkdown);
+    setCopyFeedback(copied ? "copied" : "failed");
+    window.setTimeout(() => setCopyFeedback("idle"), 2000);
   }
 
   return (
@@ -58,7 +61,7 @@ export function SendResourcePage() {
       <header className="max-w-3xl">
         <p className="island-kicker mb-2">Send Resource</p>
         <h1 className="display-title text-3xl font-bold text-[var(--text-primary)] sm:text-4xl">
-          Proponer recursos gratuitos sin tocar el catálogo
+          Proponer recursos gratuitos
         </h1>
         <p className="mt-3 text-[var(--text-secondary)]">
           Prepare a GitHub issue with the minimum fields we review: link, title, category, format,
