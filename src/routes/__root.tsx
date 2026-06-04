@@ -5,6 +5,7 @@ import { ShieldCheck } from "lucide-react";
 
 import { AuthHeader } from "#/modules/identity/presentation/auth-header";
 import { AuthenticatedNavGroup } from "#/shared/presentation/layout/authenticated-nav-group";
+import { MobileNavDrawer } from "#/shared/presentation/layout/mobile-nav-drawer";
 import { PublicNavGroup } from "#/shared/presentation/layout/public-nav-group";
 import {
   footerSignInPrompt,
@@ -63,8 +64,8 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <body>
         <div className="flex min-h-screen flex-col">
           <header className="sticky top-0 z-20 border-b border-[var(--border-default)] bg-[var(--header-bg)] backdrop-blur-md">
-            <div className="page-wrap flex items-center justify-between gap-4 py-3">
-              <Link to="/" className="flex items-center gap-3 no-underline">
+            <div className="page-wrap flex items-center justify-between gap-3 py-3">
+              <Link to="/" className="flex min-w-0 items-center gap-3 no-underline">
                 <span className="brand-mark" aria-hidden="true">
                   <ShieldCheck className="size-4" />
                 </span>
@@ -77,11 +78,14 @@ function RootDocument({ children }: { children: React.ReactNode }) {
                   </span>
                 </span>
               </Link>
-              <nav aria-label="Main" className="flex max-w-[48vw] items-center gap-1 sm:max-w-none">
+              <nav className="hidden items-center gap-1 md:flex" aria-label="Main">
                 <AuthenticatedNavGroup />
                 <PublicNavGroup />
               </nav>
-              <AuthHeader />
+              <div className="flex shrink-0 items-center gap-2">
+                <AuthHeader />
+                <MobileNavDrawer />
+              </div>
             </div>
           </header>
 
