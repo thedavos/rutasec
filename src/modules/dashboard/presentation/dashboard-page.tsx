@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 
 import type { UserDashboard } from "#/modules/dashboard/domain/entities/user-dashboard";
+import { DashboardPageHeader } from "#/modules/dashboard/presentation/dashboard-page-header";
 import { statusLabels } from "#/modules/library/presentation/library-labels";
 import { Badge } from "#/shared/presentation/ui/badge";
 import { Button } from "#/shared/presentation/ui/button";
@@ -26,7 +27,7 @@ export function DashboardPage({ dashboard }: DashboardPageProps) {
   if (dashboard.isEmpty) {
     return (
       <div className="pb-16">
-        <header className="rise-in mb-8">
+        <DashboardPageHeader>
           <p className="island-kicker mb-2">Your dashboard</p>
           <h1 className="display-title text-4xl font-bold text-[var(--text-primary)] sm:text-5xl">
             Learning overview
@@ -34,7 +35,7 @@ export function DashboardPage({ dashboard }: DashboardPageProps) {
           <p className="mt-3 max-w-2xl text-base leading-relaxed text-[var(--text-secondary)]">
             Save resources from the catalog and set a learning goal to see your progress here.
           </p>
-        </header>
+        </DashboardPageHeader>
 
         <Card className="island-shell mt-8 rounded-2xl border-[var(--border-default)] py-8 shadow-none">
           <CardHeader className="text-center">
@@ -59,7 +60,7 @@ export function DashboardPage({ dashboard }: DashboardPageProps) {
 
   return (
     <div className="pb-16">
-      <header className="rise-in mb-8">
+      <DashboardPageHeader>
         <p className="island-kicker mb-2">Your dashboard</p>
         <h1 className="display-title text-4xl font-bold text-[var(--text-primary)] sm:text-5xl">
           Learning overview
@@ -67,7 +68,7 @@ export function DashboardPage({ dashboard }: DashboardPageProps) {
         <p className="mt-3 max-w-2xl text-base leading-relaxed text-[var(--text-secondary)]">
           A snapshot of your active goal, library progress, and what to work on next.
         </p>
-      </header>
+      </DashboardPageHeader>
 
       <div className="grid gap-6 lg:grid-cols-2">
         {dashboard.focusGoal ? (
