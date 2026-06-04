@@ -14,7 +14,7 @@ This rule covers **visual design and tokens**. Page structure for catalog/librar
 
 **Feel:** technical, calm, focused, practical, structured, premium, developer-first, security-oriented, progress-driven.
 
-**Avoid:** childish UI, over-gamification, generic academy templates, cyberpunk clichés, fake hacker aesthetics, neon green as brand color, matrix effects, skulls, excessive glow on every element.
+**Avoid:** childish UI, over-gamification, generic academy templates, cyberpunk clichés, fake hacker aesthetics, neon green as brand color, matrix effects, skulls, excessive glow on every element, decorative gradient fills on cards and panels.
 
 Cybertech comes from **structure + data + precision + route systems + security language**, not decoration.
 
@@ -77,18 +77,29 @@ Do not use monospace for long prose or page titles.
 
 Content widths: `--content-narrow` (760px), `--content-default` (1120px), `--content-wide` (1440px).
 
-## Glow and gradients
+## Surfaces, glow, and gradients
 
-Glow is reserved for **active or important** elements only.
+**Default cards and panels** (`.island-shell`, `.feature-card`, shadcn `Card`) use **solid surface tokens** (`--surface`, `--surface-raised`) with **thin borders** and restrained shadows. Do not add gradient fills to cards, shells, or grid items.
 
-Utility classes in `styles.css`:
+**Gradients are reserved** for scoped, intentional accents only — see `src/styles.css`:
 
-- `.cyber-glow` — hero / empty-state atmosphere
+| Location | Purpose |
+| -------- | ------- |
+| `body`, `body::before` | Page backdrop atmosphere (one subtle layer per page) |
+| `.cyber-glow` | Hero / empty-state atmosphere |
+| `.brand-mark`, `.nav-link::after` | Small accent details (logo tile, nav underline) |
+
+Do not introduce new gradient backgrounds on components unless you add a named utility class with a clear, single purpose. Never stack multiple gradients on one surface.
+
+**Glow** is reserved for **active or important** elements only:
+
 - `.route-active` — current route highlight
 - `.route-completed` — completed route
 - `.route-warning` — blocked / warning state
+- `.feature-card:hover` — indigo border + `--primary-glow` shadow
+- Primary buttons — `--primary-glow` shadow
 
-Default cards use **border**, not shadow. Floating menus and modals may use `--shadow-md` / `--shadow-lg`.
+Default cards use **border**, not heavy shadow. Floating menus and modals may use `--shadow-md` / `--shadow-lg`.
 
 Never apply glow to every card in a grid.
 
@@ -102,7 +113,7 @@ Use shadcn `Card` with `.island-shell` for elevated panels and `.feature-card` f
 <Card className="island-shell rounded-2xl border-[var(--border-default)] shadow-none">
 ```
 
-Hover: `translateY(-1px)` via `.feature-card:hover`. Active: indigo border + subtle radial gradient.
+Hover: `translateY(-1px)` via `.feature-card:hover` with indigo border and `--primary-glow` shadow. Surfaces stay solid — no gradient fill.
 
 ### Buttons
 
@@ -185,11 +196,14 @@ Status labels: Not started, In progress, Completed, Blocked, Recommended, Saved,
 - Use technical badges and monospace metadata
 - Use practical, direct copy
 - Prefer borders over heavy shadows
+- Use solid `--surface` tokens on cards and panels
 
 **Do not**
 
 - Hardcode colors in components (use CSS variables)
 - Use teal, neon green, or ocean-themed token names
+- Add gradient fills to cards, panels, or list items
+- Stack layered gradients on surfaces
 - Apply glow to every card
 - Use skulls, matrix backgrounds, or fake terminal screens
 - Copy Linear/Huly/Pirsch layouts verbatim
