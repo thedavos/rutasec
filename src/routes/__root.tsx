@@ -47,7 +47,7 @@ function NotFoundPage() {
         <CardTitle className="display-title text-2xl">Page not found</CardTitle>
         <CardDescription>The resource or page you requested does not exist.</CardDescription>
         <Button asChild className="mt-4">
-          <Link to="/">Back to catalog</Link>
+          <Link to="/">Back to resources</Link>
         </Button>
       </CardHeader>
     </Card>

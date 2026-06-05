@@ -68,7 +68,7 @@ export function ResourceDetailPage({ resource, isSaved, userResource }: Resource
       <nav aria-label="Breadcrumb" className="rise-in mb-6">
         <Button variant="ghost" size="sm" asChild className="h-auto px-0 py-0 font-semibold">
           <Link to="/" className="text-[var(--text-secondary)] hover:text-[var(--text-primary)]">
-            ← Back to catalog
+            ← Back to resources
           </Link>
         </Button>
       </nav>
