@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import * as m from "#/paraglide/messages.js";
 import { RUTASEC_GITHUB_URL } from "#/shared/constants/rutasec-github";
@@ -18,13 +18,32 @@ function shareFeedbackMessage(status: ShareStatus) {
   return "";
 }
 
+const shareFeedbackClearDelayMs = 3000;
+
 export function SiteFooter() {
   const [shareStatus, setShareStatus] = useState<ShareStatus>("idle");
+  const clearShareStatusTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (clearShareStatusTimeoutRef.current) {
+        clearTimeout(clearShareStatusTimeoutRef.current);
+      }
+    };
+  }, []);
 
   async function handleShare() {
+    if (clearShareStatusTimeoutRef.current) {
+      clearTimeout(clearShareStatusTimeoutRef.current);
+    }
+
     const href = window.location.href;
     const copied = await copyTextToClipboard(href);
     setShareStatus(copied ? "success" : "error");
+    clearShareStatusTimeoutRef.current = setTimeout(() => {
+      setShareStatus("idle");
+      clearShareStatusTimeoutRef.current = null;
+    }, shareFeedbackClearDelayMs);
   }
 
   return (
