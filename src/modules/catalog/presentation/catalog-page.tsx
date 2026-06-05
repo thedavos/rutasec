@@ -112,7 +112,7 @@ export function CatalogPage({ catalog }: CatalogPageProps) {
                 <section
                   key={group.category}
                   id={sectionId}
-                  className="scroll-mt-24"
+                  className="scroll-mt-36"
                   aria-labelledby={headingId}
                 >
                   <div className="mb-4 border-t border-[var(--border-default)] pt-4">

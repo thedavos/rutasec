@@ -45,3 +45,18 @@ test("catalog search combines with level filter", async ({ page }) => {
 
   await expect(catalogResourceTitleLink(page, /Linux Journey/i)).toBeVisible();
 });
+
+test("catalog discovery controls stay pinned while scrolling", async ({ page }) => {
+  await page.goto("/");
+
+  const hero = page.getByRole("heading", { name: /Cybersecurity learning resources/i });
+  const search = page.getByRole("searchbox", { name: /Search catalog/i });
+
+  await expect(hero).toBeVisible();
+  await expect(search).toBeVisible();
+
+  await page.evaluate(() => window.scrollBy(0, 800));
+
+  await expect(search).toBeInViewport();
+  await expect(hero).not.toBeInViewport();
+});

@@ -155,7 +155,7 @@ export function ResourceDetailPage({ resource, isSaved, userResource }: Resource
           </div>
         </div>
 
-        <aside className="rise-in lg:sticky lg:top-24">
+        <aside className="rise-in lg:sticky lg:top-8">
           <Card className={detailCardClassName}>
             <CardHeader className="gap-2 px-5 pt-5 pb-0">
               <CardTitle className="display-title text-lg font-bold">Actions</CardTitle>

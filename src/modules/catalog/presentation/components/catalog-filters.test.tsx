@@ -21,6 +21,21 @@ const filterOptions: CatalogFilterOptions = {
   resourceTypes: ["course", "lab"],
 };
 
+describe("CatalogFiltersBar sticky layout", () => {
+  it("pins discovery controls as one sticky block", async () => {
+    await renderNavLink("/", () => (
+      <CatalogFiltersBar filters={{}} filterOptions={filterOptions} resultLabel="2 resources" />
+    ));
+
+    const filters = screen.getByRole("region", { name: "Catalog filters" });
+
+    expect(filters.className).toContain("sticky");
+    expect(filters.className).toContain("top-0");
+    expect(filters.className).toContain("border-b");
+    expect(filters.className).toContain("backdrop-blur-md");
+  });
+});
+
 describe("CatalogFiltersBar mobile sheets", () => {
   it("opens the Type sheet and applies a selected option", async () => {
     const { router } = await renderNavLink("/", () => (
