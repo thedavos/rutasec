@@ -15,7 +15,11 @@ import { copyTextToClipboard } from "#/shared/utils/copy-text-to-clipboard";
 
 type CopyFeedback = "idle" | "copied" | "failed";
 
-export function SendResourcePage() {
+type SendResourcePageProps = {
+  categories: string[];
+};
+
+export function SendResourcePage({ categories }: SendResourcePageProps) {
   const [input, setInput] = useState<ResourceProposalInput>(EMPTY_RESOURCE_PROPOSAL_INPUT);
   const [copyFeedback, setCopyFeedback] = useState<CopyFeedback>("idle");
   const [showValidation, setShowValidation] = useState(false);
@@ -70,6 +74,7 @@ export function SendResourcePage() {
       <div className="grid gap-6 lg:grid-cols-2 lg:items-start">
         <ResourceProposalForm
           input={input}
+          categories={categories}
           errors={errors}
           copyFeedback={copyFeedback}
           onFieldChange={updateField}

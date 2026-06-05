@@ -30,6 +30,7 @@ const RESOURCE_TYPE_LABELS: Record<ResourceType, string> = {
 
 type ResourceProposalFormProps = {
   input: ResourceProposalInput;
+  categories: string[];
   errors: Partial<Record<ResourceProposalField, string>>;
   copyFeedback: "idle" | "copied" | "failed";
   onFieldChange: <K extends keyof ResourceProposalInput>(
@@ -43,6 +44,7 @@ type ResourceProposalFormProps = {
 
 export function ResourceProposalForm({
   input,
+  categories,
   errors,
   copyFeedback,
   onFieldChange,
@@ -108,13 +110,25 @@ export function ResourceProposalForm({
 
           <div className="space-y-2">
             <Label htmlFor="proposal-category">Category</Label>
-            <Input
-              id="proposal-category"
+            <Select
               value={input.category}
-              onChange={(event) => onFieldChange("category", event.target.value)}
-              placeholder="e.g. Web Application Security"
-              aria-invalid={Boolean(errors.category)}
-            />
+              onValueChange={(value) => onFieldChange("category", value)}
+            >
+              <SelectTrigger
+                id="proposal-category"
+                className="w-full"
+                aria-invalid={Boolean(errors.category)}
+              >
+                <SelectValue placeholder="Select category" />
+              </SelectTrigger>
+              <SelectContent>
+                {categories.map((category) => (
+                  <SelectItem key={category} value={category}>
+                    {category}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             {errors.category ? (
               <p className="text-sm text-destructive" role="alert">
                 {errors.category}
