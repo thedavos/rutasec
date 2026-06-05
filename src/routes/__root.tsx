@@ -64,7 +64,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <div className="flex min-h-screen flex-col">
           <header className="bg-transparent">
             <div className="page-wrap flex items-center justify-between gap-3 py-3">
-              <Link to="/" className="flex min-w-0 items-center gap-1 no-underline">
+              <Link to="/" className="flex min-w-0 items-center gap-2 no-underline">
                 <span className="brand-mark" aria-hidden="true">
                   <img src="/rutasec-brand-mark.svg" alt="" className="block size-9" />
                 </span>
