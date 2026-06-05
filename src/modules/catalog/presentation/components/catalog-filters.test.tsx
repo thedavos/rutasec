@@ -28,11 +28,12 @@ describe("CatalogFiltersBar sticky layout", () => {
     ));
 
     const filters = screen.getByRole("region", { name: "Catalog filters" });
+    const stickyBlock = filters.parentElement;
 
-    expect(filters.className).toContain("sticky");
-    expect(filters.className).toContain("top-0");
-    expect(filters.className).toContain("border-b");
-    expect(filters.className).toContain("backdrop-blur-md");
+    expect(stickyBlock?.className).toContain("sticky");
+    expect(stickyBlock?.className).toContain("top-0");
+    expect(stickyBlock?.className).toContain("border-b");
+    expect(stickyBlock?.className).toContain("bg-[var(--background-soft)]");
   });
 });
 

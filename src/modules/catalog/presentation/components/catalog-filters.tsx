@@ -119,56 +119,55 @@ export function CatalogFiltersBar({ filters, filterOptions, resultLabel }: Catal
   );
 
   return (
-    <section
-      className="rise-in sticky top-0 z-10 mx-auto flex w-full max-w-2xl flex-col gap-3 border-b border-[var(--border-default)] bg-[var(--bg-base)]/95 pb-3 backdrop-blur-md"
-      aria-label="Catalog filters"
-    >
-      <div className="flex flex-wrap gap-1.5 justify-center" aria-label="Catalog categories">
-        {filterOptions.categories.map((category) => {
-          const isActive = filters.category === category;
-          return (
-            <Button
-              key={category}
-              type="button"
-              variant="outline"
-              size="sm"
-              className={cn(
-                "h-8 shrink-0 px-2.5 text-xs font-semibold",
-                isActive && ACTIVE_FILTER_TRIGGER_CLASS,
-              )}
-              aria-pressed={isActive}
-              onClick={() =>
-                applyFilters({
-                  ...filters,
-                  category: isActive ? undefined : category,
-                })
-              }
-            >
-              {category}
-            </Button>
-          );
-        })}
-      </div>
-
-      <div className="flex flex-col gap-2 md:flex-row md:items-center md:gap-2">
-        <div className="min-w-0 w-full flex-1">
-          <CatalogSearchField filters={filters} onApply={applyFilters} />
+    <div className="rise-in sticky top-0 z-10 mx-auto flex w-full max-w-full flex-col items-center bg-[var(--background-soft)] border-b border-[var(--border-default)] py-4">
+      <section className="max-w-2xl flex flex-col gap-3" aria-label="Catalog filters">
+        <div className="flex flex-wrap gap-1.5 justify-center" aria-label="Catalog categories">
+          {filterOptions.categories.map((category) => {
+            const isActive = filters.category === category;
+            return (
+              <Button
+                key={category}
+                type="button"
+                variant="outline"
+                size="sm"
+                className={cn(
+                  "h-8 shrink-0 px-2.5 text-xs font-semibold",
+                  isActive && ACTIVE_FILTER_TRIGGER_CLASS,
+                )}
+                aria-pressed={isActive}
+                onClick={() =>
+                  applyFilters({
+                    ...filters,
+                    category: isActive ? undefined : category,
+                  })
+                }
+              >
+                {category}
+              </Button>
+            );
+          })}
         </div>
 
-        <div className="flex min-w-0 w-full items-center gap-2 md:w-auto md:shrink-0">
-          <p className="min-w-0 flex-1 truncate text-sm text-[var(--text-secondary)] md:hidden">
-            {resultLabel}
-          </p>
-          <CatalogFilterControls
-            filters={filters}
-            filterOptions={filterOptions}
-            hasFilters={hasFilters}
-            onApply={applyFilters}
-            className="flex-none shrink-0"
-          />
+        <div className="flex flex-col gap-2 md:flex-row md:items-center md:gap-2">
+          <div className="min-w-0 w-full flex-1">
+            <CatalogSearchField filters={filters} onApply={applyFilters} />
+          </div>
+
+          <div className="flex min-w-0 w-full items-center gap-2 md:w-auto md:shrink-0">
+            <p className="min-w-0 flex-1 truncate text-sm text-[var(--text-secondary)] md:hidden">
+              {resultLabel}
+            </p>
+            <CatalogFilterControls
+              filters={filters}
+              filterOptions={filterOptions}
+              hasFilters={hasFilters}
+              onApply={applyFilters}
+              className="flex-none shrink-0"
+            />
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
   );
 }
 

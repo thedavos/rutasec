@@ -175,24 +175,9 @@ body {
   color: var(--text-primary);
   font-family: var(--type-body);
   background-color: var(--background-soft);
-  background: linear-gradient(
-    180deg,
-    color-mix(in oklab, var(--background-muted) 92%, #14162a 8%) 0%,
-    var(--background-soft) 50%,
-    var(--bg-base) 100%
-  );
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: -1;
-  background: radial-gradient(110% 70% at 50% -10%, rgba(99, 102, 241, 0.1), transparent 60%);
 }
 
 a:not([data-slot="button"]) {
@@ -268,27 +253,6 @@ pre code {
 .island-shell {
   border-radius: var(--radius-lg) !important;
   border: 1px solid var(--border-default);
-  box-shadow:
-    0 1px 0 var(--inset-glint) inset,
-    var(--shadow-md),
-    0 0 0 1px rgba(255, 255, 255, 0.02);
-  backdrop-filter: blur(10px);
-}
-
-.feature-card {
-  box-shadow:
-    0 1px 0 var(--inset-glint) inset,
-    0 18px 34px rgba(0, 0, 0, 0.28),
-    0 0 0 1px rgba(255, 255, 255, 0.02);
-}
-
-.feature-card:hover {
-  transform: translateY(-1px);
-  border-color: color-mix(in oklab, var(--primary-hover) 48%, var(--border-default));
-  box-shadow:
-    0 1px 0 var(--inset-glint) inset,
-    0 22px 44px rgba(0, 0, 0, 0.34),
-    0 0 0 1px var(--primary-glow);
 }
 
 .brand-mark {

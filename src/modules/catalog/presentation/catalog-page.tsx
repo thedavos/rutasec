@@ -106,7 +106,7 @@ export function CatalogPage({ catalog }: CatalogPageProps) {
           </Card>
         ) : (
           <div className="space-y-8">
-            {groupedResources.map((group) => {
+            {groupedResources.map((group, index) => {
               const { sectionId, headingId } = categorySectionIds(group.category);
               return (
                 <section
@@ -115,7 +115,11 @@ export function CatalogPage({ catalog }: CatalogPageProps) {
                   className="scroll-mt-36"
                   aria-labelledby={headingId}
                 >
-                  <div className="mb-4 border-t border-[var(--border-default)] pt-4">
+                  <div
+                    className={`mb-4 pt-4 ${
+                      index > 0 ? "border-t border-[var(--border-default)]" : ""
+                    }`}
+                  >
                     <div className="flex flex-wrap items-baseline justify-between gap-3">
                       <h3
                         id={headingId}
