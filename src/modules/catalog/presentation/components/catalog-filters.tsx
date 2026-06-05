@@ -120,7 +120,7 @@ export function CatalogFiltersBar({ filters, filterOptions, resultLabel }: Catal
 
   return (
     <section
-      className="rise-in mx-auto flex w-full max-w-2xl flex-col gap-3"
+      className="rise-in sticky top-0 z-10 mx-auto flex w-full max-w-2xl flex-col gap-3 border-b border-[var(--border-default)] bg-[var(--bg-base)]/95 pb-3 backdrop-blur-md"
       aria-label="Catalog filters"
     >
       <div className="flex flex-wrap gap-1.5 justify-center" aria-label="Catalog categories">

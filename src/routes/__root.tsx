@@ -62,7 +62,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         <div className="flex min-h-screen flex-col">
-          <header className="sticky top-0 z-20 border-b border-[var(--border-default)] bg-[var(--header-bg)] backdrop-blur-md">
+          <header className="bg-transparent">
             <div className="page-wrap flex items-center justify-between gap-3 py-3">
               <Link to="/" className="flex min-w-0 items-center gap-1 no-underline">
                 <span className="brand-mark" aria-hidden="true">
