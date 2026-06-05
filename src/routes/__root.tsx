@@ -1,7 +1,6 @@
 import { HeadContent, Link, Scripts, createRootRoute } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { TanStackDevtools } from "@tanstack/react-devtools";
-import { ShieldCheck } from "lucide-react";
 
 import { AuthHeader } from "#/modules/identity/presentation/auth-header";
 import { AuthenticatedNavGroup } from "#/shared/presentation/layout/authenticated-nav-group";
@@ -65,17 +64,12 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <div className="flex min-h-screen flex-col">
           <header className="sticky top-0 z-20 border-b border-[var(--border-default)] bg-[var(--header-bg)] backdrop-blur-md">
             <div className="page-wrap flex items-center justify-between gap-3 py-3">
-              <Link to="/" className="flex min-w-0 items-center gap-3 no-underline">
+              <Link to="/" className="flex min-w-0 items-center gap-1 no-underline">
                 <span className="brand-mark" aria-hidden="true">
-                  <ShieldCheck className="size-4" />
+                  <img src="/rutasec-brand-mark.svg" alt="" className="block size-9" />
                 </span>
-                <span>
-                  <span className="display-title block text-lg font-bold text-[var(--text-primary)]">
-                    RutaSec
-                  </span>
-                  <span className="hidden text-xs font-medium text-[var(--text-secondary)] sm:block">
-                    Cyber Learning OS
-                  </span>
+                <span className="display-title block text-lg leading-none font-bold text-[var(--text-primary)]">
+                  RutaSec
                 </span>
               </Link>
               <nav className="hidden items-center gap-1 md:flex" aria-label="Main">

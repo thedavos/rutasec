@@ -292,14 +292,12 @@ pre code {
 }
 
 .brand-mark {
-  display: inline-grid;
-  width: 2rem;
-  height: 2rem;
-  place-items: center;
-  border: 1px solid var(--primary-border);
-  border-radius: var(--radius-md);
-  color: var(--primary-hover);
-  box-shadow: 0 0 28px var(--primary-glow);
+  display: inline-flex;
+  width: 2.25rem;
+  height: 2.25rem;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
 }
 
 .cyber-glow {
