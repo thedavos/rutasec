@@ -7,6 +7,7 @@ import { authClient } from "#/modules/identity";
 import { PublicNavGroup } from "#/shared/presentation/layout/public-nav-group";
 import { RUTASEC_GITHUB_URL } from "#/shared/presentation/layout/public-nav.constants";
 import {
+  expectNavLinkActive,
   expectNavLinkInactive,
   renderNavLink,
 } from "#/shared/presentation/testing/render-nav-link";
@@ -66,11 +67,11 @@ describe("PublicNavGroup", () => {
     expect(screen.queryByRole("link", { name: "Send Resource" })).toBeNull();
   });
 
-  it("hides the Send Resource link on the send-resource route", async () => {
+  it("keeps the Send Resource link active on the send-resource route", async () => {
     mockSignedOutSession();
     await renderNavLink("/send-resource", PublicNavGroup);
 
-    expect(screen.queryByRole("link", { name: "Send Resource" })).toBeNull();
+    expectNavLinkActive(screen.getByRole("link", { name: "Send Resource" }));
     expect(screen.getByRole("link", { name: "Resources" })).toBeTruthy();
   });
 
