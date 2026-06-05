@@ -113,7 +113,7 @@ export function CatalogFiltersBar({ filters, filterOptions, resultLabel }: Catal
 
   const applyFilters = useCallback(
     (next: CatalogListInput) => {
-      void navigate({ to: "/", search: buildSearch(next) });
+      void navigate({ to: "/", search: buildSearch(next), resetScroll: false });
     },
     [navigate],
   );
@@ -148,13 +148,16 @@ export function CatalogFiltersBar({ filters, filterOptions, resultLabel }: Catal
           })}
         </div>
 
-        <div className="flex flex-col gap-2 md:flex-row md:items-center md:gap-2">
+        <div className="flex flex-col gap-2 md:flex-row md:items-start md:gap-2">
           <div className="min-w-0 w-full flex-1">
             <CatalogSearchField filters={filters} onApply={applyFilters} />
+            <p className="hidden text-xs mt-1 leading-normal text-[var(--text-secondary)] md:block">
+              {resultLabel}
+            </p>
           </div>
 
           <div className="flex min-w-0 w-full items-center gap-2 md:w-auto md:shrink-0">
-            <p className="min-w-0 flex-1 truncate text-sm text-[var(--text-secondary)] md:hidden">
+            <p className="min-w-0 flex-1 truncate text-xs text-[var(--text-secondary)] md:hidden">
               {resultLabel}
             </p>
             <CatalogFilterControls
