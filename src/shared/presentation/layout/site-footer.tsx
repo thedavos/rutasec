@@ -46,16 +46,14 @@ export function SiteFooter() {
           <p>{m.footer_sign_in_prompt()}</p>
         </div>
 
-        <div className="flex shrink-0 flex-col items-start gap-3 sm:items-end">
+        <div className="flex shrink-0 flex-wrap items-center gap-3 sm:justify-end">
+          <Button type="button" variant="outline" size="sm" onClick={handleShare}>
+            {m.footer_share()}
+          </Button>
+          <p aria-live="polite" className="min-w-24 text-xs text-[var(--text-secondary)]">
+            {shareFeedbackMessage(shareStatus)}
+          </p>
           <LanguageSelector />
-          <div className="flex items-center gap-3">
-            <Button type="button" variant="outline" size="sm" onClick={handleShare}>
-              {m.footer_share()}
-            </Button>
-            <p aria-live="polite" className="min-w-24 text-xs text-[var(--text-secondary)]">
-              {shareFeedbackMessage(shareStatus)}
-            </p>
-          </div>
         </div>
       </div>
     </footer>
