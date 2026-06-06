@@ -2,6 +2,7 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 
 import { authClient } from "#/modules/identity";
+import * as m from "#/paraglide/messages.js";
 import { Button } from "#/shared/presentation/ui/button";
 import {
   Card,
@@ -37,7 +38,7 @@ export function SignInPage({ redirect }: SignInPageProps) {
     setIsSubmitting(false);
 
     if (result.error) {
-      setError(result.error.message ?? "Could not sign in. Check your email and password.");
+      setError(result.error.message ?? m.sign_in_error_fallback());
       return;
     }
 
@@ -49,13 +50,13 @@ export function SignInPage({ redirect }: SignInPageProps) {
       <div className="w-full max-w-md">
         <Card className="island-shell rounded-2xl border-[var(--border-default)] shadow-none">
           <CardHeader>
-            <CardTitle className="display-title text-2xl">Sign in</CardTitle>
-            <CardDescription>Access your RutaSec account to save resources later.</CardDescription>
+            <CardTitle className="display-title text-2xl">{m.auth_sign_in()}</CardTitle>
+            <CardDescription>{m.sign_in_description()}</CardDescription>
           </CardHeader>
           <CardContent>
             <form className="space-y-4" onSubmit={handleSubmit}>
               <div className="space-y-2">
-                <Label htmlFor="sign-in-email">Email</Label>
+                <Label htmlFor="sign-in-email">{m.sign_in_email_label()}</Label>
                 <Input
                   id="sign-in-email"
                   type="email"
@@ -66,7 +67,7 @@ export function SignInPage({ redirect }: SignInPageProps) {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="sign-in-password">Password</Label>
+                <Label htmlFor="sign-in-password">{m.sign_in_password_label()}</Label>
                 <Input
                   id="sign-in-password"
                   type="password"
@@ -83,16 +84,16 @@ export function SignInPage({ redirect }: SignInPageProps) {
                 </p>
               ) : null}
               <Button type="submit" className="w-full" disabled={isSubmitting}>
-                {isSubmitting ? "Signing in…" : "Sign in"}
+                {isSubmitting ? m.sign_in_submitting() : m.auth_sign_in()}
               </Button>
             </form>
             <p className="mt-4 text-center text-sm text-[var(--text-secondary)]">
-              No account yet?{" "}
+              {m.sign_in_no_account()}{" "}
               <Link
                 to="/sign-up"
                 className="font-semibold text-[var(--text-primary)] underline-offset-4 hover:underline"
               >
-                Create one
+                {m.sign_in_create_one()}
               </Link>
             </p>
           </CardContent>

@@ -1,4 +1,5 @@
 import type { StudyPlanItem } from "#/modules/timeline/domain/entities/study-plan";
+import * as m from "#/paraglide/messages.js";
 
 export type TimelineWeekItem = StudyPlanItem & {
   title: string;
@@ -29,7 +30,7 @@ export function groupStudyPlanItemsByWeek(
         .sort((itemA, itemB) => itemA.itemOrder - itemB.itemOrder)
         .map((item) => ({
           ...item,
-          title: titleByResourceId.get(item.resourceId) ?? "Unknown resource",
+          title: titleByResourceId.get(item.resourceId) ?? m.timeline_unknown_resource(),
         })),
     }));
 }

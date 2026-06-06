@@ -1,0 +1,22 @@
+{
+  "$schema": "https://inlang.com/schema/inlang-message-format",
+  "auth_sign_in": "Iniciar sesión",
+  "auth_sign_up": "Crear cuenta",
+  "auth_sign_out": "Cerrar sesión",
+  "sign_in_description": "Accede a tu cuenta de RutaSec para guardar recursos más adelante.",
+  "sign_in_email_label": "Correo electrónico",
+  "sign_in_password_label": "Contraseña",
+  "sign_in_submitting": "Iniciando sesión…",
+  "sign_in_error_fallback": "No se pudo iniciar sesión. Revisa tu correo y contraseña.",
+  "sign_in_no_account": "¿Aún no tienes cuenta?",
+  "sign_in_create_one": "Crea una",
+  "sign_up_title": "Crear cuenta",
+  "sign_up_description": "Regístrate con correo y contraseña para usar RutaSec.",
+  "sign_up_name_label": "Nombre",
+  "sign_up_name_placeholder": "Opcional",
+  "sign_up_email_label": "Correo electrónico",
+  "sign_up_password_label": "Contraseña",
+  "sign_up_submitting": "Creando cuenta…",
+  "sign_up_error_fallback": "No se pudo crear tu cuenta. Prueba con otro correo.",
+  "sign_up_has_account": "¿Ya tienes cuenta?"
+}

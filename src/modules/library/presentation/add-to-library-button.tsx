@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import { authClient } from "#/modules/identity";
 import { saveResourceFn } from "#/modules/library";
+import * as m from "#/paraglide/messages.js";
 import { Button } from "#/shared/presentation/ui/button";
 
 type AddToLibraryButtonProps = {
@@ -21,7 +22,7 @@ export function AddToLibraryButton({ resourceId }: AddToLibraryButtonProps) {
   if (saveState === "saved") {
     return (
       <Button type="button" size="sm" variant="secondary" disabled>
-        In library
+        {m.add_in_library()}
       </Button>
     );
   }
@@ -46,7 +47,7 @@ export function AddToLibraryButton({ resourceId }: AddToLibraryButtonProps) {
         })();
       }}
     >
-      {isSaving ? "Adding…" : saveState === "error" ? "Try again" : "Add to library"}
+      {isSaving ? m.add_adding() : saveState === "error" ? m.add_try_again() : m.add_to_library()}
     </Button>
   );
 }

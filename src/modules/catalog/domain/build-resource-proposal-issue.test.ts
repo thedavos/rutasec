@@ -71,7 +71,7 @@ describe("validateResourceProposal", () => {
     const result = validateResourceProposal({ ...validInput, url: "bad-url" });
     expect(result.ok).toBe(false);
     if (!result.ok) {
-      expect(result.errors.url).toBe("Enter a valid http or https URL.");
+      expect(result.errors.url).toBe("url_invalid");
     }
   });
 });

@@ -2,6 +2,7 @@ import { useRouter } from "@tanstack/react-router";
 import { useState } from "react";
 
 import { generateStudyPlanForGoalFn } from "#/modules/timeline";
+import * as m from "#/paraglide/messages.js";
 import { Button } from "#/shared/presentation/ui/button";
 
 type GenerateStudyPlanButtonProps = {
@@ -25,7 +26,9 @@ export function GenerateStudyPlanButton({ goalId }: GenerateStudyPlanButtonProps
       await generateStudyPlanForGoalFn({ data: { goalId } });
       await router.invalidate();
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : "Could not generate study plan.");
+      setErrorMessage(
+        error instanceof Error ? error.message : m.timeline_generate_error_fallback(),
+      );
     } finally {
       setIsGenerating(false);
     }
@@ -34,7 +37,7 @@ export function GenerateStudyPlanButton({ goalId }: GenerateStudyPlanButtonProps
   return (
     <div className="space-y-2">
       <Button type="button" onClick={handleGenerate} disabled={isGenerating}>
-        {isGenerating ? "Generating…" : "Generate study plan"}
+        {isGenerating ? m.timeline_generating() : m.timeline_generate_button()}
       </Button>
       {errorMessage ? (
         <p className="text-sm text-[var(--destructive)]" role="alert">

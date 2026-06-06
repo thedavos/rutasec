@@ -1,6 +1,8 @@
 import { Link } from "@tanstack/react-router";
 
 import type { GoalLinkedResource } from "#/modules/goals/domain/entities/goal-linked-resource";
+import * as m from "#/paraglide/messages.js";
+import { levelLabel } from "#/shared/i18n/resource-labels";
 
 type GoalLinkedResourcesProps = {
   resources: GoalLinkedResource[];
@@ -8,9 +10,7 @@ type GoalLinkedResourcesProps = {
 
 export function GoalLinkedResources({ resources }: GoalLinkedResourcesProps) {
   if (resources.length === 0) {
-    return (
-      <p className="text-sm text-[var(--text-secondary)]">No resources linked to this goal yet.</p>
-    );
+    return <p className="text-sm text-[var(--text-secondary)]">{m.goal_no_linked_resources()}</p>;
   }
 
   return (
@@ -25,7 +25,7 @@ export function GoalLinkedResources({ resources }: GoalLinkedResourcesProps) {
             {resource.title}
           </Link>
           <span className="ml-2 text-xs text-[var(--text-secondary)]">
-            {resource.category} · {resource.level}
+            {resource.category} · {levelLabel(resource.level)}
           </span>
         </li>
       ))}

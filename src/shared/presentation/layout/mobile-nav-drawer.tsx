@@ -3,6 +3,7 @@ import { useRouterState } from "@tanstack/react-router";
 import { Menu } from "lucide-react";
 
 import { AuthHeaderActions } from "#/modules/identity/presentation/auth-header";
+import * as m from "#/paraglide/messages.js";
 import { AuthenticatedNavGroup } from "#/shared/presentation/layout/authenticated-nav-group";
 import { PublicNavGroup } from "#/shared/presentation/layout/public-nav-group";
 import { Button } from "#/shared/presentation/ui/button";
@@ -32,20 +33,22 @@ export function MobileNavDrawer() {
           variant="outline"
           size="icon"
           className="md:hidden"
-          aria-label="Open menu"
+          aria-label={m.mobile_nav_open_menu()}
         >
           <Menu className="size-5" aria-hidden />
         </Button>
       </SheetTrigger>
       <SheetContent side="right" className="border-[var(--border-default)] bg-[var(--surface)]">
         <SheetHeader className="text-left">
-          <SheetTitle className="display-title text-[var(--text-primary)]">Menu</SheetTitle>
+          <SheetTitle className="display-title text-[var(--text-primary)]">
+            {m.mobile_nav_menu_title()}
+          </SheetTitle>
           <SheetDescription className="text-[var(--text-secondary)]">
-            Browse resources and manage your account.
+            {m.mobile_nav_menu_description()}
           </SheetDescription>
         </SheetHeader>
 
-        <nav className="flex flex-col gap-1 px-4" aria-label="Main">
+        <nav className="flex flex-col gap-1 px-4" aria-label={m.nav_main_aria()}>
           <AuthenticatedNavGroup layout="stacked" />
           <PublicNavGroup layout="stacked" />
         </nav>

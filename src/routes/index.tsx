@@ -9,6 +9,7 @@ import {
   type ResourceType,
 } from "#/modules/catalog/domain/entities/resource";
 import { CatalogPage } from "#/modules/catalog/presentation/catalog-page";
+import * as m from "#/paraglide/messages.js";
 
 function parseCatalogSearch(search: Record<string, unknown>): CatalogListInput {
   const input: CatalogListInput = {};
@@ -43,7 +44,7 @@ export const Route = createFileRoute("/")({
   loaderDeps: ({ search }) => search,
   loader: async ({ deps }) => getPublicCatalogFn({ data: deps }),
   head: () => ({
-    meta: [{ title: "RutaSec — Cybersecurity Learning Catalog" }],
+    meta: [{ title: m.meta_catalog_title() }],
   }),
   component: HomeRoute,
 });

@@ -5,6 +5,7 @@ import { getSessionFn } from "#/modules/identity/server/get-session";
 import { getStudyPlanForGoalFn } from "#/modules/timeline";
 import { GoalTimelinePage } from "#/modules/timeline/presentation/goal-timeline-page";
 import { groupStudyPlanItemsByWeek } from "#/modules/timeline/presentation/group-study-plan-items-by-week";
+import * as m from "#/paraglide/messages.js";
 
 export const Route = createFileRoute("/goals/$goalId/timeline")({
   beforeLoad: async ({ location }) => {
@@ -41,7 +42,13 @@ export const Route = createFileRoute("/goals/$goalId/timeline")({
     return { goal, plan, weeks };
   },
   head: ({ loaderData }) => ({
-    meta: [{ title: `${loaderData?.goal.title ?? "Goal"} — Study timeline — RutaSec` }],
+    meta: [
+      {
+        title: m.meta_goal_timeline_title({
+          goalTitle: loaderData?.goal.title ?? m.meta_goal_timeline_title_fallback(),
+        }),
+      },
+    ],
   }),
   component: GoalTimelineRoute,
 });

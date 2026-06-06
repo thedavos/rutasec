@@ -1,5 +1,9 @@
-export const catalogTransparencyNotice =
-  "RutaSec is a curated index. Each listing links to third-party resources we do not host or own.";
+import * as m from "#/paraglide/messages.js";
 
-export const detailAttributionDescription =
-  "We organize public learning resources and credit original publishers and the roadmap they appear in.";
+export function catalogTransparencyNotice() {
+  return m.catalog_transparency_notice();
+}
+
+export function detailAttributionDescription() {
+  return m.detail_attribution_description();
+}

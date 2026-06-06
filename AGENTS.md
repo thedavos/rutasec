@@ -19,6 +19,7 @@ Detailed rules live in **`.cursor/rules/`** (`.mdc` files). Prefer those over ge
 | `sentry.mdc`         | `src/**` — instrument server functions                  |
 | `testing.mdc`        | Always — Vitest, Playwright, coverage, layer boundaries |
 | `ui-shadcn.mdc`      | UI files — shadcn/ui required for pages and components  |
+| `i18n.mdc`           | UI copy — Paraglide EN/ES, messages/, locale precedence |
 | `shared-utils.mdc`   | `src/**` — generic pure helpers → `src/shared/utils/`   |
 
 ## Stack
@@ -33,8 +34,13 @@ Do not introduce Astro, Next.js, Durable Objects, Queues, KV, or R2 unless expli
 src/routes/                    file-based routes (presentation)
 src/app/di/                    composition root (*.module.ts, incl. timeline.module.ts)
 src/modules/<feature>/         feature modules (catalog, library, identity, goals, dashboard, timeline — study plan generate/get + weekly view)
-src/shared/                    cross-cutting (db, domain/Result, utils/)
+src/shared/                    cross-cutting (db, domain/Result, utils/, i18n/)
+src/shared/i18n/               Paraglide label helpers + locale preference tests
 src/shared/utils.ts            cn() only; other helpers in src/shared/utils/
+messages/{locale}/*.json       UI translation bundles (module-owned)
+project.inlang/                Inlang project (en + es)
+src/paraglide/                 Generated Paraglide output (Vite plugin)
+src/server.ts                  Worker entry with paraglideMiddleware
 db/schema.sql                  D1 schema
 docs/timeline-rules.md         frozen MVP timeline scheduling rules
 ```

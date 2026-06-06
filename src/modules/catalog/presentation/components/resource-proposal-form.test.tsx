@@ -5,6 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vite-plus/test"
 
 import type { ResourceProposalInput } from "#/modules/catalog/domain/entities/resource-proposal";
 import { ResourceProposalForm } from "#/modules/catalog/presentation/components/resource-proposal-form";
+import * as m from "#/paraglide/messages.js";
 
 const categories = ["API Security", "Web Application Security"];
 
@@ -64,8 +65,8 @@ describe("ResourceProposalForm", () => {
   });
 
   it("shows category validation errors", () => {
-    renderForm({ errors: { category: "Category is required." } });
+    renderForm({ errors: { category: "category_required" } });
 
-    expect(screen.getByRole("alert").textContent).toBe("Category is required.");
+    expect(screen.getByRole("alert").textContent).toBe(m.proposal_error_category_required());
   });
 });

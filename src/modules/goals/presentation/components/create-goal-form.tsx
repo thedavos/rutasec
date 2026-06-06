@@ -2,6 +2,7 @@ import { useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 
 import { createGoalFn } from "#/modules/goals";
+import * as m from "#/paraglide/messages.js";
 import { Button } from "#/shared/presentation/ui/button";
 import { Input } from "#/shared/presentation/ui/input";
 import { Label } from "#/shared/presentation/ui/label";
@@ -39,7 +40,7 @@ export function CreateGoalForm() {
 
     if (!title || !Number.isFinite(hoursPerWeek) || hoursPerWeek <= 0) {
       setFormState("error");
-      setErrorMessage("Title and a positive hours/week value are required.");
+      setErrorMessage(m.goal_validation_error());
       return;
     }
 
@@ -57,7 +58,7 @@ export function CreateGoalForm() {
       setFormState("idle");
     } catch (error) {
       setFormState("error");
-      setErrorMessage(error instanceof Error ? error.message : "Could not create this goal.");
+      setErrorMessage(error instanceof Error ? error.message : m.goal_create_error_fallback());
     }
   }
 
@@ -71,36 +72,38 @@ export function CreateGoalForm() {
       }}
       className="island-shell rounded-2xl border-[var(--border-default)] p-6"
     >
-      <h2 className="display-title mb-4 text-xl font-bold text-[var(--text-primary)]">New goal</h2>
+      <h2 className="display-title mb-4 text-xl font-bold text-[var(--text-primary)]">
+        {m.goal_form_title()}
+      </h2>
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2 sm:col-span-2">
-          <Label htmlFor="goal-title">Title</Label>
+          <Label htmlFor="goal-title">{m.goal_title_label()}</Label>
           <Input
             id="goal-title"
             name="title"
             required
             maxLength={200}
-            placeholder="e.g. Web pentesting fundamentals"
+            placeholder={m.goal_title_placeholder()}
             disabled={isSubmitDisabled}
           />
         </div>
         <div className="space-y-2 sm:col-span-2">
-          <Label htmlFor="goal-description">Description (optional)</Label>
+          <Label htmlFor="goal-description">{m.goal_description_label()}</Label>
           <Textarea
             id="goal-description"
             name="description"
             maxLength={2000}
-            placeholder="What do you want to achieve?"
+            placeholder={m.goal_description_placeholder()}
             disabled={isSubmitDisabled}
             rows={3}
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="goal-target-date">Target date (optional)</Label>
+          <Label htmlFor="goal-target-date">{m.goal_target_date_label()}</Label>
           <Input id="goal-target-date" name="targetDate" type="date" disabled={isSubmitDisabled} />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="goal-hours">Hours per week</Label>
+          <Label htmlFor="goal-hours">{m.goal_hours_label()}</Label>
           <Input
             id="goal-hours"
             name="hoursPerWeek"
@@ -108,14 +111,14 @@ export function CreateGoalForm() {
             min={0.5}
             step={0.5}
             required
-            placeholder="5"
+            placeholder={m.goal_hours_placeholder()}
             disabled={isSubmitDisabled}
           />
         </div>
       </div>
       <div className="mt-4 flex flex-wrap items-center gap-3">
         <Button type="submit" disabled={isSubmitDisabled}>
-          {isSubmitting ? "Creating…" : "Create goal"}
+          {isSubmitting ? m.goal_creating() : m.goal_create_button()}
         </Button>
         {errorMessage ? (
           <p className="text-sm text-destructive" role="alert">

@@ -6,7 +6,9 @@ import {
   type SavedUserResource,
   type UserResourceStatus,
 } from "#/modules/library";
-import { statusLabels } from "#/modules/library/presentation/library-labels";
+import * as m from "#/paraglide/messages.js";
+import { getLocale } from "#/paraglide/runtime.js";
+import { userResourceStatusLabel } from "#/shared/i18n/resource-labels";
 import { Button } from "#/shared/presentation/ui/button";
 import { Input } from "#/shared/presentation/ui/input";
 import { Label } from "#/shared/presentation/ui/label";
@@ -27,7 +29,7 @@ type ResourceProgressPanelProps = {
 type SaveUiState = "idle" | "saving" | "error";
 
 function formatDate(iso: string): string {
-  return new Date(iso).toLocaleDateString(undefined, {
+  return new Date(iso).toLocaleDateString(getLocale(), {
     year: "numeric",
     month: "short",
     day: "numeric",
@@ -73,7 +75,7 @@ export function ResourceProgressPanel({
       setSaveState("idle");
     } catch (error) {
       setSaveState("error");
-      setErrorMessage(error instanceof Error ? error.message : "Could not save progress.");
+      setErrorMessage(error instanceof Error ? error.message : m.progress_error_fallback());
     }
   }
 
@@ -82,14 +84,14 @@ export function ResourceProgressPanel({
       <Separator className="bg-[var(--border-default)]" />
 
       <div className="space-y-1">
-        <p className="text-sm font-semibold text-[var(--text-primary)]">Learning progress</p>
+        <p className="text-sm font-semibold text-[var(--text-primary)]">{m.progress_title()}</p>
         <p className="text-xs leading-relaxed text-[var(--text-secondary)]">
-          Track status and completion for this saved resource.
+          {m.progress_description()}
         </p>
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor={`resource-status-${resourceId}`}>Status</Label>
+        <Label htmlFor={`resource-status-${resourceId}`}>{m.label_status()}</Label>
         <Select
           value={status}
           onValueChange={(value) => {
@@ -103,7 +105,7 @@ export function ResourceProgressPanel({
           <SelectContent>
             {USER_RESOURCE_STATUSES.map((value) => (
               <SelectItem key={value} value={value}>
-                {statusLabels[value]}
+                {userResourceStatusLabel(value)}
               </SelectItem>
             ))}
           </SelectContent>
@@ -111,7 +113,7 @@ export function ResourceProgressPanel({
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor={`resource-progress-${resourceId}`}>Progress (%)</Label>
+        <Label htmlFor={`resource-progress-${resourceId}`}>{m.progress_percent_label()}</Label>
         <Input
           id={`resource-progress-${resourceId}`}
           type="number"
@@ -127,12 +129,12 @@ export function ResourceProgressPanel({
 
       {userResource.startedAt ? (
         <p className="text-xs text-[var(--text-secondary)]">
-          Started {formatDate(userResource.startedAt)}
+          {m.progress_started({ date: formatDate(userResource.startedAt) })}
         </p>
       ) : null}
       {userResource.completedAt ? (
         <p className="text-xs text-[var(--text-secondary)]">
-          Completed {formatDate(userResource.completedAt)}
+          {m.progress_completed({ date: formatDate(userResource.completedAt) })}
         </p>
       ) : null}
 
@@ -145,7 +147,7 @@ export function ResourceProgressPanel({
           void handleSave();
         }}
       >
-        {isSaving ? "Saving…" : "Save progress"}
+        {isSaving ? m.action_saving() : m.progress_save_button()}
       </Button>
 
       {errorMessage ? (

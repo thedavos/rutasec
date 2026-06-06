@@ -4,6 +4,7 @@ import { getSessionFn } from "#/modules/identity/server/get-session";
 import { getPersonalLibraryFn } from "#/modules/library";
 import { listGoalLinkedResourcesFn, listUserGoalsFn } from "#/modules/goals";
 import { GoalsPage } from "#/modules/goals/presentation/goals-page";
+import * as m from "#/paraglide/messages.js";
 
 export const Route = createFileRoute("/goals/")({
   beforeLoad: async ({ location }) => {
@@ -25,7 +26,7 @@ export const Route = createFileRoute("/goals/")({
     return { goals, library, linkedResources };
   },
   head: () => ({
-    meta: [{ title: "Your goals — RutaSec" }],
+    meta: [{ title: m.meta_goals_title() }],
   }),
   component: GoalsRoute,
 });

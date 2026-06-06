@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { SignInPage } from "#/modules/identity/presentation/sign-in-page";
+import * as m from "#/paraglide/messages.js";
 import { parseSafeRedirectPath } from "#/shared/utils/safe-redirect-path";
 
 export type SignInSearch = {
@@ -15,7 +16,7 @@ function parseSignInSearch(search: Record<string, unknown>): SignInSearch {
 export const Route = createFileRoute("/sign-in")({
   validateSearch: parseSignInSearch,
   head: () => ({
-    meta: [{ title: "Sign in — RutaSec" }],
+    meta: [{ title: m.meta_sign_in_title() }],
   }),
   component: SignInRoute,
 });
