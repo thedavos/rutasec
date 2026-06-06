@@ -6,9 +6,23 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vite-plus/test"
 import { RUTASEC_GITHUB_URL } from "#/shared/constants/rutasec-github";
 import { SiteFooter } from "#/shared/presentation/layout/site-footer";
 
+const { setLocaleMock } = vi.hoisted(() => ({
+  setLocaleMock: vi.fn(),
+}));
+
+vi.mock("#/paraglide/runtime.js", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("#/paraglide/runtime.js")>();
+
+  return {
+    ...actual,
+    setLocale: setLocaleMock,
+  };
+});
+
 describe("SiteFooter", () => {
   beforeEach(() => {
     window.history.replaceState(null, "", "/resources/web-security");
+    setLocaleMock.mockClear();
   });
 
   afterEach(() => {
@@ -26,6 +40,14 @@ describe("SiteFooter", () => {
     expect(githubLink.getAttribute("href")).toBe(RUTASEC_GITHUB_URL);
     expect(githubLink.getAttribute("target")).toBe("_blank");
     expect(githubLink.getAttribute("rel")).toBe("noopener noreferrer");
+  });
+
+  it("lets users switch locale from the footer selector", () => {
+    render(<SiteFooter />);
+
+    fireEvent.click(screen.getByRole("button", { name: "es" }));
+
+    expect(setLocaleMock).toHaveBeenCalledWith("es");
   });
 
   it("copies the current page URL and shows success feedback", async () => {

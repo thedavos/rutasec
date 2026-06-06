@@ -4,7 +4,8 @@ import {
   USER_RESOURCE_STATUSES,
   type UserResourceStatus,
 } from "#/modules/library/domain/entities/user-resource";
-import { statusLabels } from "#/modules/library/presentation/library-labels";
+import * as m from "#/paraglide/messages.js";
+import { formatLibrarySavedCount, userResourceStatusLabel } from "#/shared/i18n/resource-labels";
 import { Button } from "#/shared/presentation/ui/button";
 import { Card, CardContent, CardHeader } from "#/shared/presentation/ui/card";
 import { Label } from "#/shared/presentation/ui/label";
@@ -37,15 +38,13 @@ export function LibraryStatusFilters({ statusFilter, total }: LibraryStatusFilte
   return (
     <Card
       className="island-shell rise-in rounded-2xl border-[var(--border-default)] py-0 shadow-none"
-      aria-label="Library status filters"
+      aria-label={m.library_filters_aria()}
     >
       <CardHeader className="gap-4 px-5 pt-5 pb-0">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="island-kicker mb-1">Filter by status</p>
-            <p className="text-sm text-[var(--text-secondary)]">
-              {total} saved resource{total === 1 ? "" : "s"} shown
-            </p>
+            <p className="island-kicker mb-1">{m.library_filter_by_status()}</p>
+            <p className="text-sm text-[var(--text-secondary)]">{formatLibrarySavedCount(total)}</p>
           </div>
           {hasFilter ? (
             <Button
@@ -54,7 +53,7 @@ export function LibraryStatusFilters({ statusFilter, total }: LibraryStatusFilte
               size="sm"
               onClick={() => applyStatus(undefined)}
             >
-              Show all
+              {m.library_show_all()}
             </Button>
           ) : null}
         </div>
@@ -62,7 +61,7 @@ export function LibraryStatusFilters({ statusFilter, total }: LibraryStatusFilte
 
       <CardContent className="px-5 pt-4 pb-5 sm:max-w-xs">
         <div className="grid gap-2">
-          <Label htmlFor="library-status-filter">Status</Label>
+          <Label htmlFor="library-status-filter">{m.label_status()}</Label>
           <Select
             value={statusFilter ?? ALL_STATUS_VALUE}
             onValueChange={(value) => {
@@ -76,13 +75,13 @@ export function LibraryStatusFilters({ statusFilter, total }: LibraryStatusFilte
             }}
           >
             <SelectTrigger id="library-status-filter" className="w-full">
-              <SelectValue placeholder="All statuses" />
+              <SelectValue placeholder={m.library_all_statuses()} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value={ALL_STATUS_VALUE}>All statuses</SelectItem>
+              <SelectItem value={ALL_STATUS_VALUE}>{m.library_all_statuses()}</SelectItem>
               {USER_RESOURCE_STATUSES.map((status) => (
                 <SelectItem key={status} value={status}>
-                  {statusLabels[status]}
+                  {userResourceStatusLabel(status)}
                 </SelectItem>
               ))}
             </SelectContent>

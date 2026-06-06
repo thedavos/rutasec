@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { BookMarked, Target } from "lucide-react";
 
+import * as m from "#/paraglide/messages.js";
 import { Button } from "#/shared/presentation/ui/button";
 
 export function DashboardQuickActions() {
@@ -9,13 +10,13 @@ export function DashboardQuickActions() {
       <Button asChild variant="outline" size="sm">
         <Link to="/library" className="inline-flex items-center gap-1.5">
           <BookMarked className="size-4" aria-hidden />
-          Library
+          {m.nav_library()}
         </Link>
       </Button>
       <Button asChild variant="outline" size="sm">
         <Link to="/goals" className="inline-flex items-center gap-1.5">
           <Target className="size-4" aria-hidden />
-          Goals
+          {m.nav_goals()}
         </Link>
       </Button>
     </div>

@@ -1,7 +1,8 @@
 import { Link } from "@tanstack/react-router";
 
 import type { TimelineWeek } from "#/modules/timeline/presentation/group-study-plan-items-by-week";
-import { studyPlanItemStatusLabels } from "#/modules/timeline/presentation/timeline-labels";
+import * as m from "#/paraglide/messages.js";
+import { formatWeekResourceCount, studyPlanItemStatusLabel } from "#/shared/i18n/resource-labels";
 import { Badge } from "#/shared/presentation/ui/badge";
 import {
   Card,
@@ -20,10 +21,8 @@ export function WeeklyTimeline({ weeks }: WeeklyTimelineProps) {
     return (
       <Card className="island-shell rounded-2xl border-[var(--border-default)] py-6 shadow-none">
         <CardHeader>
-          <CardTitle className="display-title text-lg">No scheduled resources</CardTitle>
-          <CardDescription>
-            All linked resources are completed or discarded, so nothing remains in this plan.
-          </CardDescription>
+          <CardTitle className="display-title text-lg">{m.timeline_empty_title()}</CardTitle>
+          <CardDescription>{m.timeline_empty_description()}</CardDescription>
         </CardHeader>
       </Card>
     );
@@ -35,10 +34,10 @@ export function WeeklyTimeline({ weeks }: WeeklyTimelineProps) {
         <li key={week.weekNumber}>
           <Card className="island-shell rounded-2xl border-[var(--border-default)] shadow-none">
             <CardHeader className="gap-2">
-              <p className="island-kicker mb-0">Week {week.weekNumber}</p>
-              <CardDescription>
-                {week.items.length} resource{week.items.length === 1 ? "" : "s"}
-              </CardDescription>
+              <p className="island-kicker mb-0">
+                {m.timeline_week_label({ number: String(week.weekNumber) })}
+              </p>
+              <CardDescription>{formatWeekResourceCount(week.items.length)}</CardDescription>
             </CardHeader>
             <CardContent>
               <ul className="space-y-3">
@@ -54,7 +53,7 @@ export function WeeklyTimeline({ weeks }: WeeklyTimelineProps) {
                     >
                       {item.title}
                     </Link>
-                    <Badge variant="outline">{studyPlanItemStatusLabels[item.status]}</Badge>
+                    <Badge variant="outline">{studyPlanItemStatusLabel(item.status)}</Badge>
                   </li>
                 ))}
               </ul>

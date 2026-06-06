@@ -2,12 +2,13 @@ import { createFileRoute } from "@tanstack/react-router";
 
 import { getCatalogFilterOptionsFn } from "#/modules/catalog";
 import { SendResourcePage } from "#/modules/catalog/presentation/send-resource-page";
+import * as m from "#/paraglide/messages.js";
 import { Skeleton } from "#/shared/presentation/ui/skeleton";
 
 export const Route = createFileRoute("/send-resource")({
   loader: async () => getCatalogFilterOptionsFn(),
   head: () => ({
-    meta: [{ title: "Send Resource — RutaSec" }],
+    meta: [{ title: m.meta_send_resource_title() }],
   }),
   pendingComponent: SendResourcePending,
   component: SendResourceRoute,
@@ -32,7 +33,7 @@ function SendResourcePending() {
       </header>
 
       <div className="grid gap-6 lg:grid-cols-2 lg:items-start">
-        <section aria-label="Loading resource proposal form" className="flex flex-col gap-4">
+        <section aria-label={m.loading_proposal_form_aria()} className="flex flex-col gap-4">
           <div>
             <Skeleton className="h-7 w-44 rounded-md" />
             <Skeleton className="mt-3 h-4 w-72 rounded-md" />
@@ -53,7 +54,7 @@ function SendResourcePending() {
           </div>
         </section>
 
-        <section aria-label="Loading resource proposal preview" className="flex flex-col gap-4">
+        <section aria-label={m.loading_proposal_preview_aria()} className="flex flex-col gap-4">
           <div>
             <Skeleton className="h-7 w-40 rounded-md" />
             <Skeleton className="mt-3 h-4 w-80 rounded-md" />

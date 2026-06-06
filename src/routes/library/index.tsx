@@ -8,6 +8,7 @@ import {
   type UserResourceStatus,
 } from "#/modules/library";
 import { PersonalLibraryPage } from "#/modules/library/presentation/personal-library-page";
+import * as m from "#/paraglide/messages.js";
 
 function parseLibrarySearch(search: Record<string, unknown>): GetPersonalLibraryInput {
   if (typeof search.status !== "string" || !search.status.trim()) {
@@ -36,7 +37,7 @@ export const Route = createFileRoute("/library/")({
   },
   loader: async ({ deps }) => getPersonalLibraryFn({ data: deps }),
   head: () => ({
-    meta: [{ title: "Your library — RutaSec" }],
+    meta: [{ title: m.meta_library_title() }],
   }),
   component: LibraryRoute,
 });

@@ -7,6 +7,8 @@ import type {
   CatalogFilterOptions,
   CatalogListInput,
 } from "#/modules/catalog/domain/entities/resource";
+import * as m from "#/paraglide/messages.js";
+import { levelLabel, resourceTypeLabel } from "#/shared/i18n/resource-labels";
 import { Button } from "#/shared/presentation/ui/button";
 import {
   BottomSheet,
@@ -90,7 +92,7 @@ function CatalogSearchField({ filters, onApply }: CatalogSearchFieldProps) {
       <Input
         id="catalog-search"
         type="search"
-        placeholder="Search resources..."
+        placeholder={m.catalog_search_placeholder()}
         className="h-9 w-full pl-9"
         value={value}
         onChange={(event) => setValue(event.target.value)}
@@ -99,7 +101,7 @@ function CatalogSearchField({ filters, onApply }: CatalogSearchFieldProps) {
             applyNow();
           }
         }}
-        aria-label="Search catalog"
+        aria-label={m.catalog_search_aria()}
       />
     </div>
   );
@@ -120,8 +122,11 @@ export function CatalogFiltersBar({ filters, filterOptions, resultLabel }: Catal
 
   return (
     <div className="rise-in sticky top-0 z-10 mx-auto flex w-full max-w-full flex-col items-center bg-[var(--background-soft)] border-b border-[var(--border-default)] py-4">
-      <section className="max-w-2xl flex flex-col gap-3" aria-label="Catalog filters">
-        <div className="flex flex-wrap gap-1.5 justify-center" aria-label="Catalog categories">
+      <section className="max-w-2xl flex flex-col gap-3" aria-label={m.catalog_filters_aria()}>
+        <div
+          className="flex flex-wrap gap-1.5 justify-center"
+          aria-label={m.catalog_categories_aria()}
+        >
           {filterOptions.categories.map((category) => {
             const isActive = filters.category === category;
             return (
@@ -192,12 +197,12 @@ function CatalogFilterControls({
   return (
     <div className={cn("flex items-center gap-2", className)}>
       <FilterSelect
-        label="Type"
+        label={m.filter_type_label()}
         mobileIcon={Layers}
         value={filters.resourceType ?? ""}
         options={filterOptions.resourceTypes.map((value) => ({
           value,
-          label: value.charAt(0).toUpperCase() + value.slice(1),
+          label: resourceTypeLabel(value),
         }))}
         onSelect={(resourceType) =>
           onApply({
@@ -207,12 +212,12 @@ function CatalogFilterControls({
         }
       />
       <FilterSelect
-        label="Level"
+        label={m.filter_level_label()}
         mobileIcon={BarChart3}
         value={filters.level ?? ""}
         options={filterOptions.levels.map((value) => ({
           value,
-          label: value.charAt(0).toUpperCase() + value.slice(1),
+          label: levelLabel(value),
         }))}
         onSelect={(level) =>
           onApply({
@@ -227,11 +232,11 @@ function CatalogFilterControls({
           variant="ghost"
           size="sm"
           className="h-8 w-8 shrink-0 p-0 md:w-auto md:px-2.5"
-          aria-label="Clear filters"
+          aria-label={m.filter_clear_aria()}
           onClick={() => onApply({})}
         >
           <X className="size-4 md:hidden" aria-hidden />
-          <span className="hidden text-xs md:inline">Clear filters</span>
+          <span className="hidden text-xs md:inline">{m.filter_clear()}</span>
         </Button>
       ) : null}
     </div>
@@ -266,9 +271,9 @@ function MobileFilterSheet({
   const isActive = Boolean(value);
   const selectedOption = options.find((option) => option.value === value);
   const filterAriaLabel = selectedOption
-    ? `${label}: ${selectedOption.label}`
-    : `Filter by ${label.toLowerCase()}`;
-  const sheetOptions = [{ value: "", label: "All" }, ...options];
+    ? m.filter_selected_aria({ label, option: selectedOption.label })
+    : m.filter_by_aria({ label: label.toLowerCase() });
+  const sheetOptions = [{ value: "", label: m.filter_all() }, ...options];
 
   return (
     <div className="inline-flex shrink-0 items-center md:hidden">
@@ -326,8 +331,8 @@ function DesktopFilterSelect({
   const isActive = Boolean(value);
   const selectedOption = options.find((option) => option.value === value);
   const filterAriaLabel = selectedOption
-    ? `${label}: ${selectedOption.label}`
-    : `Filter by ${label.toLowerCase()}`;
+    ? m.filter_selected_aria({ label, option: selectedOption.label })
+    : m.filter_by_aria({ label: label.toLowerCase() });
   const showIconOnly = !isActive;
 
   return (
@@ -359,7 +364,7 @@ function DesktopFilterSelect({
           <SelectValue placeholder={label} />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value={ALL_FILTER_VALUE}>All</SelectItem>
+          <SelectItem value={ALL_FILTER_VALUE}>{m.filter_all()}</SelectItem>
           {options.map((option) => (
             <SelectItem key={option.value} value={option.value}>
               {option.label}

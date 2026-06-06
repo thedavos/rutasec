@@ -2,7 +2,13 @@ import { Link } from "@tanstack/react-router";
 
 import type { UserDashboard } from "#/modules/dashboard/domain/entities/user-dashboard";
 import { DashboardPageHeader } from "#/modules/dashboard/presentation/dashboard-page-header";
-import { statusLabels } from "#/modules/library/presentation/library-labels";
+import * as m from "#/paraglide/messages.js";
+import { getLocale } from "#/paraglide/runtime.js";
+import {
+  goalStatusLabel,
+  levelLabel,
+  userResourceStatusLabel,
+} from "#/shared/i18n/resource-labels";
 import { Badge } from "#/shared/presentation/ui/badge";
 import { Button } from "#/shared/presentation/ui/button";
 import {
@@ -13,43 +19,38 @@ import {
   CardTitle,
 } from "#/shared/presentation/ui/card";
 
-const goalStatusLabels = {
-  active: "Active",
-  completed: "Completed",
-  paused: "Paused",
-} as const;
-
 type DashboardPageProps = {
   dashboard: UserDashboard;
 };
 
 export function DashboardPage({ dashboard }: DashboardPageProps) {
+  const locale = getLocale();
+
   if (dashboard.isEmpty) {
     return (
       <div className="pb-16">
         <DashboardPageHeader>
-          <p className="island-kicker mb-2">Your dashboard</p>
+          <p className="island-kicker mb-2">{m.dashboard_kicker()}</p>
           <h1 className="display-title text-4xl font-bold text-[var(--text-primary)] sm:text-5xl">
-            Learning overview
+            {m.dashboard_title()}
           </h1>
           <p className="mt-3 max-w-2xl text-base leading-relaxed text-[var(--text-secondary)]">
-            Save resources from the catalog and set a learning goal to see your progress here.
+            {m.dashboard_empty_description()}
           </p>
         </DashboardPageHeader>
 
         <Card className="island-shell mt-8 rounded-2xl border-[var(--border-default)] py-8 shadow-none">
           <CardHeader className="text-center">
-            <CardTitle className="display-title text-xl">Nothing to summarize yet</CardTitle>
-            <CardDescription>
-              Browse the catalog to save resources, then create a goal to track what you want to
-              learn.
-            </CardDescription>
+            <CardTitle className="display-title text-xl">
+              {m.dashboard_empty_card_title()}
+            </CardTitle>
+            <CardDescription>{m.dashboard_empty_card_description()}</CardDescription>
             <div className="mt-4 flex flex-wrap justify-center gap-3">
               <Button asChild>
-                <Link to="/">Browse catalog</Link>
+                <Link to="/">{m.action_browse_catalog()}</Link>
               </Button>
               <Button asChild variant="outline">
-                <Link to="/goals">Create a goal</Link>
+                <Link to="/goals">{m.dashboard_create_goal()}</Link>
               </Button>
             </div>
           </CardHeader>
@@ -61,12 +62,12 @@ export function DashboardPage({ dashboard }: DashboardPageProps) {
   return (
     <div className="pb-16">
       <DashboardPageHeader>
-        <p className="island-kicker mb-2">Your dashboard</p>
+        <p className="island-kicker mb-2">{m.dashboard_kicker()}</p>
         <h1 className="display-title text-4xl font-bold text-[var(--text-primary)] sm:text-5xl">
-          Learning overview
+          {m.dashboard_title()}
         </h1>
         <p className="mt-3 max-w-2xl text-base leading-relaxed text-[var(--text-secondary)]">
-          A snapshot of your active goal, library progress, and what to work on next.
+          {m.dashboard_populated_description()}
         </p>
       </DashboardPageHeader>
 
@@ -74,14 +75,14 @@ export function DashboardPage({ dashboard }: DashboardPageProps) {
         {dashboard.focusGoal ? (
           <Card className="island-shell rounded-2xl border-[var(--border-default)] shadow-none">
             <CardHeader>
-              <p className="island-kicker mb-1">Focus goal</p>
+              <p className="island-kicker mb-1">{m.dashboard_focus_goal()}</p>
               <div className="flex flex-wrap items-center gap-2">
-                <Badge variant="outline">{goalStatusLabels[dashboard.focusGoal.status]}</Badge>
+                <Badge variant="outline">{goalStatusLabel(dashboard.focusGoal.status)}</Badge>
                 <Badge
                   variant="secondary"
                   className="island-kicker rounded-full border-[var(--primary-border)]"
                 >
-                  {dashboard.focusGoal.hoursPerWeek} h/week
+                  {m.goal_hours_per_week({ hours: String(dashboard.focusGoal.hoursPerWeek) })}
                 </Badge>
               </div>
               <CardTitle className="display-title text-2xl font-bold text-[var(--text-primary)]">
@@ -89,30 +90,32 @@ export function DashboardPage({ dashboard }: DashboardPageProps) {
               </CardTitle>
               <CardDescription>
                 {dashboard.focusGoal.targetDate
-                  ? `Target ${new Date(`${dashboard.focusGoal.targetDate}T00:00:00`).toLocaleDateString()}`
-                  : "No target date"}
+                  ? m.goal_target_date({
+                      date: new Date(
+                        `${dashboard.focusGoal.targetDate}T00:00:00`,
+                      ).toLocaleDateString(locale),
+                    })
+                  : m.goal_no_target_date()}
               </CardDescription>
             </CardHeader>
             <CardContent className="flex flex-wrap gap-2">
               <Button asChild variant="outline" size="sm">
                 <Link to="/goals/$goalId/timeline" params={{ goalId: dashboard.focusGoal.id }}>
-                  View study timeline
+                  {m.goal_view_timeline()}
                 </Link>
               </Button>
               <Button asChild variant="ghost" size="sm">
-                <Link to="/goals">View all goals</Link>
+                <Link to="/goals">{m.dashboard_view_all_goals()}</Link>
               </Button>
             </CardContent>
           </Card>
         ) : (
           <Card className="island-shell rounded-2xl border-[var(--border-default)] shadow-none">
             <CardHeader>
-              <CardTitle className="display-title text-xl">No learning goal yet</CardTitle>
-              <CardDescription>
-                Create a goal to focus your weekly study time and link resources.
-              </CardDescription>
+              <CardTitle className="display-title text-xl">{m.dashboard_no_goal_title()}</CardTitle>
+              <CardDescription>{m.dashboard_no_goal_description()}</CardDescription>
               <Button asChild className="mt-2 w-fit">
-                <Link to="/goals">Create a goal</Link>
+                <Link to="/goals">{m.dashboard_create_goal()}</Link>
               </Button>
             </CardHeader>
           </Card>
@@ -120,13 +123,11 @@ export function DashboardPage({ dashboard }: DashboardPageProps) {
 
         <Card className="island-shell rounded-2xl border-[var(--border-default)] shadow-none">
           <CardHeader>
-            <p className="island-kicker mb-1">Pending effort</p>
+            <p className="island-kicker mb-1">{m.dashboard_pending_effort()}</p>
             <CardTitle className="display-title text-3xl font-bold text-[var(--text-primary)]">
-              {dashboard.pendingHoursEstimate}h
+              {m.dashboard_pending_hours({ hours: String(dashboard.pendingHoursEstimate) })}
             </CardTitle>
-            <CardDescription>
-              Estimated remaining hours across pending and in-progress resources.
-            </CardDescription>
+            <CardDescription>{m.dashboard_pending_description()}</CardDescription>
           </CardHeader>
         </Card>
       </div>
@@ -136,15 +137,18 @@ export function DashboardPage({ dashboard }: DashboardPageProps) {
           id="progress-summary-heading"
           className="display-title mb-4 text-2xl font-bold text-[var(--text-primary)]"
         >
-          Library progress
+          {m.dashboard_library_progress()}
         </h2>
         <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-          <ProgressStat label="Saved" value={dashboard.progress.totalSaved} />
-          <ProgressStat label="Pending" value={dashboard.progress.pending} />
-          <ProgressStat label="In progress" value={dashboard.progress.inProgress} />
-          <ProgressStat label="Completed" value={dashboard.progress.completed} />
+          <ProgressStat label={m.dashboard_stat_saved()} value={dashboard.progress.totalSaved} />
+          <ProgressStat label={m.dashboard_stat_pending()} value={dashboard.progress.pending} />
           <ProgressStat
-            label="Completion"
+            label={m.dashboard_stat_in_progress()}
+            value={dashboard.progress.inProgress}
+          />
+          <ProgressStat label={m.dashboard_stat_completed()} value={dashboard.progress.completed} />
+          <ProgressStat
+            label={m.dashboard_stat_completion()}
             value={`${dashboard.progress.overallProgressPercent}%`}
           />
         </ul>
@@ -156,22 +160,22 @@ export function DashboardPage({ dashboard }: DashboardPageProps) {
             id="next-resources-heading"
             className="display-title text-2xl font-bold text-[var(--text-primary)]"
           >
-            Next up
+            {m.dashboard_next_up()}
           </h2>
           <Button asChild variant="ghost" size="sm">
-            <Link to="/library">View library</Link>
+            <Link to="/library">{m.dashboard_view_library()}</Link>
           </Button>
         </div>
 
         {dashboard.nextResources.length === 0 ? (
           <Card className="island-shell rounded-2xl border-[var(--border-default)] py-6 shadow-none">
             <CardHeader>
-              <CardTitle className="display-title text-lg">No active resources</CardTitle>
-              <CardDescription>
-                Save resources from the catalog or mark saved items as in progress.
-              </CardDescription>
+              <CardTitle className="display-title text-lg">
+                {m.dashboard_no_active_title()}
+              </CardTitle>
+              <CardDescription>{m.dashboard_no_active_description()}</CardDescription>
               <Button asChild className="mt-2 w-fit">
-                <Link to="/">Browse catalog</Link>
+                <Link to="/">{m.action_browse_catalog()}</Link>
               </Button>
             </CardHeader>
           </Card>
@@ -182,11 +186,9 @@ export function DashboardPage({ dashboard }: DashboardPageProps) {
                 <Card className="island-shell rounded-2xl border-[var(--border-default)] shadow-none">
                   <CardHeader className="gap-2">
                     <div className="flex flex-wrap items-center gap-2">
-                      <Badge variant="outline">{statusLabels[resource.status]}</Badge>
+                      <Badge variant="outline">{userResourceStatusLabel(resource.status)}</Badge>
                       <Badge variant="secondary">{resource.estimatedHours}h</Badge>
-                      <Badge variant="outline" className="capitalize">
-                        {resource.level}
-                      </Badge>
+                      <Badge variant="outline">{levelLabel(resource.level)}</Badge>
                     </div>
                     <CardTitle className="display-title text-lg font-bold">
                       <Link
@@ -200,7 +202,9 @@ export function DashboardPage({ dashboard }: DashboardPageProps) {
                     <CardDescription>
                       {resource.category}
                       {resource.progressPercentage > 0
-                        ? ` · ${resource.progressPercentage}% complete`
+                        ? m.dashboard_resource_complete({
+                            percent: String(resource.progressPercentage),
+                          })
                         : null}
                     </CardDescription>
                   </CardHeader>

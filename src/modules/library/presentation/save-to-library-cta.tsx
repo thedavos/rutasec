@@ -3,6 +3,7 @@ import { useState } from "react";
 
 import { authClient } from "#/modules/identity";
 import { saveResourceFn } from "#/modules/library";
+import * as m from "#/paraglide/messages.js";
 import { Button } from "#/shared/presentation/ui/button";
 import { Skeleton } from "#/shared/presentation/ui/skeleton";
 
@@ -32,7 +33,7 @@ export function SaveToLibraryCta({
       setSaveState("saved");
     } catch (error) {
       setSaveState("error");
-      setErrorMessage(error instanceof Error ? error.message : "Could not save this resource.");
+      setErrorMessage(error instanceof Error ? error.message : m.save_error_fallback());
     }
   }
 
@@ -45,11 +46,11 @@ export function SaveToLibraryCta({
       <div className="space-y-2">
         <Button variant="outline" className="w-full" asChild>
           <Link to="/sign-in" search={{ redirect: signInRedirect }}>
-            Sign in to save
+            {m.save_sign_in_cta()}
           </Link>
         </Button>
         <p className="text-xs leading-relaxed text-[var(--text-secondary)]">
-          Sign in to add this resource to your personal library.
+          {m.save_sign_in_hint()}
         </p>
       </div>
     );
@@ -59,10 +60,10 @@ export function SaveToLibraryCta({
     return (
       <div className="space-y-2">
         <Button type="button" variant="secondary" className="w-full" disabled>
-          Saved to library
+          {m.save_saved_button()}
         </Button>
         <p className="text-xs leading-relaxed text-[var(--text-secondary)]">
-          This resource is in your library. Open your library to track progress.
+          {m.save_saved_hint()}
         </p>
       </div>
     );
@@ -81,7 +82,7 @@ export function SaveToLibraryCta({
           void handleSave();
         }}
       >
-        {isSaving ? "Saving…" : "Save to library"}
+        {isSaving ? m.action_saving() : m.save_button()}
       </Button>
       {errorMessage ? (
         <p className="text-xs leading-relaxed text-destructive" role="alert">
@@ -89,7 +90,7 @@ export function SaveToLibraryCta({
         </p>
       ) : (
         <p className="text-xs leading-relaxed text-[var(--text-secondary)]">
-          Track this resource in your personal library.
+          {m.save_track_hint()}
         </p>
       )}
     </div>

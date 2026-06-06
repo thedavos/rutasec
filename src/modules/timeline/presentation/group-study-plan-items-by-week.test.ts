@@ -2,6 +2,7 @@ import { describe, expect, it } from "vite-plus/test";
 
 import type { StudyPlanItem } from "#/modules/timeline/domain/entities/study-plan";
 import { groupStudyPlanItemsByWeek } from "#/modules/timeline/presentation/group-study-plan-items-by-week";
+import * as m from "#/paraglide/messages.js";
 
 function makeItem(
   overrides: Partial<StudyPlanItem> & Pick<StudyPlanItem, "resourceId">,
@@ -59,6 +60,6 @@ describe("groupStudyPlanItemsByWeek", () => {
   it("falls back to unknown title when resource is missing from the map", () => {
     const result = groupStudyPlanItemsByWeek([makeItem({ resourceId: "missing" })], new Map());
 
-    expect(result[0]?.items[0]?.title).toBe("Unknown resource");
+    expect(result[0]?.items[0]?.title).toBe(m.timeline_unknown_resource());
   });
 });

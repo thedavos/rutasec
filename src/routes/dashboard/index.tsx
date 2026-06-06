@@ -3,6 +3,7 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 import { getUserDashboardFn } from "#/modules/dashboard";
 import { DashboardPage } from "#/modules/dashboard/presentation/dashboard-page";
 import { getSessionFn } from "#/modules/identity/server/get-session";
+import * as m from "#/paraglide/messages.js";
 
 export const Route = createFileRoute("/dashboard/")({
   beforeLoad: async ({ location }) => {
@@ -16,7 +17,7 @@ export const Route = createFileRoute("/dashboard/")({
   },
   loader: async () => getUserDashboardFn(),
   head: () => ({
-    meta: [{ title: "Your dashboard — RutaSec" }],
+    meta: [{ title: m.meta_dashboard_title() }],
   }),
   component: DashboardRoute,
 });

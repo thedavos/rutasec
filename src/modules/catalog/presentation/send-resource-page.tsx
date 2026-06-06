@@ -11,6 +11,7 @@ import {
 } from "#/modules/catalog/domain/entities/resource-proposal";
 import { ResourceProposalForm } from "#/modules/catalog/presentation/components/resource-proposal-form";
 import { ResourceProposalPreview } from "#/modules/catalog/presentation/components/resource-proposal-preview";
+import * as m from "#/paraglide/messages.js";
 import { copyTextToClipboard } from "#/shared/utils/copy-text-to-clipboard";
 
 type CopyFeedback = "idle" | "copied" | "failed";
@@ -61,14 +62,11 @@ export function SendResourcePage({ categories }: SendResourcePageProps) {
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-col gap-12">
       <header className="max-w-3xl">
-        <p className="island-kicker mb-2">Send Resource</p>
+        <p className="island-kicker mb-2">{m.send_resource_kicker()}</p>
         <h1 className="display-title text-3xl font-bold text-[var(--text-primary)] sm:text-4xl">
-          Propose free resources
+          {m.send_resource_title()}
         </h1>
-        <p className="mt-3 text-[var(--text-secondary)]">
-          Prepare a GitHub issue with the minimum fields we review: link, title, category, format,
-          language, and confirmation that the resource is free and available in English or Spanish.
-        </p>
+        <p className="mt-3 text-[var(--text-secondary)]">{m.send_resource_description()}</p>
       </header>
 
       <div className="grid gap-6 lg:grid-cols-2 lg:items-start">

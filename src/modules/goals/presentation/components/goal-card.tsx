@@ -5,6 +5,9 @@ import type { LearningGoal } from "#/modules/goals/domain/entities/goal";
 import { AddGoalResourceSelect } from "#/modules/goals/presentation/components/add-goal-resource-select";
 import { GoalLinkedResources } from "#/modules/goals/presentation/components/goal-linked-resources";
 import type { PersonalLibraryItem } from "#/modules/library/domain/entities/personal-library-item";
+import * as m from "#/paraglide/messages.js";
+import { getLocale } from "#/paraglide/runtime.js";
+import { goalStatusLabel } from "#/shared/i18n/resource-labels";
 import { Badge } from "#/shared/presentation/ui/badge";
 import { Button } from "#/shared/presentation/ui/button";
 import {
@@ -16,12 +19,6 @@ import {
 } from "#/shared/presentation/ui/card";
 import { cn } from "#/shared/utils";
 
-const statusLabels: Record<LearningGoal["status"], string> = {
-  active: "Active",
-  completed: "Completed",
-  paused: "Paused",
-};
-
 type GoalCardProps = {
   goal: LearningGoal;
   linkedResources: GoalLinkedResource[];
@@ -30,16 +27,26 @@ type GoalCardProps = {
 
 export function GoalCard({ goal, linkedResources, libraryItems }: GoalCardProps) {
   const linkedResourceIds = new Set(linkedResources.map((resource) => resource.resourceId));
+  const locale = getLocale();
+  const targetDateLabel = goal.targetDate
+    ? m.goal_target_date({
+        date: new Date(`${goal.targetDate}T00:00:00`).toLocaleDateString(locale),
+      })
+    : m.goal_no_target_date();
+  const createdDateLabel = m.goal_created({
+    date: new Date(goal.createdAt).toLocaleDateString(locale),
+  });
+
   return (
     <Card className={cn("feature-card island-shell h-full gap-0 rounded-2xl py-0 shadow-none")}>
       <CardHeader className="gap-3 px-5 pt-5 pb-0">
         <div className="flex flex-wrap items-center gap-2">
-          <Badge variant="outline">{statusLabels[goal.status]}</Badge>
+          <Badge variant="outline">{goalStatusLabel(goal.status)}</Badge>
           <Badge
             variant="secondary"
             className="island-kicker rounded-full border-[var(--primary-border)]"
           >
-            {goal.hoursPerWeek} h/week
+            {m.goal_hours_per_week({ hours: String(goal.hoursPerWeek) })}
           </Badge>
         </div>
         <CardTitle className="display-title text-xl font-bold leading-tight text-[var(--text-primary)]">
@@ -54,23 +61,23 @@ export function GoalCard({ goal, linkedResources, libraryItems }: GoalCardProps)
           </CardDescription>
         ) : null}
         <CardDescription className="text-sm text-[var(--text-secondary)]">
-          {goal.targetDate
-            ? `Target ${new Date(`${goal.targetDate}T00:00:00`).toLocaleDateString()}`
-            : "No target date"}
+          {targetDateLabel}
           {" · "}
-          Created {new Date(goal.createdAt).toLocaleDateString()}
+          {createdDateLabel}
         </CardDescription>
 
         <div className="mt-4 border-t border-[var(--border-default)] pt-4">
           <Button asChild variant="outline" size="sm" className="w-full sm:w-auto">
             <Link to="/goals/$goalId/timeline" params={{ goalId: goal.id }}>
-              View study timeline
+              {m.goal_view_timeline()}
             </Link>
           </Button>
         </div>
 
         <div className="mt-4 space-y-3 border-t border-[var(--border-default)] pt-4">
-          <h3 className="text-sm font-semibold text-[var(--text-primary)]">Linked resources</h3>
+          <h3 className="text-sm font-semibold text-[var(--text-primary)]">
+            {m.goal_linked_resources_heading()}
+          </h3>
           <GoalLinkedResources resources={linkedResources} />
           <AddGoalResourceSelect
             goalId={goal.id}

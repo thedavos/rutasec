@@ -73,33 +73,33 @@ export function validateResourceProposal(raw: ResourceProposalInput): ResourcePr
 
   const url = raw.url.trim();
   if (!url) {
-    errors.url = "Resource URL is required.";
+    errors.url = "url_required";
   } else if (!isValidHttpUrl(url)) {
-    errors.url = "Enter a valid http or https URL.";
+    errors.url = "url_invalid";
   }
 
   const title = raw.title.trim();
   if (!title) {
-    errors.title = "Title is required.";
+    errors.title = "title_required";
   }
 
   const category = raw.category.trim();
   if (!category) {
-    errors.category = "Category is required.";
+    errors.category = "category_required";
   }
 
   if (!RESOURCE_TYPES.includes(raw.format)) {
-    errors.format = "Select a format.";
+    errors.format = "format_required";
   }
 
   if (raw.language !== "en" && raw.language !== "es") {
-    errors.language = "Select a language.";
+    errors.language = "language_required";
   }
 
   if (!raw.confirmations.isFree) {
-    errors.confirmations = "Confirm the resource is free.";
+    errors.confirmations = "confirm_free";
   } else if (!raw.confirmations.isEnglishOrSpanish) {
-    errors.confirmations = "Confirm the resource is available in English or Spanish.";
+    errors.confirmations = "confirm_language";
   }
 
   if (Object.keys(errors).length > 0) {

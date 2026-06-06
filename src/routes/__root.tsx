@@ -3,6 +3,8 @@ import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { TanStackDevtools } from "@tanstack/react-devtools";
 
 import { AuthHeader } from "#/modules/identity/presentation/auth-header";
+import * as m from "#/paraglide/messages.js";
+import { getLocale } from "#/paraglide/runtime.js";
 import { AuthenticatedNavGroup } from "#/shared/presentation/layout/authenticated-nav-group";
 import { MobileNavDrawer } from "#/shared/presentation/layout/mobile-nav-drawer";
 import { PublicNavGroup } from "#/shared/presentation/layout/public-nav-group";
@@ -25,7 +27,7 @@ export const Route = createRootRoute({
         content: "width=device-width, initial-scale=1",
       },
       {
-        title: "RutaSec",
+        title: m.app_title(),
       },
     ],
     links: [
@@ -42,10 +44,10 @@ function NotFoundPage() {
   return (
     <Card className="island-shell mx-auto max-w-lg rounded-2xl border-[var(--border-default)] py-8 text-center shadow-none">
       <CardHeader>
-        <CardTitle className="display-title text-2xl">Page not found</CardTitle>
-        <CardDescription>The resource or page you requested does not exist.</CardDescription>
+        <CardTitle className="display-title text-2xl">{m.not_found_title()}</CardTitle>
+        <CardDescription>{m.not_found_description()}</CardDescription>
         <Button asChild className="mt-4">
-          <Link to="/">Back to resources</Link>
+          <Link to="/">{m.back_to_resources()}</Link>
         </Button>
       </CardHeader>
     </Card>
@@ -62,10 +64,10 @@ function AppLayout() {
               <img src="/rutasec-brand-mark.svg" alt="" className="block size-9" />
             </span>
             <span className="display-title block text-lg leading-none font-bold text-[var(--text-primary)]">
-              RutaSec
+              {m.brand_name()}
             </span>
           </Link>
-          <nav className="hidden items-center gap-1 md:flex" aria-label="Main">
+          <nav className="hidden items-center gap-1 md:flex" aria-label={m.nav_main_aria()}>
             <AuthenticatedNavGroup />
             <PublicNavGroup />
           </nav>
@@ -87,7 +89,7 @@ function AppLayout() {
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang={getLocale()}>
       <head>
         <HeadContent />
       </head>

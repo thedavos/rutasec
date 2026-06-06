@@ -4,6 +4,7 @@ import { getPublicResourceByIdFn } from "#/modules/catalog";
 import { ResourceDetailPage } from "#/modules/catalog/presentation/resource-detail-page";
 import { ResourceNotFoundError } from "#/modules/catalog/server/get-public-resource-by-id";
 import { getUserResourceFn } from "#/modules/library";
+import * as m from "#/paraglide/messages.js";
 
 export const Route = createFileRoute("/resources/$id")({
   loader: async ({ params }) => {
@@ -22,7 +23,13 @@ export const Route = createFileRoute("/resources/$id")({
     }
   },
   head: ({ loaderData }) => ({
-    meta: [{ title: `${loaderData?.resource.title ?? "Resource"} — RutaSec` }],
+    meta: [
+      {
+        title: m.meta_resource_title({
+          title: loaderData?.resource.title ?? m.meta_resource_title_fallback(),
+        }),
+      },
+    ],
   }),
   component: ResourceDetailRoute,
 });

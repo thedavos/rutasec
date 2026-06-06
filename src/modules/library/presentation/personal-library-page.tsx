@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router";
 import type { PersonalLibrary } from "#/modules/library/domain/entities/personal-library-item";
 import { LibraryItemCard } from "#/modules/library/presentation/components/library-item-card";
 import { LibraryStatusFilters } from "#/modules/library/presentation/components/library-status-filters";
+import * as m from "#/paraglide/messages.js";
 import { Button } from "#/shared/presentation/ui/button";
 import { Card, CardDescription, CardHeader, CardTitle } from "#/shared/presentation/ui/card";
 
@@ -14,13 +15,12 @@ export function PersonalLibraryPage({ library }: PersonalLibraryPageProps) {
   return (
     <div className="pb-16">
       <header className="rise-in mb-8">
-        <p className="island-kicker mb-2">Personal library</p>
+        <p className="island-kicker mb-2">{m.library_kicker()}</p>
         <h1 className="display-title text-4xl font-bold text-[var(--text-primary)] sm:text-5xl">
-          Your saved resources
+          {m.library_title()}
         </h1>
         <p className="mt-3 max-w-2xl text-base leading-relaxed text-[var(--text-secondary)]">
-          Resources you saved from the catalog. Open a card for full detail or continue browsing to
-          add more.
+          {m.library_description()}
         </p>
       </header>
 
@@ -30,15 +30,15 @@ export function PersonalLibraryPage({ library }: PersonalLibraryPageProps) {
         <Card className="island-shell mt-8 rounded-2xl border-[var(--border-default)] py-8 shadow-none">
           <CardHeader className="text-center">
             <CardTitle className="display-title text-xl">
-              {library.statusFilter ? "No resources with this status" : "Nothing saved yet"}
+              {library.statusFilter ? m.library_empty_filtered_title() : m.library_empty_title()}
             </CardTitle>
             <CardDescription>
               {library.statusFilter
-                ? "Try another status filter or save resources from the public catalog."
-                : "Browse the catalog and use Save to library on any resource you want to track."}
+                ? m.library_empty_filtered_description()
+                : m.library_empty_description()}
             </CardDescription>
             <Button asChild className="mt-4">
-              <Link to="/">Browse catalog</Link>
+              <Link to="/">{m.action_browse_catalog()}</Link>
             </Button>
           </CardHeader>
         </Card>

@@ -3,6 +3,7 @@ import { useState } from "react";
 
 import { linkResourceToGoalFn } from "#/modules/goals";
 import type { PersonalLibraryItem } from "#/modules/library/domain/entities/personal-library-item";
+import * as m from "#/paraglide/messages.js";
 import { Label } from "#/shared/presentation/ui/label";
 import {
   Select,
@@ -46,32 +47,24 @@ export function AddGoalResourceSelect({
       });
       await router.invalidate();
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : "Could not link this resource.");
+      setErrorMessage(error instanceof Error ? error.message : m.goal_link_error_fallback());
     } finally {
       setIsLinking(false);
     }
   }
 
   if (libraryItems.length === 0) {
-    return (
-      <p className="text-sm text-[var(--text-secondary)]">
-        Save resources from the catalog to your library before linking them to a goal.
-      </p>
-    );
+    return <p className="text-sm text-[var(--text-secondary)]">{m.goal_link_save_first()}</p>;
   }
 
   if (availableItems.length === 0) {
-    return (
-      <p className="text-sm text-[var(--text-secondary)]">
-        All saved library resources are already linked to this goal.
-      </p>
-    );
+    return <p className="text-sm text-[var(--text-secondary)]">{m.goal_link_all_linked()}</p>;
   }
 
   return (
     <div className="space-y-2">
       <Label htmlFor={`add-resource-${goalId}`} className="text-sm text-[var(--text-secondary)]">
-        Add from library
+        {m.goal_add_from_library()}
       </Label>
       <Select onValueChange={handleValueChange} disabled={isLinking}>
         <SelectTrigger
@@ -79,7 +72,7 @@ export function AddGoalResourceSelect({
           className="w-full border-[var(--border-default)] bg-transparent"
           size="sm"
         >
-          <SelectValue placeholder={isLinking ? "Linking…" : "Choose a saved resource"} />
+          <SelectValue placeholder={isLinking ? m.goal_linking() : m.goal_choose_resource()} />
         </SelectTrigger>
         <SelectContent>
           {availableItems.map((item) => (

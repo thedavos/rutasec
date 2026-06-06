@@ -6,6 +6,8 @@ import { detailAttributionDescription } from "#/modules/catalog/presentation/cop
 import type { SavedUserResource } from "#/modules/library/domain/entities/user-resource";
 import { SaveToLibraryCta } from "#/modules/library/presentation/save-to-library-cta";
 import { ResourceProgressPanel } from "#/modules/library/presentation/resource-progress-panel";
+import * as m from "#/paraglide/messages.js";
+import { levelLabel, resourceTypeLabel } from "#/shared/i18n/resource-labels";
 import { Badge } from "#/shared/presentation/ui/badge";
 import { Button } from "#/shared/presentation/ui/button";
 import {
@@ -22,22 +24,6 @@ type ResourceDetailPageProps = {
   resource: CatalogResourceDetail;
   isSaved: boolean;
   userResource: SavedUserResource | null;
-};
-
-const levelLabels: Record<CatalogResourceDetail["level"], string> = {
-  beginner: "Beginner",
-  intermediate: "Intermediate",
-  advanced: "Advanced",
-};
-
-const typeLabels: Record<CatalogResourceDetail["resourceType"], string> = {
-  course: "Course",
-  book: "Book",
-  documentation: "Docs",
-  video: "Video",
-  lab: "Lab",
-  tool: "Tool",
-  article: "Article",
 };
 
 const detailCardClassName = cn(
@@ -65,10 +51,10 @@ function TaxonomyTrail({ resource }: { resource: CatalogResourceDetail }) {
 export function ResourceDetailPage({ resource, isSaved, userResource }: ResourceDetailPageProps) {
   return (
     <div className="pb-16">
-      <nav aria-label="Breadcrumb" className="rise-in mb-6">
+      <nav aria-label={m.detail_breadcrumb_aria()} className="rise-in mb-6">
         <Button variant="ghost" size="sm" asChild className="h-auto px-0 py-0 font-semibold">
           <Link to="/" className="text-[var(--text-secondary)] hover:text-[var(--text-primary)]">
-            ← Back to resources
+            {m.detail_back_to_resources()}
           </Link>
         </Button>
       </nav>
@@ -83,11 +69,11 @@ export function ResourceDetailPage({ resource, isSaved, userResource }: Resource
               >
                 {resource.category}
               </Badge>
-              <Badge variant="outline">{levelLabels[resource.level]}</Badge>
-              <Badge variant="outline">{typeLabels[resource.resourceType]}</Badge>
+              <Badge variant="outline">{levelLabel(resource.level)}</Badge>
+              <Badge variant="outline">{resourceTypeLabel(resource.resourceType)}</Badge>
               {resource.isFree ? (
                 <Badge className="border-[var(--primary-border)] bg-[var(--primary-soft)] text-[var(--success)]">
-                  Free
+                  {m.badge_free()}
                 </Badge>
               ) : null}
             </div>
@@ -106,7 +92,7 @@ export function ResourceDetailPage({ resource, isSaved, userResource }: Resource
 
             {resource.roadmapSection ? (
               <p className="mt-2 text-sm text-[var(--text-secondary)]">
-                Roadmap: {resource.roadmapSection}
+                {m.detail_roadmap({ section: resource.roadmapSection })}
               </p>
             ) : null}
           </header>
@@ -115,10 +101,15 @@ export function ResourceDetailPage({ resource, isSaved, userResource }: Resource
             {resource.pathContext ? (
               <Card className={detailCardClassName}>
                 <CardHeader className="gap-2 px-5 pt-5 pb-5">
-                  <CardTitle className="display-title text-lg font-bold">Learning path</CardTitle>
+                  <CardTitle className="display-title text-lg font-bold">
+                    {m.detail_learning_path_title()}
+                  </CardTitle>
                   <CardDescription className="text-[var(--text-secondary)]">
-                    Step {resource.pathContext.itemOrder} of {resource.pathContext.totalItems} in{" "}
-                    {resource.pathContext.pathTitle}
+                    {m.detail_learning_path_step({
+                      order: String(resource.pathContext.itemOrder),
+                      total: String(resource.pathContext.totalItems),
+                      pathTitle: resource.pathContext.pathTitle,
+                    })}
                   </CardDescription>
                 </CardHeader>
               </Card>
@@ -127,7 +118,9 @@ export function ResourceDetailPage({ resource, isSaved, userResource }: Resource
             {resource.tags.length > 0 ? (
               <Card className={detailCardClassName}>
                 <CardHeader className="gap-2 px-5 pt-5 pb-0">
-                  <CardTitle className="display-title text-lg font-bold">Tags</CardTitle>
+                  <CardTitle className="display-title text-lg font-bold">
+                    {m.detail_tags_title()}
+                  </CardTitle>
                 </CardHeader>
                 <CardContent className="px-5 pt-3 pb-5">
                   <div className="flex flex-wrap gap-2">
@@ -143,9 +136,11 @@ export function ResourceDetailPage({ resource, isSaved, userResource }: Resource
 
             <Card className={detailCardClassName}>
               <CardHeader className="gap-2 px-5 pt-5 pb-0">
-                <CardTitle className="display-title text-lg font-bold">Attribution</CardTitle>
+                <CardTitle className="display-title text-lg font-bold">
+                  {m.detail_attribution_title()}
+                </CardTitle>
                 <CardDescription className="text-[var(--text-secondary)]">
-                  {detailAttributionDescription}
+                  {detailAttributionDescription()}
                 </CardDescription>
               </CardHeader>
               <CardContent className="px-5 pt-3 pb-5">
@@ -158,15 +153,21 @@ export function ResourceDetailPage({ resource, isSaved, userResource }: Resource
         <aside className="rise-in lg:sticky lg:top-8">
           <Card className={detailCardClassName}>
             <CardHeader className="gap-2 px-5 pt-5 pb-0">
-              <CardTitle className="display-title text-lg font-bold">Actions</CardTitle>
+              <CardTitle className="display-title text-lg font-bold">
+                {m.detail_actions_title()}
+              </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 px-5 pt-3 pb-5">
               <dl className="grid grid-cols-[minmax(0,1fr)_auto] gap-x-4 gap-y-2 text-sm text-[var(--text-secondary)]">
-                <dt className="font-semibold text-[var(--text-primary)]">Estimated time</dt>
+                <dt className="font-semibold text-[var(--text-primary)]">
+                  {m.detail_estimated_time()}
+                </dt>
                 <dd className="text-right">{resource.estimatedHours}h</dd>
                 {resource.language ? (
                   <>
-                    <dt className="font-semibold text-[var(--text-primary)]">Language</dt>
+                    <dt className="font-semibold text-[var(--text-primary)]">
+                      {m.detail_language()}
+                    </dt>
                     <dd className="text-right uppercase">{resource.language}</dd>
                   </>
                 ) : null}
@@ -176,7 +177,7 @@ export function ResourceDetailPage({ resource, isSaved, userResource }: Resource
 
               <Button asChild className="w-full">
                 <a href={resource.url} target="_blank" rel="noopener noreferrer">
-                  Visit resource
+                  {m.visit_resource()}
                 </a>
               </Button>
 

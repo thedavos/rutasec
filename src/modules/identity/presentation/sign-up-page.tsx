@@ -2,6 +2,7 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 
 import { authClient } from "#/modules/identity";
+import * as m from "#/paraglide/messages.js";
 import { Button } from "#/shared/presentation/ui/button";
 import {
   Card,
@@ -35,7 +36,7 @@ export function SignUpPage() {
     setIsSubmitting(false);
 
     if (result.error) {
-      setError(result.error.message ?? "Could not create your account. Try a different email.");
+      setError(result.error.message ?? m.sign_up_error_fallback());
       return;
     }
 
@@ -47,24 +48,24 @@ export function SignUpPage() {
       <div className="w-full max-w-md">
         <Card className="island-shell rounded-2xl border-[var(--border-default)] shadow-none">
           <CardHeader>
-            <CardTitle className="display-title text-2xl">Create account</CardTitle>
-            <CardDescription>Register with email and password to use RutaSec.</CardDescription>
+            <CardTitle className="display-title text-2xl">{m.sign_up_title()}</CardTitle>
+            <CardDescription>{m.sign_up_description()}</CardDescription>
           </CardHeader>
           <CardContent>
             <form className="space-y-4" onSubmit={handleSubmit}>
               <div className="space-y-2">
-                <Label htmlFor="sign-up-name">Name</Label>
+                <Label htmlFor="sign-up-name">{m.sign_up_name_label()}</Label>
                 <Input
                   id="sign-up-name"
                   type="text"
                   autoComplete="name"
                   value={name}
                   onChange={(event) => setName(event.target.value)}
-                  placeholder="Optional"
+                  placeholder={m.sign_up_name_placeholder()}
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="sign-up-email">Email</Label>
+                <Label htmlFor="sign-up-email">{m.sign_up_email_label()}</Label>
                 <Input
                   id="sign-up-email"
                   type="email"
@@ -75,7 +76,7 @@ export function SignUpPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="sign-up-password">Password</Label>
+                <Label htmlFor="sign-up-password">{m.sign_up_password_label()}</Label>
                 <Input
                   id="sign-up-password"
                   type="password"
@@ -92,16 +93,16 @@ export function SignUpPage() {
                 </p>
               ) : null}
               <Button type="submit" className="w-full" disabled={isSubmitting}>
-                {isSubmitting ? "Creating account…" : "Create account"}
+                {isSubmitting ? m.sign_up_submitting() : m.sign_up_title()}
               </Button>
             </form>
             <p className="mt-4 text-center text-sm text-[var(--text-secondary)]">
-              Already have an account?{" "}
+              {m.sign_up_has_account()}{" "}
               <Link
                 to="/sign-in"
                 className="font-semibold text-[var(--text-primary)] underline-offset-4 hover:underline"
               >
-                Sign in
+                {m.auth_sign_in()}
               </Link>
             </p>
           </CardContent>

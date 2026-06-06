@@ -1,4 +1,5 @@
 import type { CatalogResourceCardAttribution } from "#/modules/catalog/domain/entities/resource";
+import * as m from "#/paraglide/messages.js";
 import { areNamedSourcesEqual } from "#/shared/utils/are-named-sources-equal";
 import { cn } from "#/shared/utils";
 
@@ -37,13 +38,13 @@ export function ResourceAttribution({ attribution, className }: ResourceAttribut
       className={cn("space-y-3 text-sm leading-relaxed text-[var(--text-secondary)]", className)}
     >
       <AttributionRow
-        label="Original source"
+        label={m.attribution_original_source()}
         href={attribution.originalSourceUrl}
         name={attribution.originalSourceName}
       />
       {showCuratedFrom ? (
         <AttributionRow
-          label="Curated from"
+          label={m.attribution_curated_from()}
           href={attribution.curatedFromUrl}
           name={attribution.curatedFromName}
         />

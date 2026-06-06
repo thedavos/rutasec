@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 
 import { authClient } from "#/modules/identity";
+import * as m from "#/paraglide/messages.js";
 import { Avatar, AvatarFallback, AvatarImage } from "#/shared/presentation/ui/avatar";
 import { Button } from "#/shared/presentation/ui/button";
 import { Skeleton } from "#/shared/presentation/ui/skeleton";
@@ -45,7 +46,7 @@ export function AuthHeaderActions({ layout = "inline" }: AuthHeaderActionsProps)
             void authClient.signOut();
           }}
         >
-          Sign out
+          {m.auth_sign_out()}
         </Button>
       </div>
     );
@@ -59,10 +60,10 @@ export function AuthHeaderActions({ layout = "inline" }: AuthHeaderActionsProps)
         className={cn(isStacked && "h-10 w-full")}
         asChild
       >
-        <Link to="/sign-in">Sign in</Link>
+        <Link to="/sign-in">{m.auth_sign_in()}</Link>
       </Button>
       <Button size="sm" className={cn(isStacked && "h-10 w-full")} asChild>
-        <Link to="/sign-up">Sign up</Link>
+        <Link to="/sign-up">{m.auth_sign_up()}</Link>
       </Button>
     </div>
   );

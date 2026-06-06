@@ -1,5 +1,6 @@
 import { Github } from "lucide-react";
 
+import * as m from "#/paraglide/messages.js";
 import { MainNavExternalLink } from "#/shared/presentation/layout/main-nav-external-link";
 import { RUTASEC_GITHUB_URL } from "#/shared/presentation/layout/public-nav.constants";
 
@@ -11,7 +12,7 @@ export function GithubNavLink({ stacked = false }: GithubNavLinkProps) {
   return (
     <MainNavExternalLink
       href={RUTASEC_GITHUB_URL}
-      label="GitHub"
+      label={m.nav_github()}
       icon={<Github className="size-4" aria-hidden />}
       stacked={stacked}
     />
