@@ -65,13 +65,27 @@ export function SiteFooter() {
           <p>{m.footer_sign_in_prompt()}</p>
         </div>
 
-        <div className="flex shrink-0 flex-wrap items-center gap-3 sm:justify-end">
-          <Button type="button" variant="outline" size="sm" onClick={handleShare}>
-            {m.footer_share()}
-          </Button>
-          <p aria-live="polite" className="min-w-24 text-xs text-[var(--text-secondary)]">
-            {shareFeedbackMessage(shareStatus)}
-          </p>
+        <div className="flex w-full items-center gap-3 sm:w-auto sm:justify-end">
+          <div className="flex flex-1 items-center gap-3 sm:flex-none">
+            <p
+              aria-live="polite"
+              className="order-2 min-w-24 text-xs text-[var(--text-secondary)] sm:order-1 sm:text-right"
+            >
+              {shareFeedbackMessage(shareStatus)}
+            </p>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="order-1 sm:order-2"
+              onClick={handleShare}
+            >
+              {m.footer_share()}
+            </Button>
+          </div>
+          <span aria-hidden className="hidden text-[var(--text-muted)] sm:inline">
+            |
+          </span>
           <LanguageSelector />
         </div>
       </div>

@@ -67,7 +67,11 @@ describe("SiteFooter", () => {
     await clickShare();
 
     expect(writeText).toHaveBeenCalledWith(window.location.href);
-    expect(screen.getByText("Link copied.")).toBeTruthy();
+    const feedback = screen.getByText("Link copied.");
+    expect(feedback).toBeTruthy();
+    expect(feedback.className).toContain("order-2");
+    expect(feedback.className).toContain("sm:order-1");
+    expect(screen.getByRole("button", { name: "Share" }).className).toContain("sm:order-2");
 
     await act(async () => {
       await vi.advanceTimersByTimeAsync(shareFeedbackClearDelayMs);
