@@ -1,4 +1,4 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 
 import { getSessionFn } from "#/modules/identity/server/get-session";
 import {
@@ -7,6 +7,7 @@ import {
   type GetPersonalLibraryInput,
   type UserResourceStatus,
 } from "#/modules/library";
+import { GuestLibraryPage } from "#/modules/library/presentation/guest-library-page";
 import { PersonalLibraryPage } from "#/modules/library/presentation/personal-library-page";
 import * as m from "#/paraglide/messages.js";
 
@@ -26,16 +27,15 @@ function parseLibrarySearch(search: Record<string, unknown>): GetPersonalLibrary
 export const Route = createFileRoute("/library/")({
   validateSearch: parseLibrarySearch,
   loaderDeps: ({ search }) => search,
-  beforeLoad: async ({ location }) => {
+  loader: async ({ deps }) => {
     const session = await getSessionFn();
     if (!session?.user) {
-      throw redirect({
-        to: "/sign-in",
-        search: { redirect: location.pathname },
-      });
+      return { mode: "guest" as const };
     }
+
+    const library = await getPersonalLibraryFn({ data: deps });
+    return { mode: "authenticated" as const, library };
   },
-  loader: async ({ deps }) => getPersonalLibraryFn({ data: deps }),
   head: () => ({
     meta: [{ title: m.meta_library_title() }],
   }),
@@ -43,6 +43,11 @@ export const Route = createFileRoute("/library/")({
 });
 
 function LibraryRoute() {
-  const library = Route.useLoaderData();
-  return <PersonalLibraryPage library={library} />;
+  const data = Route.useLoaderData();
+
+  if (data.mode === "guest") {
+    return <GuestLibraryPage />;
+  }
+
+  return <PersonalLibraryPage library={data.library} />;
 }

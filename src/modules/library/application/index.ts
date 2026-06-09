@@ -18,3 +18,5 @@ export type {
   UpdateUserResourceInput,
 } from "#/modules/library/application/update-user-resource/update-user-resource";
 export { UpdateUserResourceUseCase } from "#/modules/library/application/update-user-resource/update-user-resource.use-case";
+export type { SyncGuestLibrary } from "#/modules/library/application/sync-guest-library/sync-guest-library";
+export { SyncGuestLibraryUseCase } from "#/modules/library/application/sync-guest-library/sync-guest-library.use-case";
