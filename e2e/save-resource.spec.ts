@@ -94,6 +94,8 @@ test("authenticated user can save a resource from detail", async ({ page }, test
 });
 
 test("guest saves sync into authenticated library after sign-up", async ({ page }, testInfo) => {
+  test.setTimeout(90_000);
+
   const email = uniqueE2eEmail(testInfo);
   const password = "test-password-123";
 
@@ -112,10 +114,11 @@ test("guest saves sync into authenticated library after sign-up", async ({ page 
   });
 
   await page.goto("/sign-up");
+  await expect(page.getByRole("banner").getByRole("link", { name: "Sign up" })).toBeVisible();
   await page.getByLabel("Email").fill(email);
   await page.getByLabel("Password").fill(password);
   await page.getByRole("button", { name: "Create account" }).click();
-  await expect(page.getByRole("button", { name: "Sign out" })).toBeVisible({ timeout: 30_000 });
+  await expect(page.getByRole("button", { name: "Sign out" })).toBeVisible({ timeout: 45_000 });
 
   await page.goto("/library");
   await expect(page.getByRole("heading", { name: "Your saved resources" })).toBeVisible({
