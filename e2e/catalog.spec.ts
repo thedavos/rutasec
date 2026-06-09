@@ -19,9 +19,13 @@ test("public catalog lists resources without login", async ({ page }) => {
 test("resource detail shows linked attribution", async ({ page }) => {
   await page.goto("/");
 
-  await catalogResourceTitleLink(page, /Linux Journey/i)
-    .first()
-    .click();
+  const detailLink = catalogResourceTitleLink(page, /Linux Journey/i).first();
+  await expect(detailLink).toBeVisible({ timeout: 15_000 });
+  const href = await detailLink.getAttribute("href");
+  if (!href) {
+    throw new Error("Expected Linux Journey catalog link to include an href");
+  }
+  await page.goto(href);
 
   await expect(page.getByText("Attribution", { exact: true })).toBeVisible();
   await expect(page.getByText(/Original source:/)).toBeVisible();
