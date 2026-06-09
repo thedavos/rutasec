@@ -11,4 +11,11 @@
       "database_id": "665ba0bc-6d31-427e-bd6b-69a71424da9a",
     },
   ],
+  "kv_namespaces": [
+    {
+      "binding": "CATALOG_CACHE",
+      "id": "50859743e69f4d13b4dbf2dd8ff5aaf0",
+      "preview_id": "e1f57d6f328049dd8bef5660b2fce880",
+    },
+  ],
 }

@@ -1,3 +1,4 @@
+import { createCachedCatalogAdapter } from "#/modules/catalog/adapters/cache/cached-catalog-adapter";
 import { createD1CatalogAdapter } from "#/modules/catalog/adapters/d1/d1-catalog-adapter";
 import {
   GetCatalogFilterOptionsUseCase,
@@ -5,6 +6,7 @@ import {
   GetPublicResourceByIdUseCase,
   ListCatalogResourcesUseCase,
 } from "#/modules/catalog/application";
+import { getCatalogCacheStore } from "#/shared/catalog-cache";
 import { getDb } from "#/shared/db";
 
 export type CatalogModule = {
@@ -15,7 +17,7 @@ export type CatalogModule = {
 };
 
 export function createCatalogModule(db: D1Database): CatalogModule {
-  const catalog = createD1CatalogAdapter(db);
+  const catalog = createCachedCatalogAdapter(createD1CatalogAdapter(db), getCatalogCacheStore());
 
   return {
     getPublicCatalog: new GetPublicCatalogUseCase(catalog),

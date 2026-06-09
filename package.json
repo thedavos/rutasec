@@ -30,6 +30,8 @@
     "db:seed:verify": "node scripts/verify-seed-links.mjs",
     "db:smoke-user:local": "node scripts/seed-smoke-user.mjs",
     "db:smoke-user:reset": "node scripts/seed-smoke-user.mjs --reset",
+    "cache:clear:local": "node scripts/clear-catalog-cache.mjs --local",
+    "cache:clear:remote": "node scripts/clear-catalog-cache.mjs --remote",
     "prepare": "vp config"
   },
   "dependencies": {
