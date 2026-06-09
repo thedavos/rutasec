@@ -3,12 +3,20 @@ import { expect, test, type Page } from "@playwright/test";
 import { uniqueE2eEmail } from "./test-data";
 
 async function openFirstResourceDetail(page: Page) {
-  await page.locator('a[href^="/resources/"]').first().click();
-  await page.waitForURL(/\/resources\/[^/]+/);
+  const detailLink = page.locator('a[href^="/resources/"]').first();
+  await expect(detailLink).toBeVisible({ timeout: 15_000 });
+  const href = await detailLink.getAttribute("href");
+  if (!href) {
+    throw new Error("Expected catalog resource link to include an href");
+  }
+  await page.goto(href);
 }
 
 test("visitor can save a resource without signing in", async ({ page }) => {
   await page.goto("/");
+  await expect(
+    page.getByRole("heading", { name: /Cybersecurity learning resources/i }),
+  ).toBeVisible();
   await openFirstResourceDetail(page);
 
   await expect(page.getByRole("button", { name: "Save to library" })).toBeVisible({
@@ -27,6 +35,9 @@ test("visitor can save a resource without signing in", async ({ page }) => {
 
 test("guest library page shows locally saved resources", async ({ page }) => {
   await page.goto("/");
+  await expect(
+    page.getByRole("heading", { name: /Cybersecurity learning resources/i }),
+  ).toBeVisible();
   await openFirstResourceDetail(page);
 
   await expect(page.getByRole("button", { name: "Save to library" })).toBeVisible({
@@ -87,6 +98,9 @@ test("guest saves sync into authenticated library after sign-up", async ({ page 
   const password = "test-password-123";
 
   await page.goto("/");
+  await expect(
+    page.getByRole("heading", { name: /Cybersecurity learning resources/i }),
+  ).toBeVisible();
   await openFirstResourceDetail(page);
 
   await expect(page.getByRole("button", { name: "Save to library" })).toBeVisible({
