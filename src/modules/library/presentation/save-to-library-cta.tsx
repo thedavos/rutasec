@@ -9,7 +9,6 @@ import {
 } from "#/modules/library/presentation/guest-library/use-guest-library";
 import * as m from "#/paraglide/messages.js";
 import { Button } from "#/shared/presentation/ui/button";
-import { Skeleton } from "#/shared/presentation/ui/skeleton";
 
 type SaveToLibraryCtaProps = {
   resourceId: string;
@@ -24,7 +23,7 @@ export function SaveToLibraryCta({
   signInRedirect,
   initialIsSaved = false,
 }: SaveToLibraryCtaProps) {
-  const { data: session, isPending: isSessionPending } = authClient.useSession();
+  const { data: session } = authClient.useSession();
   const guestSave = useGuestLibrarySave();
   const { isSaved: isGuestSaved } = useIsGuestResourceSaved(resourceId);
   const [saveState, setSaveState] = useState<SaveUiState>(initialIsSaved ? "saved" : "idle");
@@ -54,10 +53,6 @@ export function SaveToLibraryCta({
     } catch (error) {
       setErrorMessage(error instanceof Error ? error.message : m.save_error_fallback());
     }
-  }
-
-  if (isSessionPending) {
-    return <Skeleton className="h-9 w-full rounded-md" />;
   }
 
   if (isSaved) {
