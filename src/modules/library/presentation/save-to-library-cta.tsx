@@ -9,6 +9,7 @@ import {
 } from "#/modules/library/presentation/guest-library/use-guest-library";
 import * as m from "#/paraglide/messages.js";
 import { Button } from "#/shared/presentation/ui/button";
+import { Skeleton } from "#/shared/presentation/ui/skeleton";
 
 type SaveToLibraryCtaProps = {
   resourceId: string;
@@ -25,12 +26,14 @@ export function SaveToLibraryCta({
 }: SaveToLibraryCtaProps) {
   const { data: session } = authClient.useSession();
   const guestSave = useGuestLibrarySave();
-  const { isSaved: isGuestSaved } = useIsGuestResourceSaved(resourceId);
+  const { isSaved: isGuestSaved, isPending: isGuestPending } = useIsGuestResourceSaved(resourceId);
   const [saveState, setSaveState] = useState<SaveUiState>(initialIsSaved ? "saved" : "idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const isAuthenticated = Boolean(session?.user);
-  const isSaved = isAuthenticated ? saveState === "saved" || initialIsSaved : isGuestSaved;
+  const isSaved = isAuthenticated
+    ? saveState === "saved" || initialIsSaved
+    : saveState === "saved" || isGuestSaved;
 
   async function handleAuthenticatedSave() {
     setSaveState("saving");
@@ -46,13 +49,20 @@ export function SaveToLibraryCta({
   }
 
   async function handleGuestSave() {
+    setSaveState("saving");
     setErrorMessage(null);
 
     try {
       await guestSave.mutateAsync(resourceId);
+      setSaveState("saved");
     } catch (error) {
+      setSaveState("error");
       setErrorMessage(error instanceof Error ? error.message : m.save_error_fallback());
     }
+  }
+
+  if (!isAuthenticated && isGuestPending && saveState !== "saved") {
+    return <Skeleton className="h-9 w-full rounded-md" />;
   }
 
   if (isSaved) {
@@ -68,7 +78,9 @@ export function SaveToLibraryCta({
     );
   }
 
-  const isSaving = isAuthenticated ? saveState === "saving" : guestSave.isPending;
+  const isSaving = isAuthenticated
+    ? saveState === "saving"
+    : saveState === "saving" || guestSave.isPending;
 
   return (
     <div className="space-y-2">
