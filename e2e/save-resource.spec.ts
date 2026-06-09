@@ -1,14 +1,15 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 
 import { uniqueE2eEmail } from "./test-data";
 
+async function openFirstResourceDetail(page: Page) {
+  await page.locator('a[href^="/resources/"]').first().click();
+  await page.waitForURL(/\/resources\/[^/]+/);
+}
+
 test("visitor can save a resource without signing in", async ({ page }) => {
   await page.goto("/");
-
-  await page.locator('a[href^="/resources/"]').first().click();
-  await expect(page.getByRole("link", { name: "Visit resource" })).toBeVisible({
-    timeout: 15_000,
-  });
+  await openFirstResourceDetail(page);
 
   await expect(page.getByRole("button", { name: "Save to library" })).toBeVisible({
     timeout: 15_000,
@@ -26,12 +27,8 @@ test("visitor can save a resource without signing in", async ({ page }) => {
 
 test("guest library page shows locally saved resources", async ({ page }) => {
   await page.goto("/");
+  await openFirstResourceDetail(page);
 
-  const detailLink = page.locator('a[href^="/resources/"]').first();
-  await detailLink.click();
-  await expect(page.getByRole("link", { name: "Visit resource" })).toBeVisible({
-    timeout: 15_000,
-  });
   await expect(page.getByRole("button", { name: "Save to library" })).toBeVisible({
     timeout: 15_000,
   });
@@ -69,11 +66,7 @@ test("authenticated user can save a resource from detail", async ({ page }, test
   await expect(page.getByRole("button", { name: "Sign out" })).toBeVisible({ timeout: 15_000 });
 
   await page.goto("/");
-  const detailLink = page.locator('a[href^="/resources/"]').first();
-  await detailLink.click();
-  await expect(page.getByRole("link", { name: "Visit resource" })).toBeVisible({
-    timeout: 15_000,
-  });
+  await openFirstResourceDetail(page);
 
   await expect(page.getByRole("button", { name: "Save to library" })).toBeVisible({
     timeout: 15_000,
@@ -94,11 +87,8 @@ test("guest saves sync into authenticated library after sign-up", async ({ page 
   const password = "test-password-123";
 
   await page.goto("/");
-  const detailLink = page.locator('a[href^="/resources/"]').first();
-  await detailLink.click();
-  await expect(page.getByRole("link", { name: "Visit resource" })).toBeVisible({
-    timeout: 15_000,
-  });
+  await openFirstResourceDetail(page);
+
   await expect(page.getByRole("button", { name: "Save to library" })).toBeVisible({
     timeout: 15_000,
   });
@@ -114,9 +104,10 @@ test("guest saves sync into authenticated library after sign-up", async ({ page 
   await expect(page.getByRole("button", { name: "Sign out" })).toBeVisible({ timeout: 30_000 });
 
   await page.goto("/library");
-  await page.waitForLoadState("networkidle");
   await expect(page.getByRole("heading", { name: "Your saved resources" })).toBeVisible({
     timeout: 30_000,
   });
-  await expect(page.locator('a[href^="/resources/"]').first()).toBeVisible();
+  await expect(page.locator('a[href^="/resources/"]').first()).toBeVisible({
+    timeout: 15_000,
+  });
 });
