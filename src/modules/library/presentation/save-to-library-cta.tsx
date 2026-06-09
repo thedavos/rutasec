@@ -26,7 +26,7 @@ export function SaveToLibraryCta({
 }: SaveToLibraryCtaProps) {
   const { data: session, isPending: isSessionPending } = authClient.useSession();
   const guestSave = useGuestLibrarySave();
-  const { isSaved: isGuestSaved, isPending: isGuestPending } = useIsGuestResourceSaved(resourceId);
+  const { isSaved: isGuestSaved } = useIsGuestResourceSaved(resourceId);
   const [saveState, setSaveState] = useState<SaveUiState>(initialIsSaved ? "saved" : "idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -56,7 +56,7 @@ export function SaveToLibraryCta({
     }
   }
 
-  if (isSessionPending || (!isAuthenticated && isGuestPending)) {
+  if (isSessionPending) {
     return <Skeleton className="h-9 w-full rounded-md" />;
   }
 

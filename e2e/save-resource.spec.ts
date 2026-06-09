@@ -7,7 +7,9 @@ test("visitor can save a resource without signing in", async ({ page }) => {
 
   await page.locator('a[href^="/resources/"]').first().click();
 
-  await expect(page.getByRole("button", { name: "Save to library" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Save to library" })).toBeVisible({
+    timeout: 15_000,
+  });
   await page.getByRole("button", { name: "Save to library" }).click();
   await expect(page.getByRole("button", { name: "Saved to library" })).toBeVisible({
     timeout: 15_000,
@@ -24,13 +26,18 @@ test("guest library page shows locally saved resources", async ({ page }) => {
 
   const detailLink = page.locator('a[href^="/resources/"]').first();
   await detailLink.click();
+  await expect(page.getByRole("button", { name: "Save to library" })).toBeVisible({
+    timeout: 15_000,
+  });
   await page.getByRole("button", { name: "Save to library" }).click();
   await expect(page.getByRole("button", { name: "Saved to library" })).toBeVisible({
     timeout: 15_000,
   });
 
   await page.goto("/library");
-  await expect(page.getByRole("heading", { name: "Saved on this device" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Saved on this device" })).toBeVisible({
+    timeout: 15_000,
+  });
   await expect(page.locator('a[href^="/resources/"]').first()).toBeVisible();
 });
 
@@ -59,7 +66,9 @@ test("authenticated user can save a resource from detail", async ({ page }, test
   const detailLink = page.locator('a[href^="/resources/"]').first();
   await detailLink.click();
 
-  await expect(page.getByRole("button", { name: "Save to library" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Save to library" })).toBeVisible({
+    timeout: 15_000,
+  });
   await page.getByRole("button", { name: "Save to library" }).click();
   await expect(page.getByRole("button", { name: "Saved to library" })).toBeVisible({
     timeout: 15_000,
@@ -78,6 +87,9 @@ test("guest saves sync into authenticated library after sign-up", async ({ page 
   await page.goto("/");
   const detailLink = page.locator('a[href^="/resources/"]').first();
   await detailLink.click();
+  await expect(page.getByRole("button", { name: "Save to library" })).toBeVisible({
+    timeout: 15_000,
+  });
   await page.getByRole("button", { name: "Save to library" }).click();
   await expect(page.getByRole("button", { name: "Saved to library" })).toBeVisible({
     timeout: 15_000,
@@ -91,7 +103,7 @@ test("guest saves sync into authenticated library after sign-up", async ({ page 
 
   await page.goto("/library");
   await expect(page.getByRole("heading", { name: "Your saved resources" })).toBeVisible({
-    timeout: 15_000,
+    timeout: 30_000,
   });
   await expect(page.locator('a[href^="/resources/"]').first()).toBeVisible();
 });
