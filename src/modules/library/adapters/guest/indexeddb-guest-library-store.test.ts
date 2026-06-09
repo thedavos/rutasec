@@ -12,6 +12,15 @@ import {
 } from "#/modules/library/adapters/guest/guest-library-db";
 
 describe("createIndexedDbGuestLibraryStore", () => {
+  it("lists a save immediately after the write transaction commits", async () => {
+    const store = createIndexedDbGuestLibraryStore();
+    await store.save("res-immediate-list-1");
+
+    const entries = await store.list();
+
+    expect(entries.some((entry) => entry.resourceId === "res-immediate-list-1")).toBe(true);
+  });
+
   it("persists guest saves across store instances", async () => {
     const firstStore = createIndexedDbGuestLibraryStore();
     await firstStore.save("res-persist-1");

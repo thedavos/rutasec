@@ -24,6 +24,8 @@ function runTransaction<T>(
     const store = transaction.objectStore(GUEST_LIBRARY_STORE_NAME);
     const request = run(store);
 
+    let result: T | undefined;
+
     request.onerror = () => {
       reject(request.error ?? new Error("Guest library IndexedDB request failed"));
     };
@@ -33,7 +35,11 @@ function runTransaction<T>(
     };
 
     request.onsuccess = () => {
-      resolve(request.result as T);
+      result = request.result as T;
+    };
+
+    transaction.oncomplete = () => {
+      resolve(result as T);
     };
   });
 }
