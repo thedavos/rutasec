@@ -47,7 +47,7 @@ docs/timeline-rules.md         frozen MVP timeline scheduling rules
 
 db/seed/ seed JSON + generated import.sql
 scripts/ import-seed-to-d1.mjs
-wrangler.jsonc Worker + D1 binding (DB → rutasec-db)
+wrangler.jsonc Worker + D1 binding (DB → rutasec-db) and KV binding (CATALOG_CACHE)
 .cursor/rules/ project rules for agents
 
 ````
@@ -75,9 +75,11 @@ npm run deploy          # build + wrangler deploy
 npm run test:e2e        # Playwright e2e (starts dev server if needed)
 npm run db:schema:local # apply schema to local D1
 npm run db:seed:local   # generate + load seed into local D1
+npm run cache:clear:local  # clear local catalog KV cache
+npm run cache:clear:remote # clear remote catalog KV cache
 ```
 
-Local D1 is SQLite under `.wrangler/state/v3/d1/` — no separate SQL server. `npm run dev` uses the same local D1 via the `DB` binding.
+Local D1 is SQLite under `.wrangler/state/v3/d1/` — no separate SQL server. Local catalog KV lives under `.wrangler/state/v3/kv/`. `npm run dev` uses the same local D1 via the `DB` binding.
 
 ## v1 ship gate
 

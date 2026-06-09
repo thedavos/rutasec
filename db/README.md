@@ -9,6 +9,31 @@ npm run db:schema:local    # apply product + auth schema (local)
 npm run db:seed:local        # load starter catalog seed
 npm run db:smoke-user:local  # ensure local smoke test account (dev server must be running)
 npm run db:smoke-user:reset  # delete and recreate smoke account
+npm run cache:clear:local    # clear local catalog KV cache
+npm run cache:clear:remote   # clear remote catalog KV cache (Cloudflare credentials required)
+```
+
+## Catalog cache
+
+Public catalog reads (resource lists, filter options, resource detail) are cached in Cloudflare KV with a 5 minute TTL. D1 remains the source of truth.
+
+After updating editorial catalog data locally:
+
+```bash
+npm run db:seed:local
+npm run cache:clear:local
+```
+
+After a remote seed or import:
+
+```bash
+npm run cache:clear:remote
+```
+
+You can also wait for TTL expiry instead of clearing cache manually. For a full local reset of D1 and KV state, remove both state directories:
+
+```bash
+rm -rf .wrangler/state/v3/d1 .wrangler/state/v3/kv
 ```
 
 ## Local smoke test account
