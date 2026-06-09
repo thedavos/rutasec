@@ -1,4 +1,5 @@
 import { authClient } from "#/modules/identity";
+import { LibraryNavLink } from "#/modules/identity/presentation/library-nav-link";
 import { GithubNavLink } from "#/shared/presentation/layout/github-nav-link";
 import {
   navGroupContainerClass,
@@ -22,6 +23,7 @@ export function PublicNavGroup({ layout = "inline" }: PublicNavGroupProps) {
   return (
     <div className={navGroupContainerClass(layout)}>
       <ResourcesNavLink stacked={stacked} />
+      <LibraryNavLink stacked={stacked} />
       <GithubNavLink stacked={stacked} />
       <SendResourceNavLink stacked={stacked} />
     </div>

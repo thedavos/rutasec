@@ -37,5 +37,17 @@
   "status_pending": "Pendiente",
   "status_in_progress": "En progreso",
   "status_completed": "Completado",
-  "status_discarded": "Descartado"
+  "status_discarded": "Descartado",
+  "guest_library_kicker": "Biblioteca de invitado",
+  "guest_library_title": "Guardados en este dispositivo",
+  "guest_library_description": "Recursos que guardaste al explorar. Inicia sesión para sincronizarlos con tu cuenta y seguir tu progreso.",
+  "guest_library_empty_description": "Explora el catálogo y guarda recursos aquí. Permanecen en este navegador hasta que inicies sesión.",
+  "guest_library_save_hint": "Guardado localmente en este dispositivo. Inicia sesión para sincronizar entre sesiones.",
+  "guest_library_saved_hint": "Guardado en este dispositivo. Inicia sesión para sincronizar con tu cuenta.",
+  "guest_library_sign_in_link": "Inicia sesión",
+  "guest_library_sign_in_suffix": "para sincronizar los recursos guardados con tu cuenta.",
+  "guest_library_sync_failed_title": "Algunos recursos guardados no se pudieron sincronizar con tu cuenta.",
+  "guest_library_sync_error_fallback": "La sincronización falló. Tus guardados locales siguen en este dispositivo.",
+  "guest_library_sync_retry": "Reintentar sincronización",
+  "guest_library_sync_retrying": "Reintentando sincronización…"
 }

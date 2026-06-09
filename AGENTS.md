@@ -32,6 +32,7 @@ Do not introduce Astro, Next.js, Durable Objects, Queues, KV, or R2 unless expli
 
 ```
 src/routes/                    file-based routes (presentation)
+src/integrations/              cross-cutting client providers (TanStack Query)
 src/app/di/                    composition root (*.module.ts, incl. timeline.module.ts)
 src/modules/<feature>/         feature modules (catalog, library, identity, goals, dashboard, timeline — study plan generate/get + weekly view)
 src/shared/                    cross-cutting (db, domain/Result, utils/, i18n/)
@@ -103,6 +104,7 @@ vp test run
 
 - **Generic pure helpers** (no feature-specific rules) live in `src/shared/utils/` as one function per file with colocated `*.test.ts` — see `shared-utils.mdc`. Do not park reusable string/URL/compare helpers under a module’s `presentation/` folder.
 - Business logic and D1 access in server functions / loaders, not client components.
+- Guest library (logged-out saves) uses IndexedDB + TanStack Query in `src/modules/library/adapters/guest/` and syncs to `user_resources` after sign-in.
 - `resources` = editorial catalog; `user_resources` = personal state — keep them separate.
 - `src/modules/timeline` owns scheduling rules, study plan persistence (DAV-118), and the weekly timeline route (DAV-119).
 - Instrument `createServerFn` handlers with `Sentry.startSpan` (see `sentry.mdc`).

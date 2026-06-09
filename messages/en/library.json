@@ -37,5 +37,17 @@
   "status_pending": "Pending",
   "status_in_progress": "In progress",
   "status_completed": "Completed",
-  "status_discarded": "Discarded"
+  "status_discarded": "Discarded",
+  "guest_library_kicker": "Guest library",
+  "guest_library_title": "Saved on this device",
+  "guest_library_description": "Resources you saved while browsing. Sign in to sync them to your account and track progress.",
+  "guest_library_empty_description": "Browse the catalog and save resources here. They stay on this browser until you sign in.",
+  "guest_library_save_hint": "Saved locally on this device. Sign in to sync across sessions.",
+  "guest_library_saved_hint": "Saved on this device. Sign in to sync to your account.",
+  "guest_library_sign_in_link": "Sign in",
+  "guest_library_sign_in_suffix": "to sync saved resources to your account.",
+  "guest_library_sync_failed_title": "Some saved resources could not sync to your account.",
+  "guest_library_sync_error_fallback": "Sync failed. Your local saves are still on this device.",
+  "guest_library_sync_retry": "Retry sync",
+  "guest_library_sync_retrying": "Retrying sync…"
 }

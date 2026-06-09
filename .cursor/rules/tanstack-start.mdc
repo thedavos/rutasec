@@ -12,7 +12,7 @@ File-based routes live in `src/routes/`. Layout shell is `src/routes/__root.tsx`
 
 ## Data loading
 
-Prefer route loaders and `createServerFn` over client-side fetching for catalog and personal data.
+Prefer route loaders and `createServerFn` over client-side fetching for catalog and personal data. Exception: logged-out guest library saves use IndexedDB + TanStack Query (`src/modules/library/presentation/guest-library/`) and sync to D1 after authentication.
 
 ```tsx
 import { createServerFn } from '@tanstack/react-start'

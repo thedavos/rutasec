@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router";
 import type { PersonalLibrary } from "#/modules/library/domain/entities/personal-library-item";
 import { LibraryItemCard } from "#/modules/library/presentation/components/library-item-card";
 import { LibraryStatusFilters } from "#/modules/library/presentation/components/library-status-filters";
+import { GuestLibrarySyncBanner } from "#/modules/library/presentation/guest-library/guest-library-sync-banner";
 import * as m from "#/paraglide/messages.js";
 import { Button } from "#/shared/presentation/ui/button";
 import { Card, CardDescription, CardHeader, CardTitle } from "#/shared/presentation/ui/card";
@@ -23,6 +24,8 @@ export function PersonalLibraryPage({ library }: PersonalLibraryPageProps) {
           {m.library_description()}
         </p>
       </header>
+
+      <GuestLibrarySyncBanner />
 
       <LibraryStatusFilters statusFilter={library.statusFilter} total={library.items.length} />
 

@@ -2,7 +2,9 @@ import { HeadContent, Link, Outlet, Scripts, createRootRoute } from "@tanstack/r
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { TanStackDevtools } from "@tanstack/react-devtools";
 
+import { QueryProvider } from "#/integrations/query-provider";
 import { AuthHeader } from "#/modules/identity/presentation/auth-header";
+import { GuestLibrarySyncProvider } from "#/modules/library/presentation/guest-library/guest-library-sync-provider";
 import * as m from "#/paraglide/messages.js";
 import { getLocale } from "#/paraglide/runtime.js";
 import { AuthenticatedNavGroup } from "#/shared/presentation/layout/authenticated-nav-group";
@@ -56,34 +58,38 @@ function NotFoundPage() {
 
 function AppLayout() {
   return (
-    <div className="flex min-h-screen flex-col">
-      <header className="bg-transparent">
-        <div className="page-wrap flex items-center justify-between gap-3 py-3">
-          <Link to="/" className="flex min-w-0 items-center gap-2 no-underline">
-            <span className="brand-mark" aria-hidden="true">
-              <img src="/rutasec-brand-mark.svg" alt="" className="block size-9" />
-            </span>
-            <span className="display-title block text-lg leading-none font-bold text-[var(--text-primary)]">
-              {m.brand_name()}
-            </span>
-          </Link>
-          <nav className="hidden items-center gap-1 md:flex" aria-label={m.nav_main_aria()}>
-            <AuthenticatedNavGroup />
-            <PublicNavGroup />
-          </nav>
-          <div className="flex shrink-0 items-center gap-2">
-            <AuthHeader />
-            <MobileNavDrawer />
-          </div>
+    <QueryProvider>
+      <GuestLibrarySyncProvider>
+        <div className="flex min-h-screen flex-col">
+          <header className="bg-transparent">
+            <div className="page-wrap flex items-center justify-between gap-3 py-3">
+              <Link to="/" className="flex min-w-0 items-center gap-2 no-underline">
+                <span className="brand-mark" aria-hidden="true">
+                  <img src="/rutasec-brand-mark.svg" alt="" className="block size-9" />
+                </span>
+                <span className="display-title block text-lg leading-none font-bold text-[var(--text-primary)]">
+                  {m.brand_name()}
+                </span>
+              </Link>
+              <nav className="hidden items-center gap-1 md:flex" aria-label={m.nav_main_aria()}>
+                <AuthenticatedNavGroup />
+                <PublicNavGroup />
+              </nav>
+              <div className="flex shrink-0 items-center gap-2">
+                <AuthHeader />
+                <MobileNavDrawer />
+              </div>
+            </div>
+          </header>
+
+          <main className="page-wrap flex flex-1 flex-col py-8 sm:py-10">
+            <Outlet />
+          </main>
+
+          <SiteFooter />
         </div>
-      </header>
-
-      <main className="page-wrap flex flex-1 flex-col py-8 sm:py-10">
-        <Outlet />
-      </main>
-
-      <SiteFooter />
-    </div>
+      </GuestLibrarySyncProvider>
+    </QueryProvider>
   );
 }
 

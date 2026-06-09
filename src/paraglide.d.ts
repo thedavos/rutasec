@@ -199,6 +199,18 @@ declare module "#/paraglide/messages.js" {
   export const status_in_progress: ParaglideMessage;
   export const status_completed: ParaglideMessage;
   export const status_discarded: ParaglideMessage;
+  export const guest_library_kicker: ParaglideMessage;
+  export const guest_library_title: ParaglideMessage;
+  export const guest_library_description: ParaglideMessage;
+  export const guest_library_empty_description: ParaglideMessage;
+  export const guest_library_save_hint: ParaglideMessage;
+  export const guest_library_saved_hint: ParaglideMessage;
+  export const guest_library_sign_in_link: ParaglideMessage;
+  export const guest_library_sign_in_suffix: ParaglideMessage;
+  export const guest_library_sync_failed_title: ParaglideMessage;
+  export const guest_library_sync_error_fallback: ParaglideMessage;
+  export const guest_library_sync_retry: ParaglideMessage;
+  export const guest_library_sync_retrying: ParaglideMessage;
   export const goals_kicker: ParaglideMessage;
   export const goals_title: ParaglideMessage;
   export const goals_description: ParaglideMessage;

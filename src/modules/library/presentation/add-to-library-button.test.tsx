@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vite-plus/test";
 
@@ -17,11 +18,42 @@ vi.mock("#/modules/library", () => ({
   saveResourceFn: vi.fn(),
 }));
 
+vi.mock("#/modules/library/presentation/guest-library/use-guest-library", () => ({
+  useGuestLibrarySave: vi.fn(),
+  useIsGuestResourceSaved: vi.fn(),
+}));
+
+import {
+  useGuestLibrarySave,
+  useIsGuestResourceSaved,
+} from "#/modules/library/presentation/guest-library/use-guest-library";
+
 const mockUseSession = vi.mocked(authClient.useSession);
 const mockSaveResourceFn = vi.mocked(saveResourceFn);
+const mockUseGuestLibrarySave = vi.mocked(useGuestLibrarySave);
+const mockUseIsGuestResourceSaved = vi.mocked(useIsGuestResourceSaved);
+
+function renderWithQuery(ui: React.ReactElement) {
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: { retry: false },
+      mutations: { retry: false },
+    },
+  });
+
+  return render(<QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>);
+}
 
 beforeEach(() => {
   vi.stubGlobal("scrollTo", vi.fn());
+  mockUseGuestLibrarySave.mockReturnValue({
+    mutateAsync: vi.fn(),
+    isPending: false,
+  } as unknown as ReturnType<typeof useGuestLibrarySave>);
+  mockUseIsGuestResourceSaved.mockReturnValue({
+    isSaved: false,
+    isPending: false,
+  });
 });
 
 afterEach(() => {
@@ -29,7 +61,7 @@ afterEach(() => {
 });
 
 describe("AddToLibraryButton", () => {
-  it("renders nothing when signed out", () => {
+  it("renders for signed-out visitors", () => {
     mockUseSession.mockReturnValue({
       data: null,
       isPending: false,
@@ -37,9 +69,9 @@ describe("AddToLibraryButton", () => {
       error: null,
     } as ReturnType<typeof authClient.useSession>);
 
-    const { container } = render(<AddToLibraryButton resourceId="res-1" />);
+    renderWithQuery(<AddToLibraryButton resourceId="res-1" />);
 
-    expect(container.firstChild).toBeNull();
+    expect(screen.getByRole("button", { name: "Add to library" })).toBeTruthy();
   });
 
   it("saves the resource when signed in", async () => {
@@ -62,7 +94,7 @@ describe("AddToLibraryButton", () => {
       updatedAt: "2026-01-01T00:00:00.000Z",
     });
 
-    render(<AddToLibraryButton resourceId="res-1" />);
+    renderWithQuery(<AddToLibraryButton resourceId="res-1" />);
 
     fireEvent.click(screen.getByRole("button", { name: "Add to library" }));
     await waitFor(() => {

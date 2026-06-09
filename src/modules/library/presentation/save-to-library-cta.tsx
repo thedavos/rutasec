@@ -3,6 +3,10 @@ import { useState } from "react";
 
 import { authClient } from "#/modules/identity";
 import { saveResourceFn } from "#/modules/library";
+import {
+  useGuestLibrarySave,
+  useIsGuestResourceSaved,
+} from "#/modules/library/presentation/guest-library/use-guest-library";
 import * as m from "#/paraglide/messages.js";
 import { Button } from "#/shared/presentation/ui/button";
 import { Skeleton } from "#/shared/presentation/ui/skeleton";
@@ -20,11 +24,16 @@ export function SaveToLibraryCta({
   signInRedirect,
   initialIsSaved = false,
 }: SaveToLibraryCtaProps) {
-  const { data: session, isPending } = authClient.useSession();
+  const { data: session, isPending: isSessionPending } = authClient.useSession();
+  const guestSave = useGuestLibrarySave();
+  const { isSaved: isGuestSaved, isPending: isGuestPending } = useIsGuestResourceSaved(resourceId);
   const [saveState, setSaveState] = useState<SaveUiState>(initialIsSaved ? "saved" : "idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  async function handleSave() {
+  const isAuthenticated = Boolean(session?.user);
+  const isSaved = isAuthenticated ? saveState === "saved" || initialIsSaved : isGuestSaved;
+
+  async function handleAuthenticatedSave() {
     setSaveState("saving");
     setErrorMessage(null);
 
@@ -37,39 +46,34 @@ export function SaveToLibraryCta({
     }
   }
 
-  if (isPending) {
+  async function handleGuestSave() {
+    setErrorMessage(null);
+
+    try {
+      await guestSave.mutateAsync(resourceId);
+    } catch (error) {
+      setErrorMessage(error instanceof Error ? error.message : m.save_error_fallback());
+    }
+  }
+
+  if (isSessionPending || (!isAuthenticated && isGuestPending)) {
     return <Skeleton className="h-9 w-full rounded-md" />;
   }
 
-  if (!session?.user) {
-    return (
-      <div className="space-y-2">
-        <Button variant="outline" className="w-full" asChild>
-          <Link to="/sign-in" search={{ redirect: signInRedirect }}>
-            {m.save_sign_in_cta()}
-          </Link>
-        </Button>
-        <p className="text-xs leading-relaxed text-[var(--text-secondary)]">
-          {m.save_sign_in_hint()}
-        </p>
-      </div>
-    );
-  }
-
-  if (saveState === "saved") {
+  if (isSaved) {
     return (
       <div className="space-y-2">
         <Button type="button" variant="secondary" className="w-full" disabled>
           {m.save_saved_button()}
         </Button>
         <p className="text-xs leading-relaxed text-[var(--text-secondary)]">
-          {m.save_saved_hint()}
+          {isAuthenticated ? m.save_saved_hint() : m.guest_library_saved_hint()}
         </p>
       </div>
     );
   }
 
-  const isSaving = saveState === "saving";
+  const isSaving = isAuthenticated ? saveState === "saving" : guestSave.isPending;
 
   return (
     <div className="space-y-2">
@@ -79,7 +83,7 @@ export function SaveToLibraryCta({
         className="w-full"
         disabled={isSaving}
         onClick={() => {
-          void handleSave();
+          void (isAuthenticated ? handleAuthenticatedSave() : handleGuestSave());
         }}
       >
         {isSaving ? m.action_saving() : m.save_button()}
@@ -90,9 +94,21 @@ export function SaveToLibraryCta({
         </p>
       ) : (
         <p className="text-xs leading-relaxed text-[var(--text-secondary)]">
-          {m.save_track_hint()}
+          {isAuthenticated ? m.save_track_hint() : m.guest_library_save_hint()}
         </p>
       )}
+      {!isAuthenticated ? (
+        <p className="text-xs leading-relaxed text-[var(--text-secondary)]">
+          <Link
+            to="/sign-in"
+            search={{ redirect: signInRedirect }}
+            className="text-[var(--primary-color)]"
+          >
+            {m.guest_library_sign_in_link()}
+          </Link>{" "}
+          {m.guest_library_sign_in_suffix()}
+        </p>
+      ) : null}
     </div>
   );
 }
