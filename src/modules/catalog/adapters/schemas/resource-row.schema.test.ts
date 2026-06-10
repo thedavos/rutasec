@@ -11,6 +11,7 @@ const validRow = {
   title: "Linux Journey",
   description: "Learn Linux",
   url: "https://linuxjourney.com/",
+  icon_url: "https://icons.duckduckgo.com/ip3/linuxjourney.com.ico",
   phase: "Foundational Knowledge Phase",
   category: "Operating Systems",
   topic: "Linux Basics",
@@ -47,18 +48,20 @@ describe("resourceRowSchema", () => {
     );
   });
 
-  it("accepts nullable description, subtopic, and language", () => {
+  it("accepts nullable description, subtopic, language, and icon_url", () => {
     expect(
       resourceRowSchema.parse({
         ...validRow,
         description: null,
         subtopic: null,
         language: null,
+        icon_url: null,
       }),
     ).toMatchObject({
       description: null,
       subtopic: null,
       language: null,
+      icon_url: null,
     });
   });
 });

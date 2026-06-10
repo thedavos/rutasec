@@ -22,6 +22,8 @@
     "start": "node --import ./dist/server/instrument.server.mjs ./dist/server/index.mjs",
     "db:auth-schema:generate": "npx @better-auth/cli generate --config scripts/auth.cli.ts --output db/auth-schema.sql --yes",
     "db:schema:local": "wrangler d1 execute rutasec-db --local --file=db/schema.sql && wrangler d1 execute rutasec-db --local --file=db/auth-schema.sql",
+    "db:migrate:local": "wrangler d1 execute rutasec-db --local --file=db/migrations/dav-140-add-icon-url.sql",
+    "db:migrate:remote": "wrangler d1 execute rutasec-db --remote --file=db/migrations/dav-140-add-icon-url.sql",
     "db:schema:remote": "wrangler d1 execute rutasec-db --remote --file=db/schema.sql && wrangler d1 execute rutasec-db --remote --file=db/auth-schema.sql",
     "db:tables:local": "wrangler d1 execute rutasec-db --local --command \"SELECT name FROM sqlite_master WHERE type='table' ORDER BY name;\"",
     "db:seed:sql": "node scripts/import-seed-to-d1.mjs",

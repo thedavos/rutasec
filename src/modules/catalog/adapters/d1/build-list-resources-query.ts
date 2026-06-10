@@ -5,6 +5,7 @@ const CARD_SELECT = `
   title,
   description,
   url,
+  icon_url,
   phase,
   category,
   topic,

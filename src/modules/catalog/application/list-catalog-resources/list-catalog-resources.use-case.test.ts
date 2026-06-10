@@ -10,6 +10,7 @@ const resource: CatalogResourceCard = {
   title: "Linux Journey",
   description: null,
   url: "https://linuxjourney.com/",
+  iconUrl: null,
   phase: "Foundational Knowledge Phase",
   category: "Networking",
   topic: "TCP/IP",

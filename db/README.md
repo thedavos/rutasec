@@ -1,11 +1,12 @@
 # Database (D1)
 
-Product schema: `schema.sql`. Better Auth tables: `auth-schema.sql`. Catalog seed: `seed/web-pentesting-starter.json` → `seed/import.sql` (generated).
+Product schema: `schema.sql`. Better Auth tables: `auth-schema.sql`. Catalog seed: `seed/web-pentesting-starter.json` → `seed/import.sql` (generated). Seed resources may include optional `icon_url` (curated site icon); run `node scripts/backfill-seed-icon-urls.mjs` to populate from resource URLs.
 
 ## Commands
 
 ```bash
 npm run db:schema:local    # apply product + auth schema (local)
+npm run db:migrate:local   # apply incremental migrations on existing local D1
 npm run db:seed:local        # load starter catalog seed
 npm run db:smoke-user:local  # ensure local smoke test account (dev server must be running)
 npm run db:smoke-user:reset  # delete and recreate smoke account
@@ -65,3 +66,13 @@ npm run db:seed:local
 npm run dev
 npm run db:smoke-user:local
 ```
+
+### Existing local D1 (schema change without wipe)
+
+```bash
+npm run db:migrate:local
+npm run db:seed:local
+npm run cache:clear:local
+```
+
+Skip migrations on a fresh database created from `db/schema.sql` (column is already in `CREATE TABLE`).

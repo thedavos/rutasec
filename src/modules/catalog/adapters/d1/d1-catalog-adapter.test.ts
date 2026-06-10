@@ -11,6 +11,7 @@ const validRow = {
   title: "Linux Journey",
   description: "Learn Linux",
   url: "https://linuxjourney.com/",
+  icon_url: null,
   phase: "Foundational Knowledge Phase",
   category: "Operating Systems",
   topic: "Linux Basics",

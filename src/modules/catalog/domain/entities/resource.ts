@@ -34,6 +34,7 @@ export type CatalogResourceCard = {
   title: string;
   description: string | null;
   url: string;
+  iconUrl: string | null;
   phase: string;
   category: string;
   topic: string;

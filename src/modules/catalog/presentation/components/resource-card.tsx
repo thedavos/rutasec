@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 
 import type { CatalogResourceCard } from "#/modules/catalog/domain/entities/resource";
+import { ResourceSiteIcon } from "#/modules/catalog/presentation/components/resource-site-icon";
 import { AddToLibraryButton } from "#/modules/library/presentation/add-to-library-button";
 import * as m from "#/paraglide/messages.js";
 import { levelLabel, resourceTypeLabel } from "#/shared/i18n/resource-labels";
@@ -27,15 +28,18 @@ export function ResourceCard({ resource }: ResourceCardProps) {
               </Badge>
             ) : null}
           </div>
-          <h4 className="display-title mt-2 text-lg font-bold leading-tight">
-            <Link
-              to="/resources/$id"
-              params={{ id: resource.id }}
-              className="text-[var(--text-primary)] no-underline hover:text-[var(--primary-hover)]"
-            >
-              {resource.title}
-            </Link>
-          </h4>
+          <div className="mt-2 flex items-start gap-3">
+            <ResourceSiteIcon iconUrl={resource.iconUrl} resourceType={resource.resourceType} />
+            <h4 className="display-title min-w-0 flex-1 text-lg font-bold leading-tight">
+              <Link
+                to="/resources/$id"
+                params={{ id: resource.id }}
+                className="text-[var(--text-primary)] no-underline hover:text-[var(--primary-hover)]"
+              >
+                {resource.title}
+              </Link>
+            </h4>
+          </div>
 
           {resource.description ? (
             <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-[var(--text-secondary)]">

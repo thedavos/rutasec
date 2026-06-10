@@ -7,6 +7,7 @@ export function mapResourceRowToCard(row: ResourceRow): CatalogResourceCard {
     title: row.title,
     description: row.description,
     url: row.url,
+    iconUrl: row.icon_url,
     phase: row.phase,
     category: row.category,
     topic: row.topic,

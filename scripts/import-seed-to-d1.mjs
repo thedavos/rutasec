@@ -153,7 +153,7 @@ ON CONFLICT(id) DO UPDATE SET
     statements.push(
       `
 INSERT INTO resources (
-  id, title, description, url,
+  id, title, description, url, icon_url,
   phase, category, topic, subtopic,
   resource_type, level, estimated_hours,
   original_source_name, original_source_url,
@@ -164,6 +164,7 @@ INSERT INTO resources (
   ${sqlString(resource.title)},
   ${sqlString(resource.description ?? null)},
   ${sqlString(resource.url)},
+  ${sqlString(resource.icon_url ?? null)},
   ${sqlString(resource.phase)},
   ${sqlString(resource.category)},
   ${sqlString(resource.topic)},
@@ -188,6 +189,7 @@ ON CONFLICT(id) DO UPDATE SET
   title = excluded.title,
   description = excluded.description,
   url = excluded.url,
+  icon_url = excluded.icon_url,
   phase = excluded.phase,
   category = excluded.category,
   topic = excluded.topic,

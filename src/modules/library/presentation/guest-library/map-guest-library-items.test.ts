@@ -9,6 +9,7 @@ const catalogCard: CatalogResourceCard = {
   title: "Web Pentesting 101",
   description: null,
   url: "https://example.com",
+  iconUrl: null,
   phase: "foundation",
   category: "Web",
   topic: "Pentesting",

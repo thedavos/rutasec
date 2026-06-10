@@ -14,6 +14,7 @@ export const catalogResourceCardSchema = z.object({
   title: z.string(),
   description: z.string().nullable(),
   url: z.string(),
+  iconUrl: z.string().nullable(),
   phase: z.string(),
   category: z.string(),
   topic: z.string(),
