@@ -9,7 +9,7 @@ alwaysApply: true
 
 TanStack Start, React, Tailwind CSS, Cloudflare Workers, Cloudflare D1, Better Auth.
 
-Do not introduce Astro, Next.js, Durable Objects, Queues, KV, or R2 unless explicitly requested.
+Do not introduce Astro, Next.js, Durable Objects, Queues, or R2 unless explicitly requested. Workers KV is used for `CATALOG_CACHE` (catalog read cache) only.
 
 ## Architecture
 

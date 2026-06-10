@@ -26,7 +26,7 @@ Detailed rules live in **`.cursor/rules/`** (`.mdc` files). Prefer those over ge
 
 TanStack Start · React · Tailwind CSS · Cloudflare Workers · D1 · Better Auth · Sentry
 
-Do not introduce Astro, Next.js, Durable Objects, Queues, KV, or R2 unless explicitly requested.
+Do not introduce Astro, Next.js, Durable Objects, Queues, or R2 unless explicitly requested. Workers KV is in use for `CATALOG_CACHE` (public catalog cache) only.
 
 ## Key paths
 
@@ -81,6 +81,10 @@ npm run cache:clear:remote # clear remote catalog KV cache
 ```
 
 Local D1 is SQLite under `.wrangler/state/v3/d1/` — no separate SQL server. Local catalog KV lives under `.wrangler/state/v3/kv/`. `npm run dev` uses the same local D1 via the `DB` binding.
+
+### CI deploy token (GitHub Actions)
+
+`deploy.yml` and `preview.yml` use `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID`. The token must have **Edit** on **Workers Scripts**, **Workers KV Storage**, and **D1** (account scope). Without KV write, deploy fails with `kv bindings require kv write perms [code: 10023]`. See `README.md` → CI/CD.
 
 ## v1 ship gate
 

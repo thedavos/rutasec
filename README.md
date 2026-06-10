@@ -8,7 +8,7 @@ Cybersecurity learning catalog on **TanStack Start**, **Cloudflare Workers**, **
 
 - [TanStack Start](https://tanstack.com/start) + [TanStack Router](https://tanstack.com/router) (file-based routes in `src/routes/`)
 - [React](https://react.dev/) · [Tailwind CSS](https://tailwindcss.com/) · [shadcn/ui](https://ui.shadcn.com/)
-- [Cloudflare Workers](https://developers.cloudflare.com/workers/) · [D1](https://developers.cloudflare.com/d1/)
+- [Cloudflare Workers](https://developers.cloudflare.com/workers/) · [D1](https://developers.cloudflare.com/d1/) · Workers KV (`CATALOG_CACHE`)
 - [Better Auth](https://www.better-auth.com/) (email/password, sessions)
 - [Sentry](https://sentry.io/) (server instrumentation)
 - Tooling: [Vite+](https://viteplus.dev/guide/) (`vp` CLI)
@@ -172,7 +172,22 @@ Workflows run on pull requests and `main` via [`.github/workflows/`](.github/wor
 | `deploy.yml`  | Manual `production`       | Wrangler deploy to production               |
 | `deploy.yml`  | Manual `db-schema-remote` | Remote D1 schema apply                      |
 
-Set in GitHub **Settings → Secrets and variables → Actions**: `CLOUDFLARE_API_TOKEN` (and `CLOUDFLARE_ACCOUNT_ID` if Wrangler needs it). Override `BETTER_AUTH_SECRET` for stricter e2e; production auth secrets belong in Wrangler (`wrangler secret put`), not only in GitHub Actions.
+Set in GitHub **Settings → Secrets and variables → Actions**:
+
+| Secret                  | Purpose                                           |
+| ----------------------- | ------------------------------------------------- |
+| `CLOUDFLARE_API_TOKEN`  | Wrangler deploy, D1 schema apply, preview workers |
+| `CLOUDFLARE_ACCOUNT_ID` | Account scope for Wrangler in CI                  |
+
+The API token needs **Account** permissions (Edit on each):
+
+- **Workers Scripts** — deploy production and preview workers
+- **Workers KV Storage** — required since `wrangler.jsonc` binds `CATALOG_CACHE` (error `10023` without it)
+- **D1** — remote schema apply (`db-schema-remote` workflow)
+
+If the token is resource-scoped, include the `CATALOG_CACHE` namespace id from `wrangler.jsonc`. Create or edit tokens at [Cloudflare API Tokens](https://dash.cloudflare.com/profile/api-tokens).
+
+Override `BETTER_AUTH_SECRET` for stricter e2e; production auth secrets belong in Wrangler (`wrangler secret put`), not only in GitHub Actions.
 
 ## v1 scope
 

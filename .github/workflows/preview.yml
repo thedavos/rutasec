@@ -1,3 +1,4 @@
+# Same CLOUDFLARE_API_TOKEN requirements as deploy.yml (Workers Scripts + KV + D1).
 name: Preview deploy
 
 on:

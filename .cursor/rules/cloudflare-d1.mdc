@@ -4,13 +4,24 @@ globs: db/**,wrangler.jsonc,scripts/**
 alwaysApply: false
 ---
 
-# Cloudflare D1
+# Cloudflare D1 and bindings
 
-## Binding
+## Bindings (`wrangler.jsonc`)
 
-Worker binding: `DB` → database `rutasec-db` (see `wrangler.jsonc`).
+| Binding | Resource | Access |
+| ------- | -------- | ------ |
+| `DB` | D1 `rutasec-db` | `#/shared/db` (`getDb()`) |
+| `CATALOG_CACHE` | Workers KV | `#/shared/catalog-cache` (`getCatalogCacheStore()`) |
 
-Access in server code: `#/shared/db` (`getDb()`).
+## CI / deploy API token
+
+GitHub Actions (`deploy.yml`, `preview.yml`) need `CLOUDFLARE_API_TOKEN` with **Account → Edit** on:
+
+- Workers Scripts
+- Workers KV Storage (required for `CATALOG_CACHE`; without it: `kv bindings require kv write perms [code: 10023]`)
+- D1
+
+Resource-scoped tokens must include the KV namespace id from `wrangler.jsonc`.
 
 ## Files
 
