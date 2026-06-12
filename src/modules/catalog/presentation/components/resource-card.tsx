@@ -18,7 +18,7 @@ export function ResourceCard({ resource }: ResourceCardProps) {
   return (
     <Card className={cn("feature-card island-shell h-full gap-0 rounded-xl py-0 shadow-none")}>
       <article className="flex h-full flex-col gap-4 px-5 py-4">
-        <div className="min-w-0">
+        <div className="min-w-0 flex flex-col gap-3">
           <div className="flex flex-wrap items-center gap-2">
             <Badge variant="outline">{levelLabel(resource.level)}</Badge>
             <Badge variant="outline">{resourceTypeLabel(resource.resourceType)}</Badge>
@@ -28,7 +28,7 @@ export function ResourceCard({ resource }: ResourceCardProps) {
               </Badge>
             ) : null}
           </div>
-          <div className="mt-2 flex items-start gap-3">
+          <div className="flex items-center gap-3">
             <ResourceSiteIcon iconUrl={resource.iconUrl} resourceType={resource.resourceType} />
             <h4 className="display-title min-w-0 flex-1 text-lg font-bold leading-tight">
               <Link
@@ -42,12 +42,12 @@ export function ResourceCard({ resource }: ResourceCardProps) {
           </div>
 
           {resource.description ? (
-            <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-[var(--text-secondary)]">
+            <p className="line-clamp-2 text-sm leading-relaxed text-[var(--text-secondary)]">
               {resource.description}
             </p>
           ) : null}
 
-          <dl className="type-mono mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-[var(--text-secondary)]">
+          <dl className="type-mono flex flex-wrap gap-x-4 gap-y-1 text-xs text-[var(--text-secondary)]">
             <div className="flex gap-2">
               <dt className="font-semibold text-[var(--text-primary)]">{m.card_topic()}</dt>
               <dd>{resource.topic}</dd>
