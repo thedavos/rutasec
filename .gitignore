@@ -18,4 +18,5 @@ playwright/.cache
 __unconfig*
 todos.json
 db/seed/import.sql
+db/seed/proposals/*.json
 .vscode/*

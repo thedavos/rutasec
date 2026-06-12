@@ -1,4 +1,4 @@
-import { RESOURCE_TYPES, type ResourceType } from "#/modules/catalog/domain/entities/resource";
+import { RESOURCE_TYPES } from "#/modules/catalog/domain/entities/resource";
 import type {
   ProposalLanguage,
   ResourceProposalField,
@@ -6,32 +6,12 @@ import type {
   ResourceProposalIssue,
   ResourceProposalValidation,
 } from "#/modules/catalog/domain/entities/resource-proposal";
+import {
+  PROPOSAL_FORMAT_LABELS,
+  PROPOSAL_FORMAT_SLUGS,
+  PROPOSAL_LANGUAGE_LABELS,
+} from "#/shared/constants/proposal-format";
 import { RUTASEC_GITHUB_ISSUES_NEW_URL } from "#/shared/constants/rutasec-github";
-
-const PROPOSAL_FORMAT_SLUGS: Record<ResourceType, string> = {
-  course: "course",
-  book: "book",
-  documentation: "documentation",
-  video: "video",
-  lab: "lab",
-  tool: "tool",
-  article: "article",
-};
-
-const PROPOSAL_FORMAT_LABELS: Record<ResourceType, string> = {
-  course: "Course",
-  book: "Book",
-  documentation: "Documentation",
-  video: "Video",
-  lab: "Lab",
-  tool: "Tool",
-  article: "Article",
-};
-
-const PROPOSAL_LANGUAGE_LABELS: Record<ProposalLanguage, string> = {
-  en: "English",
-  es: "Spanish",
-};
 
 const MAINTAINER_CHECKLIST = [
   "The resource is free and legal",

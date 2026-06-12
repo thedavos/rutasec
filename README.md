@@ -83,14 +83,17 @@ npm run db:schema:local    # apply product + auth schema (local)
 npm run db:schema:remote   # apply product + auth schema (remote)
 npm run db:auth-schema:generate  # regenerate db/auth-schema.sql from Better Auth CLI
 npm run db:tables:local    # list tables
-npm run db:seed:sql        # generate db/seed/import.sql
-npm run db:seed:local      # generate + load seed (local)
+npm run db:seed:sql        # generate db/seed/import.sql (starter only)
+npm run db:seed:sql:all    # generate import.sql from starter + expansion
+npm run db:seed:local      # generate + load starter seed (local)
+npm run db:seed:local:all  # generate + load starter + expansion (local)
 npm run db:seed:verify     # check seed URLs are reachable
-npm run db:seed:remote     # generate + load seed (remote)
+npm run db:seed:remote     # generate + load starter seed (remote)
+npm run db:seed:remote:all # generate + load starter + expansion (remote)
 npm run db:smoke-user:local    # local QA user (requires npm run dev)
 ```
 
-Seed source: `db/seed/web-pentesting-starter.json`. Each resource uses `resource_type` plus a learning-mode tag: `theory`, `practice`, or `mixed`.
+Seed sources: `db/seed/web-pentesting-starter.json` and `db/seed/web-pentesting-expansion.json`. Use `db:seed:local:all` after promoting proposals so both files load into D1. Each resource uses `resource_type` plus a learning-mode tag: `theory`, `practice`, or `mixed`.
 
 Access D1 in server code via `#/shared/db` (`getDb()`).
 
@@ -98,6 +101,60 @@ Access D1 in server code via `#/shared/db` (`getDb()`).
 
 ```bash
 npx wrangler d1 create rutasec-db   # once — copy id into wrangler.jsonc
+```
+
+## Proposal intake (maintainers)
+
+Turn a `/send-resource` GitHub issue into a validated seed resource JSON for manual review before importing.
+
+Full usage: **[scripts/proposal-intake/README.md](scripts/proposal-intake/README.md)** (`proposal:intake`, `community-icon:import`, `proposal:set-icon`, `proposal:promote`, `proposal:close`).
+
+```bash
+export GITHUB_TOKEN="$(gh auth token)"   # or set GITHUB_TOKEN explicitly
+export CURSOR_API_KEY=...                # Cursor SDK key
+npm run proposal:intake -- 42            # writes db/seed/proposals/issue-42.json (gitignored)
+npm run proposal:intake -- 42 --stdout   # print JSON instead
+```
+
+Review the output, then promote into editorial seed and load both seeds:
+
+```bash
+npm run proposal:promote -- 42 --assign-path-order --remove-proposal
+npm run db:seed:local:all
+npm run cache:clear:local
+npm run proposal:close -- 42
+```
+
+Use `db:seed:remote:all` only after review.
+
+Example with a community-hosted logo:
+
+```bash
+npm run community-icon:import -- https://community.example/logo.svg my-community
+npm run proposal:intake -- 42
+npm run proposal:set-icon -- 42 my-community
+```
+
+## Community logos (curated icons)
+
+Host third-party community logos in the repo when you want a stable card icon (e.g. YouTube video from a community channel, but show the community mark).
+
+```bash
+npm run community-icon:import -- https://example.com/logo.svg acme-security
+# optional: --force to overwrite an existing file
+```
+
+- Saves to `public/community-icons/<slug>.<ext>` (served at `/community-icons/...`)
+- Records metadata in `db/seed/community-logos.json`
+- Prints the `icon_url` to paste into seed JSON, e.g. `"icon_url": "/community-icons/acme-security.svg"`
+
+Use only logos you have rights to redistribute. Pair with `url` pointing at the actual resource (YouTube, article, etc.).
+
+After proposal intake, apply a hosted community icon to the generated file:
+
+```bash
+npm run proposal:set-icon -- 42 acme-security
+# or: npm run proposal:set-icon -- 42 --icon-path /community-icons/acme-security.svg
 ```
 
 ## Authentication
@@ -161,16 +218,22 @@ Production secrets: `wrangler secret put <NAME>`. Bindings and compatibility fla
 
 Workflows run on pull requests and `main` via [`.github/workflows/`](.github/workflows/):
 
-| Workflow      | Job / trigger             | Purpose                                     |
-| ------------- | ------------------------- | ------------------------------------------- |
-| `ci.yml`      | `check`                   | `vp check` (format, lint, types)            |
-| `ci.yml`      | `unit`                    | `npm run test:coverage` (80% gate)          |
-| `ci.yml`      | `build`                   | `npm run build`                             |
-| `ci.yml`      | `e2e`                     | Playwright (`e2e/`) with local D1 bootstrap |
-| `preview.yml` | PR after CI               | Deploy preview Worker `rutasec-pr-<number>` |
-| `preview.yml` | PR closed                 | Delete preview Worker                       |
-| `deploy.yml`  | Manual `production`       | Wrangler deploy to production               |
-| `deploy.yml`  | Manual `db-schema-remote` | Remote D1 schema apply                      |
+| Workflow                   | Job / trigger             | Purpose                                        |
+| -------------------------- | ------------------------- | ---------------------------------------------- |
+| `ci.yml`                   | `check`                   | `vp check` (format, lint, types)               |
+| `ci.yml`                   | `unit`                    | `npm run test:coverage` (80% gate)             |
+| `ci.yml`                   | `build`                   | `npm run build`                                |
+| `ci.yml`                   | `e2e`                     | Playwright (`e2e/`) with local D1 bootstrap    |
+| `preview.yml`              | PR after CI               | Deploy preview Worker `rutasec-pr-<number>`    |
+| `preview.yml`              | PR closed                 | Delete preview Worker                          |
+| `deploy.yml`               | Manual `production`       | Wrangler deploy to production                  |
+| `deploy.yml`               | Manual `db-schema-remote` | Remote D1 schema apply                         |
+| `proposal-intake.yml`      | Manual                    | Fetch + enrich proposal issue; upload artifact |
+| `proposal-promote.yml`     | Manual                    | Promote proposal into seed; open PR            |
+| `proposal-seed-remote.yml` | Manual                    | Remote D1 seed + catalog KV clear (post-merge) |
+| `proposal-close.yml`       | Manual                    | Close reviewed proposal issue                  |
+
+Maintainer proposal flow: see **[scripts/proposal-intake/README.md](scripts/proposal-intake/README.md)** → GitHub Actions.
 
 Set in GitHub **Settings → Secrets and variables → Actions**:
 
@@ -178,12 +241,13 @@ Set in GitHub **Settings → Secrets and variables → Actions**:
 | ----------------------- | ------------------------------------------------- |
 | `CLOUDFLARE_API_TOKEN`  | Wrangler deploy, D1 schema apply, preview workers |
 | `CLOUDFLARE_ACCOUNT_ID` | Account scope for Wrangler in CI                  |
+| `CURSOR_API_KEY`        | Proposal intake / promote workflows (DAV-137)     |
 
 The API token needs **Account** permissions (Edit on each):
 
 - **Workers Scripts** — deploy production and preview workers
 - **Workers KV Storage** — required since `wrangler.jsonc` binds `CATALOG_CACHE` (error `10023` without it)
-- **D1** — remote schema apply (`db-schema-remote` workflow)
+- **D1** — remote schema apply (`db-schema-remote` workflow) and proposal seed remote
 
 If the token is resource-scoped, include the `CATALOG_CACHE` namespace id from `wrangler.jsonc`. Create or edit tokens at [Cloudflare API Tokens](https://dash.cloudflare.com/profile/api-tokens).
 
