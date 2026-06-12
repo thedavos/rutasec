@@ -4,11 +4,13 @@ Turn a `/send-resource` GitHub issue into a validated seed resource JSON for hum
 
 Related scripts:
 
-| npm script              | Script file                         |
-| ----------------------- | ----------------------------------- |
-| `proposal:intake`       | `scripts/proposal-intake/cli.ts`    |
-| `community-icon:import` | `scripts/import-community-icon.mjs` |
-| `proposal:set-icon`     | `scripts/set-proposal-icon.mjs`     |
+| npm script              | Script file                                  |
+| ----------------------- | -------------------------------------------- |
+| `proposal:intake`       | `scripts/proposal-intake/cli.ts`             |
+| `community-icon:import` | `scripts/import-community-icon.mjs`          |
+| `proposal:set-icon`     | `scripts/set-proposal-icon.mjs`              |
+| `proposal:promote`      | `scripts/promote-proposal-to-seed.mjs`       |
+| `proposal:close`        | `scripts/proposal-intake/close-issue-cli.ts` |
 
 ## Prerequisites
 
@@ -59,9 +61,11 @@ npm run proposal:intake -- --help
 
 1. Review `db/seed/proposals/issue-<number>.json`
 2. Optionally set a community logo (see below)
-3. Append the resource to `db/seed/web-pentesting-expansion.json` (or another seed file)
-4. `npm run db:seed:local` → verify on `/resources`
-5. `npm run db:seed:remote` only after review
+3. Promote into editorial seed: `npm run proposal:promote -- <number>`
+4. `npm run db:seed:local:all` → verify on `/resources`
+5. `npm run cache:clear:local` if catalog looks stale
+6. `npm run db:seed:remote:all` only after review
+7. `npm run proposal:close -- <number>` → close the GitHub issue with an acceptance comment
 
 ---
 
@@ -124,6 +128,83 @@ npm run proposal:set-icon -- --help
 
 ---
 
+## `proposal:promote`
+
+Copy a reviewed proposal into an editorial seed file (default: `db/seed/web-pentesting-expansion.json`).
+
+```bash
+npm run proposal:promote -- <issue-number> [options]
+```
+
+### Options
+
+| Flag                  | Description                                                          |
+| --------------------- | -------------------------------------------------------------------- |
+| `--seed <path>`       | Target seed file (default: expansion)                                |
+| `--assign-path-order` | Set `path_order` to next free slot when the proposed one is taken    |
+| `--remove-proposal`   | Delete `db/seed/proposals/issue-<n>.json` after a successful promote |
+| `--dry-run`           | Validate only; do not write seed or remove proposal                  |
+| `--help`              | Show usage                                                           |
+
+### Examples
+
+```bash
+npm run proposal:promote -- 42
+npm run proposal:promote -- 42 --assign-path-order --remove-proposal
+npm run proposal:promote -- 42 --seed db/seed/web-pentesting-starter.json --dry-run
+```
+
+Re-running promote with the same resource `id` updates the existing row in the target seed (idempotent).
+
+---
+
+## `proposal:close`
+
+Close a reviewed proposal issue on GitHub with an optional acceptance comment.
+
+```bash
+npm run proposal:close -- <issue-number> [options]
+```
+
+### Options
+
+| Flag                 | Description                                        |
+| -------------------- | -------------------------------------------------- |
+| `--comment <text>`   | Custom closing comment                             |
+| `--resource-id <id>` | Include catalog resource id in the default comment |
+| `--no-comment`       | Close without posting a comment                    |
+| `--dry-run`          | Validate only; do not post or close                |
+| `--help`             | Show usage                                         |
+
+By default the script posts a short acceptance message. If `db/seed/proposals/issue-<n>.json` still exists, it includes the resource `id` in that message.
+
+Only issues with a proposal title (`[new-<type>] …`) are accepted — same guard as `proposal:intake`.
+
+### Examples
+
+```bash
+npm run proposal:close -- 42
+npm run proposal:close -- 42 --resource-id res-video-example
+npm run proposal:close -- 42 --no-comment
+npm run proposal:close -- 42 --dry-run
+```
+
+---
+
+## Seed import (starter + expansion)
+
+`npm run db:seed:local` loads **starter only**. After promoting proposals into expansion, import both editorial seeds:
+
+```bash
+npm run db:seed:local:all    # generate SQL from starter + expansion → load local D1
+npm run db:seed:remote:all   # same for remote D1
+npm run cache:clear:local    # refresh catalog KV after seed changes
+```
+
+Underlying scripts: `db:seed:sql:all` → `scripts/import-all-seeds-to-d1.mjs`.
+
+---
+
 ## End-to-end workflow
 
 ### Standard proposal (auto favicon)
@@ -134,8 +215,10 @@ export CURSOR_API_KEY=...
 
 npm run proposal:intake -- 42
 # review db/seed/proposals/issue-42.json
-# merge into db/seed/web-pentesting-expansion.json
-npm run db:seed:local
+npm run proposal:promote -- 42 --assign-path-order --remove-proposal
+npm run db:seed:local:all
+npm run cache:clear:local
+npm run proposal:close -- 42
 ```
 
 ### YouTube (or external URL) + community logo
@@ -144,6 +227,10 @@ npm run db:seed:local
 npm run community-icon:import -- https://community.example/logo.svg my-community
 npm run proposal:intake -- 42
 npm run proposal:set-icon -- 42 my-community
+npm run proposal:promote -- 42 --assign-path-order
+npm run db:seed:local:all
+npm run cache:clear:local
+npm run proposal:close -- 42 --resource-id res-video-example
 ```
 
 Example seed fields after set-icon:
@@ -168,6 +255,9 @@ Example seed fields after set-icon:
 | `scripts/proposal-intake/`                               | Intake CLI and helpers                                 |
 | `scripts/import-community-icon.mjs`                      | Logo download + manifest update                        |
 | `scripts/set-proposal-icon.mjs`                          | Patch proposal `icon_url`                              |
+| `scripts/promote-proposal-to-seed.mjs`                   | Merge proposal into editorial seed                     |
+| `scripts/proposal-intake/close-issue-cli.ts`             | Close GitHub proposal issue                            |
+| `scripts/import-all-seeds-to-d1.mjs`                     | Generate combined SQL from all editorial seeds         |
 | `db/seed/proposals/`                                     | Generated proposal JSON (gitignored except `.gitkeep`) |
 | `db/seed/community-logos.json`                           | Slug → `icon_path` manifest                            |
 | `public/community-icons/`                                | Hosted logo assets (`/community-icons/...` in the app) |
@@ -185,7 +275,53 @@ Example seed fields after set-icon:
 | `Duplicate seed URL`                   | Resource already in seed; do not re-import                      |
 | `No icon_path for slug`                | Run `community-icon:import` for that slug first                 |
 | `Proposal file not found`              | Run `proposal:intake` for that issue number first               |
+| `path_order … already used`            | Re-run `proposal:promote` with `--assign-path-order`            |
 | `Icon file not found`                  | Run `community-icon:import` or check `--icon-path`              |
+
+---
+
+## GitHub Actions (maintainers)
+
+Step-by-step workflows in [`.github/workflows/`](../../.github/workflows/). Run from **Actions** → workflow → **Run workflow**.
+
+| Workflow                 | File                       | When to run                     |
+| ------------------------ | -------------------------- | ------------------------------- |
+| **Proposal intake**      | `proposal-intake.yml`      | New proposal issue to review    |
+| **Proposal promote**     | `proposal-promote.yml`     | After reviewing intake artifact |
+| **Proposal seed remote** | `proposal-seed-remote.yml` | After merging the seed PR       |
+| **Proposal close**       | `proposal-close.yml`       | After remote D1 is updated      |
+
+### Required secrets
+
+| Secret                  | Workflows                                                         |
+| ----------------------- | ----------------------------------------------------------------- |
+| `CURSOR_API_KEY`        | Proposal intake; Proposal promote (when `intake_run_id` is empty) |
+| `CLOUDFLARE_API_TOKEN`  | Proposal seed remote                                              |
+| `CLOUDFLARE_ACCOUNT_ID` | Proposal seed remote                                              |
+
+`GITHUB_TOKEN` is provided by Actions (issues + PR permissions are declared in each workflow).
+
+### Recommended sequence
+
+1. **Proposal intake** — input: `issue_number`
+   - Uploads artifact `proposal-issue-<n>`
+   - Comments on the issue with resource id and workflow run link
+
+2. **Proposal promote** — inputs: `issue_number`, `intake_run_id` (from step 1 run)
+   - Merges proposal into `web-pentesting-expansion.json`
+   - Opens a PR for human review
+
+3. Merge the seed PR on `main`
+
+4. **Proposal seed remote** — loads starter + expansion into remote D1 and clears catalog KV
+   - Uses the `production` environment (optional approval gate)
+
+5. **Proposal close** — input: `issue_number`, optional `resource_id`
+   - Posts acceptance comment and closes the issue
+
+Each workflow supports `dry_run` where applicable (validate without writes).
+
+Local CLI commands remain available for the same steps on a maintainer machine.
 
 ---
 
