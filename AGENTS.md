@@ -47,7 +47,8 @@ docs/timeline-rules.md         frozen MVP timeline scheduling rules
 ```
 
 db/seed/ seed JSON + generated import.sql
-scripts/ import-seed-to-d1.mjs
+db/seed/proposals/ gitignored proposal intake output (DAV-137)
+scripts/ import-seed-to-d1.mjs, proposal-intake/
 wrangler.jsonc Worker + D1 binding (DB → rutasec-db) and KV binding (CATALOG_CACHE)
 .cursor/rules/ project rules for agents
 
@@ -79,6 +80,7 @@ npm run db:migrate:local # incremental migration on existing local D1
 npm run db:seed:local   # generate + load seed into local D1
 npm run cache:clear:local  # clear local catalog KV cache
 npm run cache:clear:remote # clear remote catalog KV cache
+npm run proposal:intake -- <issue#>  # DAV-137 maintainer intake (needs GITHUB_TOKEN, CURSOR_API_KEY)
 ```
 
 Local D1 is SQLite under `.wrangler/state/v3/d1/` — no separate SQL server. Local catalog KV lives under `.wrangler/state/v3/kv/`. `npm run dev` uses the same local D1 via the `DB` binding.

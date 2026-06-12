@@ -34,6 +34,7 @@
     "db:smoke-user:reset": "node scripts/seed-smoke-user.mjs --reset",
     "cache:clear:local": "node scripts/clear-catalog-cache.mjs --local",
     "cache:clear:remote": "node scripts/clear-catalog-cache.mjs --remote",
+    "proposal:intake": "tsx scripts/proposal-intake/cli.ts",
     "prepare": "vp config"
   },
   "dependencies": {
@@ -64,6 +65,7 @@
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20260527.1",
+    "@cursor/sdk": "^1.0.18",
     "@inlang/paraglide-js": "^2.18.2",
     "@playwright/test": "^1.60.0",
     "@tailwindcss/typography": "^0.5.16",
@@ -79,6 +81,7 @@
     "better-sqlite3": "^12.10.0",
     "fake-indexeddb": "^6.2.5",
     "jsdom": "^28.1.0",
+    "tsx": "^4.22.4",
     "typescript": "^6.0.2",
     "vite": "npm:@voidzero-dev/vite-plus-core@latest",
     "vite-plus": "latest",

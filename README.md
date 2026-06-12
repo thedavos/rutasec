@@ -92,6 +92,19 @@ npm run db:smoke-user:local    # local QA user (requires npm run dev)
 
 Seed source: `db/seed/web-pentesting-starter.json`. Each resource uses `resource_type` plus a learning-mode tag: `theory`, `practice`, or `mixed`.
 
+## Proposal intake (maintainers)
+
+Turn a `/send-resource` GitHub issue into a validated seed resource JSON for manual review before importing.
+
+```bash
+export GITHUB_TOKEN="$(gh auth token)"   # or set GITHUB_TOKEN explicitly
+export CURSOR_API_KEY=...                # Cursor SDK key
+npm run proposal:intake -- 42            # writes db/seed/proposals/issue-42.json (gitignored)
+npm run proposal:intake -- 42 --stdout   # print JSON instead
+```
+
+Review the output, append the resource to `db/seed/web-pentesting-expansion.json` (or another seed file), then run `npm run db:seed:local` before `db:seed:remote`.
+
 Access D1 in server code via `#/shared/db` (`getDb()`).
 
 **First-time Cloudflare setup** (if `database_id` is not in `wrangler.jsonc`):
