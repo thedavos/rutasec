@@ -5,6 +5,7 @@ import { getPersonalLibraryFn } from "#/modules/library";
 import { listGoalLinkedResourcesFn, listUserGoalsFn } from "#/modules/goals";
 import { GoalsPage } from "#/modules/goals/presentation/goals-page";
 import * as m from "#/paraglide/messages.js";
+import { buildPageHead } from "#/shared/presentation/seo/build-page-head";
 
 export const Route = createFileRoute("/goals/")({
   beforeLoad: async ({ location }) => {
@@ -25,9 +26,12 @@ export const Route = createFileRoute("/goals/")({
 
     return { goals, library, linkedResources };
   },
-  head: () => ({
-    meta: [{ title: m.meta_goals_title() }],
-  }),
+  head: () =>
+    buildPageHead({
+      title: m.meta_goals_title(),
+      description: m.goals_description(),
+      path: "/goals",
+    }),
   component: GoalsRoute,
 });
 

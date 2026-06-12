@@ -11,6 +11,7 @@ import { AuthenticatedNavGroup } from "#/shared/presentation/layout/authenticate
 import { MobileNavDrawer } from "#/shared/presentation/layout/mobile-nav-drawer";
 import { PublicNavGroup } from "#/shared/presentation/layout/public-nav-group";
 import { SiteFooter } from "#/shared/presentation/layout/site-footer";
+import { buildPageHead } from "#/shared/presentation/seo/build-page-head";
 import { Button } from "#/shared/presentation/ui/button";
 import { Card, CardDescription, CardHeader, CardTitle } from "#/shared/presentation/ui/card";
 
@@ -19,26 +20,45 @@ import appCss from "../styles.css?url";
 export const Route = createRootRoute({
   component: AppLayout,
   notFoundComponent: NotFoundPage,
-  head: () => ({
-    meta: [
-      {
-        charSet: "utf-8",
-      },
-      {
-        name: "viewport",
-        content: "width=device-width, initial-scale=1",
-      },
-      {
-        title: m.app_title(),
-      },
-    ],
-    links: [
-      {
-        rel: "stylesheet",
-        href: appCss,
-      },
-    ],
-  }),
+  head: () => {
+    const pageHead = buildPageHead({
+      title: m.meta_catalog_title(),
+      description: m.meta_site_description(),
+      path: "/",
+    });
+
+    return {
+      meta: [
+        {
+          charSet: "utf-8",
+        },
+        {
+          name: "viewport",
+          content: "width=device-width, initial-scale=1",
+        },
+        ...pageHead.meta,
+      ],
+      links: [
+        {
+          rel: "stylesheet",
+          href: appCss,
+        },
+        {
+          rel: "icon",
+          href: "/favicon.ico",
+          sizes: "any",
+        },
+        {
+          rel: "apple-touch-icon",
+          href: "/rutasec.png",
+        },
+        {
+          rel: "manifest",
+          href: "/manifest.json",
+        },
+      ],
+    };
+  },
   shellComponent: RootDocument,
 });
 

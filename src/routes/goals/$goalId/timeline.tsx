@@ -6,6 +6,7 @@ import { getStudyPlanForGoalFn } from "#/modules/timeline";
 import { GoalTimelinePage } from "#/modules/timeline/presentation/goal-timeline-page";
 import { groupStudyPlanItemsByWeek } from "#/modules/timeline/presentation/group-study-plan-items-by-week";
 import * as m from "#/paraglide/messages.js";
+import { buildPageHead } from "#/shared/presentation/seo/build-page-head";
 
 export const Route = createFileRoute("/goals/$goalId/timeline")({
   beforeLoad: async ({ location }) => {
@@ -41,15 +42,14 @@ export const Route = createFileRoute("/goals/$goalId/timeline")({
 
     return { goal, plan, weeks };
   },
-  head: ({ loaderData }) => ({
-    meta: [
-      {
-        title: m.meta_goal_timeline_title({
-          goalTitle: loaderData?.goal.title ?? m.meta_goal_timeline_title_fallback(),
-        }),
-      },
-    ],
-  }),
+  head: ({ loaderData, params }) =>
+    buildPageHead({
+      title: m.meta_goal_timeline_title({
+        goalTitle: loaderData?.goal.title ?? m.meta_goal_timeline_title_fallback(),
+      }),
+      description: m.meta_goal_timeline_description(),
+      path: `/goals/${params.goalId}/timeline`,
+    }),
   component: GoalTimelineRoute,
 });
 

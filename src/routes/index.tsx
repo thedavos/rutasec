@@ -10,6 +10,7 @@ import {
 } from "#/modules/catalog/domain/entities/resource";
 import { CatalogPage } from "#/modules/catalog/presentation/catalog-page";
 import * as m from "#/paraglide/messages.js";
+import { buildPageHead } from "#/shared/presentation/seo/build-page-head";
 
 function parseCatalogSearch(search: Record<string, unknown>): CatalogListInput {
   const input: CatalogListInput = {};
@@ -43,9 +44,12 @@ export const Route = createFileRoute("/")({
   validateSearch: parseCatalogSearch,
   loaderDeps: ({ search }) => search,
   loader: async ({ deps }) => getPublicCatalogFn({ data: deps }),
-  head: () => ({
-    meta: [{ title: m.meta_catalog_title() }],
-  }),
+  head: () =>
+    buildPageHead({
+      title: m.meta_catalog_title(),
+      description: m.meta_catalog_description(),
+      path: "/",
+    }),
   component: HomeRoute,
 });
 

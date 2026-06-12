@@ -36,6 +36,11 @@ declare module "#/paraglide/messages.js" {
   export const mobile_nav_menu_title: ParaglideMessage;
   export const mobile_nav_menu_description: ParaglideMessage;
   export const meta_catalog_title: ParaglideMessage;
+  export const meta_site_description: ParaglideMessage;
+  export const meta_catalog_description: ParaglideMessage;
+  export const meta_resource_description_fallback: ParaglideMessage;
+  export const meta_dashboard_description: ParaglideMessage;
+  export const meta_goal_timeline_description: ParaglideMessage;
   export const meta_resource_title: ParaglideMessage;
   export const meta_resource_title_fallback: ParaglideMessage;
   export const meta_send_resource_title: ParaglideMessage;

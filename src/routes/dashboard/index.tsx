@@ -4,6 +4,7 @@ import { getUserDashboardFn } from "#/modules/dashboard";
 import { DashboardPage } from "#/modules/dashboard/presentation/dashboard-page";
 import { getSessionFn } from "#/modules/identity/server/get-session";
 import * as m from "#/paraglide/messages.js";
+import { buildPageHead } from "#/shared/presentation/seo/build-page-head";
 
 export const Route = createFileRoute("/dashboard/")({
   beforeLoad: async ({ location }) => {
@@ -16,9 +17,12 @@ export const Route = createFileRoute("/dashboard/")({
     }
   },
   loader: async () => getUserDashboardFn(),
-  head: () => ({
-    meta: [{ title: m.meta_dashboard_title() }],
-  }),
+  head: () =>
+    buildPageHead({
+      title: m.meta_dashboard_title(),
+      description: m.meta_dashboard_description(),
+      path: "/dashboard",
+    }),
   component: DashboardRoute,
 });
 

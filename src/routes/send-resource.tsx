@@ -3,13 +3,17 @@ import { createFileRoute } from "@tanstack/react-router";
 import { getCatalogFilterOptionsFn } from "#/modules/catalog";
 import { SendResourcePage } from "#/modules/catalog/presentation/send-resource-page";
 import * as m from "#/paraglide/messages.js";
+import { buildPageHead } from "#/shared/presentation/seo/build-page-head";
 import { Skeleton } from "#/shared/presentation/ui/skeleton";
 
 export const Route = createFileRoute("/send-resource")({
   loader: async () => getCatalogFilterOptionsFn(),
-  head: () => ({
-    meta: [{ title: m.meta_send_resource_title() }],
-  }),
+  head: () =>
+    buildPageHead({
+      title: m.meta_send_resource_title(),
+      description: m.send_resource_description(),
+      path: "/send-resource",
+    }),
   pendingComponent: SendResourcePending,
   component: SendResourceRoute,
 });

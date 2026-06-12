@@ -10,6 +10,7 @@ import {
 import { GuestLibraryPage } from "#/modules/library/presentation/guest-library-page";
 import { PersonalLibraryPage } from "#/modules/library/presentation/personal-library-page";
 import * as m from "#/paraglide/messages.js";
+import { buildPageHead } from "#/shared/presentation/seo/build-page-head";
 
 function parseLibrarySearch(search: Record<string, unknown>): GetPersonalLibraryInput {
   if (typeof search.status !== "string" || !search.status.trim()) {
@@ -36,9 +37,12 @@ export const Route = createFileRoute("/library/")({
     const library = await getPersonalLibraryFn({ data: deps });
     return { mode: "authenticated" as const, library };
   },
-  head: () => ({
-    meta: [{ title: m.meta_library_title() }],
-  }),
+  head: () =>
+    buildPageHead({
+      title: m.meta_library_title(),
+      description: m.library_description(),
+      path: "/library",
+    }),
   component: LibraryRoute,
 });
 
