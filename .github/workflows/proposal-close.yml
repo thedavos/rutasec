@@ -1,0 +1,63 @@
+# Maintainer workflow (DAV-137 Phase D): close a reviewed proposal issue on GitHub.
+# Run after the seed PR is merged and remote D1 is updated.
+name: Proposal close
+
+on:
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: GitHub issue number to close
+        required: true
+        type: string
+      resource_id:
+        description: Optional catalog resource id for the closing comment
+        required: false
+        type: string
+      no_comment:
+        description: Close without posting a comment
+        required: false
+        type: boolean
+        default: false
+      dry_run:
+        description: Validate only; do not post or close
+        required: false
+        type: boolean
+        default: false
+
+concurrency:
+  group: proposal-close-${{ inputs.issue_number }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  close:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Close proposal issue
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          args="${{ inputs.issue_number }}"
+          if [ -n "${{ inputs.resource_id }}" ]; then
+            args="$args --resource-id ${{ inputs.resource_id }}"
+          fi
+          if [ "${{ inputs.no_comment }}" = "true" ]; then
+            args="$args --no-comment"
+          fi
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            args="$args --dry-run"
+          fi
+          npm run proposal:close -- "$args"

@@ -1,0 +1,126 @@
+# Maintainer workflow (DAV-137 Phase D): merge proposal JSON into editorial seed and open a PR.
+# Requires CURSOR_API_KEY when intake_run_id is omitted (intake re-run).
+#
+# Typical flow: Proposal intake → review artifact → this workflow → merge PR → seed remote → close issue.
+name: Proposal promote
+
+on:
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: GitHub issue number
+        required: true
+        type: string
+      intake_run_id:
+        description: Workflow run id from Proposal intake (skips re-running intake when set)
+        required: false
+        type: string
+      assign_path_order:
+        description: Assign next free path_order when the proposed slot is taken
+        required: false
+        type: boolean
+        default: true
+      dry_run:
+        description: Validate only; do not write seed or open a PR
+        required: false
+        type: boolean
+        default: false
+
+concurrency:
+  group: proposal-promote-${{ inputs.issue_number }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: read
+  actions: read
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Download proposal artifact
+        if: inputs.intake_run_id != ''
+        uses: actions/download-artifact@v4
+        with:
+          name: proposal-issue-${{ inputs.issue_number }}
+          run-id: ${{ inputs.intake_run_id }}
+          github-token: ${{ github.token }}
+          path: db/seed/proposals
+
+      - name: Run proposal intake
+        if: inputs.intake_run_id == ''
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          CURSOR_API_KEY: ${{ secrets.CURSOR_API_KEY }}
+        run: npm run proposal:intake -- ${{ inputs.issue_number }}
+
+      - name: Promote proposal to seed
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          args="${{ inputs.issue_number }}"
+          if [ "${{ inputs.assign_path_order }}" = "true" ]; then
+            args="$args --assign-path-order"
+          fi
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            args="$args --dry-run"
+          else
+            args="$args --remove-proposal"
+          fi
+          npm run proposal:promote -- "$args"
+
+      - name: Create pull request
+        if: inputs.dry_run != true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ inputs.issue_number }}
+          BRANCH: proposal/issue-${{ inputs.issue_number }}-${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git checkout -b "$BRANCH"
+          git add db/seed/web-pentesting-expansion.json
+          git commit -m "$(cat <<EOF
+          feat(seed): add resource from proposal issue #${ISSUE_NUMBER}
+
+          Automated promote from GitHub Actions (DAV-137).
+          EOF
+          )"
+          git push --force-with-lease origin "$BRANCH"
+
+          gh pr create \
+            --base main \
+            --head "$BRANCH" \
+            --title "feat(seed): proposal issue #${ISSUE_NUMBER}" \
+            --body "$(cat <<EOF
+          ## Summary
+
+          Promotes GitHub issue #${ISSUE_NUMBER} into \`db/seed/web-pentesting-expansion.json\`.
+
+          - Workflow run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          - Issue: ${{ github.server_url }}/${{ github.repository }}/issues/${ISSUE_NUMBER}
+
+          ## Maintainer checklist
+
+          - [ ] Review seed fields (title, url, tags, path_order, icon_url)
+          - [ ] Merge this PR
+          - [ ] Run **Proposal seed remote** workflow
+          - [ ] Run **Proposal close** workflow for issue #${ISSUE_NUMBER}
+          EOF
+          )"
