@@ -9,9 +9,11 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SignUpRouteImport } from './routes/sign-up'
 import { Route as SignInRouteImport } from './routes/sign-in'
 import { Route as SendResourceRouteImport } from './routes/send-resource'
+import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as LibraryIndexRouteImport } from './routes/library/index'
 import { Route as GoalsIndexRouteImport } from './routes/goals/index'
@@ -20,6 +22,11 @@ import { Route as ResourcesIdRouteImport } from './routes/resources/$id'
 import { Route as GoalsGoalIdTimelineRouteImport } from './routes/goals/$goalId/timeline'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SignUpRoute = SignUpRouteImport.update({
   id: '/sign-up',
   path: '/sign-up',
@@ -33,6 +40,11 @@ const SignInRoute = SignInRouteImport.update({
 const SendResourceRoute = SendResourceRouteImport.update({
   id: '/send-resource',
   path: '/send-resource',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
+  id: '/robots.txt',
+  path: '/robots.txt',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -73,9 +85,11 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/robots.txt': typeof RobotsDottxtRoute
   '/send-resource': typeof SendResourceRoute
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/resources/$id': typeof ResourcesIdRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/goals/': typeof GoalsIndexRoute
@@ -85,9 +99,11 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/robots.txt': typeof RobotsDottxtRoute
   '/send-resource': typeof SendResourceRoute
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/resources/$id': typeof ResourcesIdRoute
   '/dashboard': typeof DashboardIndexRoute
   '/goals': typeof GoalsIndexRoute
@@ -98,9 +114,11 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/robots.txt': typeof RobotsDottxtRoute
   '/send-resource': typeof SendResourceRoute
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/resources/$id': typeof ResourcesIdRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/goals/': typeof GoalsIndexRoute
@@ -112,9 +130,11 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/robots.txt'
     | '/send-resource'
     | '/sign-in'
     | '/sign-up'
+    | '/sitemap.xml'
     | '/resources/$id'
     | '/dashboard/'
     | '/goals/'
@@ -124,9 +144,11 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/robots.txt'
     | '/send-resource'
     | '/sign-in'
     | '/sign-up'
+    | '/sitemap.xml'
     | '/resources/$id'
     | '/dashboard'
     | '/goals'
@@ -136,9 +158,11 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/robots.txt'
     | '/send-resource'
     | '/sign-in'
     | '/sign-up'
+    | '/sitemap.xml'
     | '/resources/$id'
     | '/dashboard/'
     | '/goals/'
@@ -149,9 +173,11 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  RobotsDottxtRoute: typeof RobotsDottxtRoute
   SendResourceRoute: typeof SendResourceRoute
   SignInRoute: typeof SignInRoute
   SignUpRoute: typeof SignUpRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   ResourcesIdRoute: typeof ResourcesIdRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
   GoalsIndexRoute: typeof GoalsIndexRoute
@@ -162,6 +188,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sign-up': {
       id: '/sign-up'
       path: '/sign-up'
@@ -181,6 +214,13 @@ declare module '@tanstack/react-router' {
       path: '/send-resource'
       fullPath: '/send-resource'
       preLoaderRoute: typeof SendResourceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/robots.txt': {
+      id: '/robots.txt'
+      path: '/robots.txt'
+      fullPath: '/robots.txt'
+      preLoaderRoute: typeof RobotsDottxtRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -237,9 +277,11 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  RobotsDottxtRoute: RobotsDottxtRoute,
   SendResourceRoute: SendResourceRoute,
   SignInRoute: SignInRoute,
   SignUpRoute: SignUpRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   ResourcesIdRoute: ResourcesIdRoute,
   DashboardIndexRoute: DashboardIndexRoute,
   GoalsIndexRoute: GoalsIndexRoute,
