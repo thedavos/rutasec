@@ -7,6 +7,7 @@ const LIBRARY_SELECT = `
   ur.progress_percentage,
   ur.created_at AS saved_at,
   r.title,
+  r.icon_url,
   r.category,
   r.level,
   r.resource_type,

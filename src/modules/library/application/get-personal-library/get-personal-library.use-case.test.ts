@@ -12,6 +12,7 @@ const item: PersonalLibraryItem = {
   progressPercentage: 0,
   savedAt: "2026-01-01T00:00:00.000Z",
   title: "Linux Journey",
+  iconUrl: null,
   category: "OS",
   level: "beginner",
   resourceType: "course",

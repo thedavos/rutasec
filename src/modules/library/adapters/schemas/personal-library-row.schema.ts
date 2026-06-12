@@ -10,6 +10,7 @@ export const personalLibraryRowSchema = z.object({
   progress_percentage: z.number(),
   saved_at: z.string(),
   title: z.string(),
+  icon_url: z.string().nullable(),
   category: z.string(),
   level: z.enum(RESOURCE_LEVELS),
   resource_type: z.enum(RESOURCE_TYPES),

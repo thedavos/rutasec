@@ -13,6 +13,7 @@ export function mapGuestEntryToLibraryItem(
     progressPercentage: 0,
     savedAt: entry.savedAt,
     title: catalogCard.title,
+    iconUrl: catalogCard.iconUrl,
     category: catalogCard.category,
     level: catalogCard.level,
     resourceType: catalogCard.resourceType,

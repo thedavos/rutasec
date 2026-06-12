@@ -9,6 +9,7 @@ export function mapPersonalLibraryRowToItem(row: PersonalLibraryRow): PersonalLi
     progressPercentage: row.progress_percentage,
     savedAt: row.saved_at,
     title: row.title,
+    iconUrl: row.icon_url,
     category: row.category,
     level: row.level,
     resourceType: row.resource_type,

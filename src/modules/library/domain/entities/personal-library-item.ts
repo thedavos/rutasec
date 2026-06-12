@@ -7,6 +7,7 @@ export type PersonalLibraryItem = {
   progressPercentage: number;
   savedAt: string;
   title: string;
+  iconUrl: string | null;
   category: string;
   level: string;
   resourceType: string;

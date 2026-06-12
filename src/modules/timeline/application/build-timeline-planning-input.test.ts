@@ -51,6 +51,7 @@ describe("buildTimelinePlanningInput", () => {
           progressPercentage: 50,
           savedAt: "2026-01-01T00:00:00.000Z",
           title: "Web Security",
+          iconUrl: null,
           category: "Web",
           level: "beginner",
           resourceType: "course",

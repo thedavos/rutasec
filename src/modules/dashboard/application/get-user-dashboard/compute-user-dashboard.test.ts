@@ -24,6 +24,7 @@ const baseItem = (
   status: "pending",
   progressPercentage: 0,
   savedAt: "2026-01-01T00:00:00.000Z",
+  iconUrl: null,
   category: "Web",
   level: "beginner",
   resourceType: "course",

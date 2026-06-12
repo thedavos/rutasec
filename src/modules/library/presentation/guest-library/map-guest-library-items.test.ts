@@ -46,6 +46,7 @@ describe("mapGuestEntriesToLibraryItems", () => {
         progressPercentage: 0,
         savedAt: "2026-06-08T12:00:00.000Z",
         title: "Web Pentesting 101",
+        iconUrl: null,
         category: "Web",
         level: "beginner",
         resourceType: "course",

@@ -8,6 +8,7 @@ describe("buildListUserResourcesQuery", () => {
 
     expect(sql).toContain("FROM user_resources ur");
     expect(sql).toContain("INNER JOIN resources r");
+    expect(sql).toContain("r.icon_url");
     expect(sql).toContain("ur.user_id = ?");
     expect(sql).not.toContain("ur.status = ?");
     expect(sql).toContain("ORDER BY ur.updated_at DESC");

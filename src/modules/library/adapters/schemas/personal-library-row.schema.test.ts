@@ -11,6 +11,7 @@ describe("personalLibraryRowSchema", () => {
       progress_percentage: 0,
       saved_at: "2026-01-01T00:00:00.000Z",
       title: "Linux Journey",
+      icon_url: null,
       category: "Operating Systems",
       level: "beginner",
       resource_type: "course",

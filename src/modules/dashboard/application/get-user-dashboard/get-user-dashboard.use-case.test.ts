@@ -39,6 +39,7 @@ describe("GetUserDashboardUseCase", () => {
               progressPercentage: 0,
               savedAt: "2026-01-01T00:00:00.000Z",
               title: "Intro",
+              iconUrl: null,
               category: "Web",
               level: "beginner" as const,
               resourceType: "course" as const,
