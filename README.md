@@ -92,9 +92,19 @@ npm run db:smoke-user:local    # local QA user (requires npm run dev)
 
 Seed source: `db/seed/web-pentesting-starter.json`. Each resource uses `resource_type` plus a learning-mode tag: `theory`, `practice`, or `mixed`.
 
+Access D1 in server code via `#/shared/db` (`getDb()`).
+
+**First-time Cloudflare setup** (if `database_id` is not in `wrangler.jsonc`):
+
+```bash
+npx wrangler d1 create rutasec-db   # once — copy id into wrangler.jsonc
+```
+
 ## Proposal intake (maintainers)
 
 Turn a `/send-resource` GitHub issue into a validated seed resource JSON for manual review before importing.
+
+Full usage: **[scripts/proposal-intake/README.md](scripts/proposal-intake/README.md)** (`proposal:intake`, `community-icon:import`, `proposal:set-icon`).
 
 ```bash
 export GITHUB_TOKEN="$(gh auth token)"   # or set GITHUB_TOKEN explicitly
@@ -105,12 +115,34 @@ npm run proposal:intake -- 42 --stdout   # print JSON instead
 
 Review the output, append the resource to `db/seed/web-pentesting-expansion.json` (or another seed file), then run `npm run db:seed:local` before `db:seed:remote`.
 
-Access D1 in server code via `#/shared/db` (`getDb()`).
-
-**First-time Cloudflare setup** (if `database_id` is not in `wrangler.jsonc`):
+Example with a community-hosted logo:
 
 ```bash
-npx wrangler d1 create rutasec-db   # once — copy id into wrangler.jsonc
+npm run community-icon:import -- https://community.example/logo.svg my-community
+npm run proposal:intake -- 42
+npm run proposal:set-icon -- 42 my-community
+```
+
+## Community logos (curated icons)
+
+Host third-party community logos in the repo when you want a stable card icon (e.g. YouTube video from a community channel, but show the community mark).
+
+```bash
+npm run community-icon:import -- https://example.com/logo.svg acme-security
+# optional: --force to overwrite an existing file
+```
+
+- Saves to `public/community-icons/<slug>.<ext>` (served at `/community-icons/...`)
+- Records metadata in `db/seed/community-logos.json`
+- Prints the `icon_url` to paste into seed JSON, e.g. `"icon_url": "/community-icons/acme-security.svg"`
+
+Use only logos you have rights to redistribute. Pair with `url` pointing at the actual resource (YouTube, article, etc.).
+
+After proposal intake, apply a hosted community icon to the generated file:
+
+```bash
+npm run proposal:set-icon -- 42 acme-security
+# or: npm run proposal:set-icon -- 42 --icon-path /community-icons/acme-security.svg
 ```
 
 ## Authentication

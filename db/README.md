@@ -1,6 +1,6 @@
 # Database (D1)
 
-Product schema: `schema.sql`. Better Auth tables: `auth-schema.sql`. Catalog seed: `seed/web-pentesting-starter.json` → `seed/import.sql` (generated). Seed resources may include optional `icon_url` (curated site icon); run `node scripts/backfill-seed-icon-urls.mjs` to populate from resource URLs.
+Product schema: `schema.sql`. Better Auth tables: `auth-schema.sql`. Catalog seed: `seed/web-pentesting-starter.json` → `seed/import.sql` (generated). Seed resources may include optional `icon_url` (curated site icon); run `node scripts/backfill-seed-icon-urls.mjs` to populate from resource URLs, or `npm run community-icon:import` to host a community logo under `public/community-icons/` (manifest: `seed/community-logos.json`). After `npm run proposal:intake`, run `npm run proposal:set-icon -- <issue#> <slug>` to patch `seed/proposals/issue-<n>.json`.
 
 ## Commands
 
