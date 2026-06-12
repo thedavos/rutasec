@@ -49,5 +49,9 @@
   "guest_library_sync_failed_title": "Some saved resources could not sync to your account.",
   "guest_library_sync_error_fallback": "Sync failed. Your local saves are still on this device.",
   "guest_library_sync_retry": "Retry sync",
-  "guest_library_sync_retrying": "Retrying sync…"
+  "guest_library_sync_retrying": "Retrying sync…",
+  "guest_library_remove_button": "Remove from this device",
+  "guest_library_remove_hint": "Removes the local save from this browser only. You can save it again anytime.",
+  "library_remove_device_hint": "This only removes the save from this browser. Your account library is unchanged.",
+  "guest_library_remove_error_fallback": "Could not remove this resource from this device."
 }

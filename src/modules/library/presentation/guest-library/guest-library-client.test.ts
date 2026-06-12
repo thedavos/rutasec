@@ -66,6 +66,7 @@ vi.mock("#/modules/library/server/save-resource", () => ({
 import { saveResourceFn } from "#/modules/library/server/save-resource";
 import {
   listGuestLibraryEntries,
+  removeGuestLibraryEntry,
   retryFailedGuestLibrarySync,
   saveGuestLibraryEntry,
   syncGuestLibraryToServer,
@@ -85,6 +86,14 @@ describe("guest-library-client", () => {
 
     expect(saved.resourceId).toBe("res-1");
     expect(entries).toHaveLength(1);
+  });
+
+  it("removes a guest entry through the store", async () => {
+    await saveGuestLibraryEntry("res-1");
+
+    await removeGuestLibraryEntry("res-1");
+
+    expect(await listGuestLibraryEntries()).toEqual([]);
   });
 
   it("syncs guest entries to the server and clears local rows", async () => {

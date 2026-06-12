@@ -49,5 +49,9 @@
   "guest_library_sync_failed_title": "Algunos recursos guardados no se pudieron sincronizar con tu cuenta.",
   "guest_library_sync_error_fallback": "La sincronización falló. Tus guardados locales siguen en este dispositivo.",
   "guest_library_sync_retry": "Reintentar sincronización",
-  "guest_library_sync_retrying": "Reintentando sincronización…"
+  "guest_library_sync_retrying": "Reintentando sincronización…",
+  "guest_library_remove_button": "Quitar de este dispositivo",
+  "guest_library_remove_hint": "Quita el guardado local de este navegador solamente. Puedes volver a guardarlo cuando quieras.",
+  "library_remove_device_hint": "Solo quita el guardado de este navegador. Tu biblioteca de cuenta no cambia.",
+  "guest_library_remove_error_fallback": "No se pudo quitar este recurso de este dispositivo."
 }

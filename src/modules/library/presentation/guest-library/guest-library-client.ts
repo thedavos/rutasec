@@ -14,6 +14,10 @@ export async function saveGuestLibraryEntry(resourceId: string): Promise<GuestLi
   return getGuestLibraryStore().save(resourceId);
 }
 
+export async function removeGuestLibraryEntry(resourceId: string): Promise<void> {
+  await getGuestLibraryStore().remove([resourceId]);
+}
+
 async function saveResourceForSync(
   resourceId: string,
 ): Promise<Result<SavedUserResource, LibraryError>> {

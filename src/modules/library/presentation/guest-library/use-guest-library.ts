@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import {
   listGuestLibraryEntries,
+  removeGuestLibraryEntry,
   retryFailedGuestLibrarySync,
   saveGuestLibraryEntry,
   syncGuestLibraryToServer,
@@ -37,6 +38,18 @@ export function useGuestLibrarySave() {
   return useMutation({
     mutationKey: [...guestLibraryQueryKeys.all, "save"],
     mutationFn: saveGuestLibraryEntry,
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: guestLibraryQueryKeys.all });
+    },
+  });
+}
+
+export function useGuestLibraryRemove() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationKey: [...guestLibraryQueryKeys.all, "remove"],
+    mutationFn: removeGuestLibraryEntry,
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: guestLibraryQueryKeys.all });
     },

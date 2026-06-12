@@ -9,18 +9,21 @@ import { beforeEach, describe, expect, it, vi } from "vite-plus/test";
 vi.mock("#/modules/library/presentation/guest-library/guest-library-client", () => ({
   listGuestLibraryEntries: vi.fn(),
   saveGuestLibraryEntry: vi.fn(),
+  removeGuestLibraryEntry: vi.fn(),
   syncGuestLibraryToServer: vi.fn(),
   retryFailedGuestLibrarySync: vi.fn(),
 }));
 
 import {
   listGuestLibraryEntries,
+  removeGuestLibraryEntry,
   retryFailedGuestLibrarySync,
   saveGuestLibraryEntry,
   syncGuestLibraryToServer,
 } from "#/modules/library/presentation/guest-library/guest-library-client";
 import {
   useGuestLibraryEntries,
+  useGuestLibraryRemove,
   useGuestLibrarySave,
   useGuestLibrarySyncMutation,
   useIsGuestResourceSaved,
@@ -29,6 +32,7 @@ import {
 
 const mockListGuestLibraryEntries = vi.mocked(listGuestLibraryEntries);
 const mockSaveGuestLibraryEntry = vi.mocked(saveGuestLibraryEntry);
+const mockRemoveGuestLibraryEntry = vi.mocked(removeGuestLibraryEntry);
 const mockSyncGuestLibraryToServer = vi.mocked(syncGuestLibraryToServer);
 const mockRetryFailedGuestLibrarySync = vi.mocked(retryFailedGuestLibrarySync);
 
@@ -103,6 +107,24 @@ describe("useGuestLibrary hooks", () => {
     await waitFor(() => {
       expect(result.current.isSaved).toBe(true);
     });
+  });
+
+  it("removes a guest resource through the mutation", async () => {
+    mockRemoveGuestLibraryEntry.mockResolvedValue(undefined);
+    mockListGuestLibraryEntries.mockResolvedValue([]);
+
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+    });
+    const invalidateSpy = vi.spyOn(queryClient, "invalidateQueries");
+    const { result } = renderHook(() => useGuestLibraryRemove(), {
+      wrapper: createWrapper(queryClient),
+    });
+
+    await result.current.mutateAsync("res-3");
+
+    expect(mockRemoveGuestLibraryEntry.mock.calls[0]?.[0]).toBe("res-3");
+    expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: ["guest-library"] });
   });
 
   it("saves a guest resource through the mutation", async () => {
