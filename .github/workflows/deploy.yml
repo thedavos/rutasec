@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: production
-      url: https://rutasec.davidvargas-d45.workers.dev/
+      url: https://rutasec.space/
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

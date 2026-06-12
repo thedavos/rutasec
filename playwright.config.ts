@@ -6,6 +6,7 @@ const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? `http://localhost:${port}`;
 /** CI default when the secret is unset or empty (empty string bypasses `??`). */
 const ciAuthSecret = process.env.BETTER_AUTH_SECRET || "ci-only-not-for-production-use-32chars!!";
 const ciAuthUrl = process.env.BETTER_AUTH_URL || `http://localhost:${port}`;
+const ciPublicSiteUrl = process.env.PUBLIC_SITE_URL || ciAuthUrl;
 
 export default defineConfig({
   testDir: "./e2e",
@@ -37,6 +38,7 @@ export default defineConfig({
           CLOUDFLARE_INCLUDE_PROCESS_ENV: "true",
           BETTER_AUTH_SECRET: ciAuthSecret,
           BETTER_AUTH_URL: ciAuthUrl,
+          PUBLIC_SITE_URL: ciPublicSiteUrl,
         }
       : undefined,
   },

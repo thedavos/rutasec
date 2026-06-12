@@ -11,6 +11,7 @@ concurrency:
 
 env:
   PLAYWRIGHT_BASE_URL: http://localhost:3000
+  PUBLIC_SITE_URL: http://localhost:3000
   BETTER_AUTH_URL: http://localhost:3000
   BETTER_AUTH_SECRET: ci-only-not-for-production-use-32chars!!
 
@@ -78,6 +79,7 @@ jobs:
           printf '%s\n' \
             "BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET:-ci-only-not-for-production-use-32chars!!}" \
             "BETTER_AUTH_URL=${BETTER_AUTH_URL:-http://localhost:3000}" \
+            "PUBLIC_SITE_URL=${PUBLIC_SITE_URL:-http://localhost:3000}" \
             > .dev.vars
       - run: npm run test:e2e
       - uses: actions/upload-artifact@v4
