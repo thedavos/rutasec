@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 
 import type { CatalogResourceDetail } from "#/modules/catalog/domain/entities/resource";
 import { ResourceAttribution } from "#/modules/catalog/presentation/components/resource-attribution";
+import { ResourceSiteIcon } from "#/modules/catalog/presentation/components/resource-site-icon";
 import { detailAttributionDescription } from "#/modules/catalog/presentation/copy/transparency-copy";
 import type { SavedUserResource } from "#/modules/library/domain/entities/user-resource";
 import { SaveToLibraryCta } from "#/modules/library/presentation/save-to-library-cta";
@@ -62,20 +63,12 @@ export function ResourceDetailPage({ resource, isSaved, userResource }: Resource
       <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_300px]">
         <div className="min-w-0 space-y-8">
           <header className="rise-in">
-            <div className="mb-3 flex flex-wrap items-center gap-2">
-              <Badge
-                variant="secondary"
-                className="island-kicker rounded-full border-[var(--primary-border)]"
-              >
-                {resource.category}
-              </Badge>
-              <Badge variant="outline">{levelLabel(resource.level)}</Badge>
-              <Badge variant="outline">{resourceTypeLabel(resource.resourceType)}</Badge>
-              {resource.isFree ? (
-                <Badge className="border-[var(--primary-border)] bg-[var(--primary-soft)] text-[var(--success)]">
-                  {m.badge_free()}
-                </Badge>
-              ) : null}
+            <div className="mb-3">
+              <ResourceSiteIcon
+                iconUrl={resource.iconUrl}
+                resourceType={resource.resourceType}
+                size="md"
+              />
             </div>
 
             <h1 className="display-title text-4xl font-bold text-[var(--text-primary)] sm:text-5xl">
@@ -159,6 +152,18 @@ export function ResourceDetailPage({ resource, isSaved, userResource }: Resource
             </CardHeader>
             <CardContent className="space-y-4 px-5 pt-3 pb-5">
               <dl className="grid grid-cols-[minmax(0,1fr)_auto] gap-x-4 gap-y-2 text-sm text-[var(--text-secondary)]">
+                <dt className="font-semibold text-[var(--text-primary)]">{m.detail_category()}</dt>
+                <dd className="text-right">{resource.category}</dd>
+                <dt className="font-semibold text-[var(--text-primary)]">{m.detail_level()}</dt>
+                <dd className="text-right">{levelLabel(resource.level)}</dd>
+                <dt className="font-semibold text-[var(--text-primary)]">{m.detail_type()}</dt>
+                <dd className="text-right">{resourceTypeLabel(resource.resourceType)}</dd>
+                {resource.isFree ? (
+                  <>
+                    <dt className="font-semibold text-[var(--text-primary)]">{m.detail_free()}</dt>
+                    <dd className="text-right text-[var(--success)]">{m.badge_free()}</dd>
+                  </>
+                ) : null}
                 <dt className="font-semibold text-[var(--text-primary)]">
                   {m.detail_estimated_time()}
                 </dt>

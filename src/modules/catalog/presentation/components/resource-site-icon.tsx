@@ -24,20 +24,48 @@ const resourceTypeIcons: Record<ResourceType, LucideIcon> = {
   article: Newspaper,
 };
 
+const iconSizes = {
+  sm: {
+    box: "size-8 rounded-md",
+    fallback: "size-4",
+    pixels: 32,
+  },
+  md: {
+    box: "size-10 rounded-lg sm:size-12",
+    fallback: "size-5 sm:size-6",
+    pixels: 48,
+  },
+  lg: {
+    box: "size-12 rounded-xl sm:size-16",
+    fallback: "size-6 sm:size-8",
+    pixels: 64,
+  },
+} as const;
+
 type ResourceSiteIconProps = {
   iconUrl: string | null;
   resourceType: ResourceType;
+  size?: keyof typeof iconSizes;
+  className?: string;
 };
 
-export function ResourceSiteIcon({ iconUrl, resourceType }: ResourceSiteIconProps) {
+export function ResourceSiteIcon({
+  iconUrl,
+  resourceType,
+  size = "sm",
+  className,
+}: ResourceSiteIconProps) {
   const [imageFailed, setImageFailed] = useState(false);
   const FallbackIcon = resourceTypeIcons[resourceType];
   const showImage = Boolean(iconUrl) && !imageFailed;
+  const dimensions = iconSizes[size];
 
   return (
     <div
       className={cn(
-        "flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-md border border-[var(--border-subtle)] bg-[var(--surface-raised)]",
+        "flex shrink-0 items-center justify-center overflow-hidden border border-[var(--border-subtle)] bg-[var(--surface-raised)]",
+        dimensions.box,
+        className,
       )}
       aria-hidden={showImage}
     >
@@ -45,14 +73,14 @@ export function ResourceSiteIcon({ iconUrl, resourceType }: ResourceSiteIconProp
         <img
           src={iconUrl!}
           alt=""
-          width={32}
-          height={32}
+          width={dimensions.pixels}
+          height={dimensions.pixels}
           className="size-full object-cover"
           onError={() => setImageFailed(true)}
         />
       ) : (
         <FallbackIcon
-          className="size-4 text-[var(--text-secondary)]"
+          className={cn("text-[var(--text-secondary)]", dimensions.fallback)}
           aria-label={resourceTypeLabel(resourceType)}
         />
       )}
