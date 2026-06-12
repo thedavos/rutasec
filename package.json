@@ -35,6 +35,8 @@
     "cache:clear:local": "node scripts/clear-catalog-cache.mjs --local",
     "cache:clear:remote": "node scripts/clear-catalog-cache.mjs --remote",
     "proposal:intake": "tsx scripts/proposal-intake/cli.ts",
+    "community-icon:import": "node scripts/import-community-icon.mjs",
+    "proposal:set-icon": "node scripts/set-proposal-icon.mjs",
     "prepare": "vp config"
   },
   "dependencies": {
