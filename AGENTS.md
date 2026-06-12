@@ -75,6 +75,7 @@ npm run build           # production build → dist/server/
 npm run deploy          # build + wrangler deploy
 npm run test:e2e        # Playwright e2e (starts dev server if needed)
 npm run db:schema:local # apply schema to local D1
+npm run db:migrate:local # incremental migration on existing local D1
 npm run db:seed:local   # generate + load seed into local D1
 npm run cache:clear:local  # clear local catalog KV cache
 npm run cache:clear:remote # clear remote catalog KV cache

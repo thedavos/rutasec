@@ -32,6 +32,7 @@ CREATE TABLE IF NOT EXISTS resources (
   title TEXT NOT NULL,
   description TEXT,
   url TEXT NOT NULL,
+  icon_url TEXT,
 
   phase TEXT NOT NULL,
   category TEXT NOT NULL,

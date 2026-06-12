@@ -7,6 +7,7 @@ export const resourceRowSchema = z.object({
   title: z.string(),
   description: z.string().nullable(),
   url: z.string(),
+  icon_url: z.string().nullable(),
   phase: z.string(),
   category: z.string(),
   topic: z.string(),

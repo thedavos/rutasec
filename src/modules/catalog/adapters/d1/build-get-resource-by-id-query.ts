@@ -8,6 +8,7 @@ const DETAIL_SELECT = `
   r.title,
   r.description,
   r.url,
+  r.icon_url,
   r.phase,
   r.category,
   r.topic,
