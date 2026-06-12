@@ -17,14 +17,16 @@ Cybersecurity learning catalog on **TanStack Start**, **Cloudflare Workers**, **
 
 - Node.js (see `packageManager` in `package.json`)
 - [Wrangler](https://developers.cloudflare.com/workers/wrangler/) for D1 and deploy
-- `.env.local` with `BETTER_AUTH_SECRET` and `BETTER_AUTH_URL` (see [Authentication](#authentication))
+- `.env.local` with `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, and `PUBLIC_SITE_URL` (see [Authentication](#authentication))
 
 ## Getting started
 
 ```bash
 vp install
 npx -y @better-auth/cli secret   # add output to .env.local as BETTER_AUTH_SECRET=
-# .env.local also needs BETTER_AUTH_URL=http://localhost:3000
+# .env.local also needs:
+# BETTER_AUTH_URL=http://localhost:3000
+# PUBLIC_SITE_URL=http://localhost:3000
 npm run db:schema:local          # product tables + Better Auth tables
 npm run db:seed:local
 npm run dev
@@ -165,7 +167,10 @@ Better Auth runs on the same D1 binding as product data. Server config lives in 
 # .env.local
 BETTER_AUTH_SECRET=<from @better-auth/cli secret>
 BETTER_AUTH_URL=http://localhost:3000
+PUBLIC_SITE_URL=http://localhost:3000
 ```
+
+`PUBLIC_SITE_URL` is the public origin for SEO meta tags (`og:url`, `og:image`). Production sets it in `wrangler.jsonc` (`vars.PUBLIC_SITE_URL`). Preview deploys override it per PR in `.github/workflows/preview.yml`.
 
 After changing Better Auth options, regenerate auth tables if needed:
 
@@ -182,7 +187,7 @@ import { getAuth } from "#/modules/identity/adapters/better-auth/server-auth";
 import { getSessionFn } from "#/modules/identity/server/get-session";
 ```
 
-Production: set `BETTER_AUTH_SECRET` and `BETTER_AUTH_URL` with `wrangler secret put`. Keep `nodejs_compat` enabled in `wrangler.jsonc`.
+Production: `wrangler secret put BETTER_AUTH_SECRET`. Set `BETTER_AUTH_URL` to `https://rutasec.space` if auth callbacks must not fall back to `http://localhost:3000`. Keep `nodejs_compat` enabled in `wrangler.jsonc`.
 
 ## UI (shadcn)
 

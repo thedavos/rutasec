@@ -59,9 +59,10 @@ Resolve internal ownership via `requireAuthenticatedAppUser()` from `#/modules/i
 ```bash
 BETTER_AUTH_SECRET=   # npx -y @better-auth/cli secret
 BETTER_AUTH_URL=http://localhost:3000
+PUBLIC_SITE_URL=http://localhost:3000
 ```
 
-Production: `wrangler secret put BETTER_AUTH_SECRET` and `wrangler secret put BETTER_AUTH_URL`.
+Production: `wrangler secret put BETTER_AUTH_SECRET`. Set `BETTER_AUTH_URL` to `https://rutasec.space` when auth callbacks must not fall back to `http://localhost:3000`. `PUBLIC_SITE_URL` for SEO lives in `wrangler.jsonc` (`vars`) and preview deploy secrets.
 
 ## Wrangler
 
