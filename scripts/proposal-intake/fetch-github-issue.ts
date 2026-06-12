@@ -1,6 +1,6 @@
 import { PROPOSAL_TITLE_PREFIX_PATTERN } from "#/shared/constants/proposal-format";
 
-const GITHUB_REPO = "thedavos/rutasec";
+import { githubHeaders, githubIssueUrl, readGitHubError } from "./github-api";
 
 export type GitHubIssue = {
   number: number;
@@ -14,21 +14,14 @@ export function isProposalIssueTitle(title: string): boolean {
 }
 
 export async function fetchGitHubIssue(issueNumber: number, token: string): Promise<GitHubIssue> {
-  const response = await fetch(
-    `https://api.github.com/repos/${GITHUB_REPO}/issues/${issueNumber}`,
-    {
-      headers: {
-        Accept: "application/vnd.github+json",
-        Authorization: `Bearer ${token}`,
-        "User-Agent": "rutasec-proposal-intake",
-        "X-GitHub-Api-Version": "2022-11-28",
-      },
-    },
-  );
+  const response = await fetch(githubIssueUrl(issueNumber), {
+    headers: githubHeaders(token),
+  });
 
   if (!response.ok) {
-    const body = await response.text();
-    throw new Error(`GitHub API error ${response.status} for issue #${issueNumber}: ${body}`);
+    throw new Error(
+      `GitHub API error ${response.status} for issue #${issueNumber}: ${await readGitHubError(response)}`,
+    );
   }
 
   const issue = (await response.json()) as GitHubIssue;

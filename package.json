@@ -27,8 +27,11 @@
     "db:schema:remote": "wrangler d1 execute rutasec-db --remote --file=db/schema.sql && wrangler d1 execute rutasec-db --remote --file=db/auth-schema.sql",
     "db:tables:local": "wrangler d1 execute rutasec-db --local --command \"SELECT name FROM sqlite_master WHERE type='table' ORDER BY name;\"",
     "db:seed:sql": "node scripts/import-seed-to-d1.mjs",
+    "db:seed:sql:all": "node scripts/import-all-seeds-to-d1.mjs",
     "db:seed:local": "npm run db:seed:sql && wrangler d1 execute rutasec-db --local --file=db/seed/import.sql",
+    "db:seed:local:all": "npm run db:seed:sql:all && wrangler d1 execute rutasec-db --local --file=db/seed/import.sql",
     "db:seed:remote": "npm run db:seed:sql && wrangler d1 execute rutasec-db --remote --file=db/seed/import.sql",
+    "db:seed:remote:all": "npm run db:seed:sql:all && wrangler d1 execute rutasec-db --remote --file=db/seed/import.sql",
     "db:seed:verify": "node scripts/verify-seed-links.mjs",
     "db:smoke-user:local": "node scripts/seed-smoke-user.mjs",
     "db:smoke-user:reset": "node scripts/seed-smoke-user.mjs --reset",
@@ -37,6 +40,8 @@
     "proposal:intake": "tsx scripts/proposal-intake/cli.ts",
     "community-icon:import": "node scripts/import-community-icon.mjs",
     "proposal:set-icon": "node scripts/set-proposal-icon.mjs",
+    "proposal:promote": "node scripts/promote-proposal-to-seed.mjs",
+    "proposal:close": "tsx scripts/proposal-intake/close-issue-cli.ts",
     "prepare": "vp config"
   },
   "dependencies": {

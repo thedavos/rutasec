@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-import { execSync } from "node:child_process";
 import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
@@ -8,6 +7,7 @@ import { parseResourceProposalIssueBody } from "#/shared/utils/parse-resource-pr
 
 import { enrichProposalWithCursor } from "./enrich-with-cursor";
 import { fetchGitHubIssue } from "./fetch-github-issue";
+import { resolveGitHubToken } from "./github-auth";
 import { assertUrlNotDuplicate, loadSeedContext } from "./load-seed-context";
 import { resolveIconUrl } from "./resolve-icon";
 import { writeProposalOutput } from "./write-output";
@@ -32,20 +32,11 @@ Environment:
 Output:
   Default: db/seed/proposals/issue-<number>.json (gitignored)
 
-Review the generated resource before appending to db/seed/*.json and running db:seed:remote.
+Review the generated resource, then promote and close:
+
+  npm run proposal:promote -- <issue-number>
+  npm run proposal:close -- <issue-number>
 `);
-}
-
-function resolveGitHubToken(): string {
-  if (process.env.GITHUB_TOKEN?.trim()) {
-    return process.env.GITHUB_TOKEN.trim();
-  }
-
-  try {
-    return execSync("gh auth token", { encoding: "utf8" }).trim();
-  } catch {
-    throw new Error("Set GITHUB_TOKEN or authenticate gh before running proposal intake");
-  }
 }
 
 function resolveCursorApiKey(): string {
