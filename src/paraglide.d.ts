@@ -21,7 +21,8 @@ declare module "#/paraglide/messages.js" {
   export const nav_main_aria: ParaglideMessage;
   export const footer_open_source_intro: ParaglideMessage;
   export const footer_github: ParaglideMessage;
-  export const footer_sign_in_prompt: ParaglideMessage;
+  export const footer_author_intro: ParaglideMessage;
+  export const footer_author_name: ParaglideMessage;
   export const footer_share: ParaglideMessage;
   export const footer_link_copied: ParaglideMessage;
   export const footer_link_copy_failed: ParaglideMessage;
@@ -97,6 +98,10 @@ declare module "#/paraglide/messages.js" {
   export const detail_tags_title: ParaglideMessage;
   export const detail_attribution_title: ParaglideMessage;
   export const detail_actions_title: ParaglideMessage;
+  export const detail_category: ParaglideMessage;
+  export const detail_level: ParaglideMessage;
+  export const detail_type: ParaglideMessage;
+  export const detail_free: ParaglideMessage;
   export const detail_estimated_time: ParaglideMessage;
   export const detail_language: ParaglideMessage;
   export const attribution_original_source: ParaglideMessage;
@@ -211,6 +216,9 @@ declare module "#/paraglide/messages.js" {
   export const guest_library_sync_error_fallback: ParaglideMessage;
   export const guest_library_sync_retry: ParaglideMessage;
   export const guest_library_sync_retrying: ParaglideMessage;
+  export const guest_library_remove_button: ParaglideMessage;
+  export const guest_library_remove_hint: ParaglideMessage;
+  export const guest_library_remove_error_fallback: ParaglideMessage;
   export const goals_kicker: ParaglideMessage;
   export const goals_title: ParaglideMessage;
   export const goals_description: ParaglideMessage;

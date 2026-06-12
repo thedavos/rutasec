@@ -32,7 +32,7 @@ src/shared/i18n/               Pure helpers (resource labels, resolve-locale-pre
 import * as m from "#/paraglide/messages.js";
 import { getLocale } from "#/paraglide/runtime.js";
 
-<p>{m.footer_sign_in_prompt()}</p>
+<p>{m.footer_author_intro()}</p>
 <time>{new Date(iso).toLocaleDateString(getLocale(), { dateStyle: "medium" })}</time>
 ```
 

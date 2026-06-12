@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
 import * as m from "#/paraglide/messages.js";
+import { DAVOSDO_DEV_URL } from "#/shared/constants/davosdo";
 import { RUTASEC_GITHUB_URL } from "#/shared/constants/rutasec-github";
 import { LanguageSelector } from "#/shared/presentation/layout/language-selector";
 import { Button } from "#/shared/presentation/ui/button";
@@ -62,7 +63,18 @@ export function SiteFooter() {
             </a>
             .
           </p>
-          <p>{m.footer_sign_in_prompt()}</p>
+          <p>
+            {m.footer_author_intro()}{" "}
+            <a
+              href={DAVOSDO_DEV_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold text-[var(--text-primary)] underline underline-offset-4 hover:text-[var(--primary-hover)]"
+            >
+              {m.footer_author_name()}
+            </a>
+            .
+          </p>
         </div>
 
         <div className="flex w-full items-center gap-3 sm:w-auto sm:justify-end">

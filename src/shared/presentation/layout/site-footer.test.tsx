@@ -3,6 +3,7 @@
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vite-plus/test";
 
+import { DAVOSDO_DEV_URL } from "#/shared/constants/davosdo";
 import { RUTASEC_GITHUB_URL } from "#/shared/constants/rutasec-github";
 import { SiteFooter } from "#/shared/presentation/layout/site-footer";
 
@@ -43,6 +44,15 @@ describe("SiteFooter", () => {
     expect(githubLink.getAttribute("href")).toBe(RUTASEC_GITHUB_URL);
     expect(githubLink.getAttribute("target")).toBe("_blank");
     expect(githubLink.getAttribute("rel")).toBe("noopener noreferrer");
+  });
+
+  it("links users to davosdo.dev", () => {
+    render(<SiteFooter />);
+
+    const authorLink = screen.getByRole("link", { name: "davosdo.dev" });
+    expect(authorLink.getAttribute("href")).toBe(DAVOSDO_DEV_URL);
+    expect(authorLink.getAttribute("target")).toBe("_blank");
+    expect(authorLink.getAttribute("rel")).toBe("noopener noreferrer");
   });
 
   it("lets users switch locale from the footer selector", () => {
